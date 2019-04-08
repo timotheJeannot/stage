@@ -1,0 +1,223 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulaire de création d'événements{% endblock %}
+
+{% block body%}
+
+	{% if editmode%}
+		<h1> Modification d'un Evénement ! </h1>
+	{%else %}
+		<h1> Création d'un Evénement ! </h1>
+	{% endif %}
+
+	{%if errors is null%}
+
+	{%else %}
+		<h3>Erreurs dans le formulaire</h3>
+		<ul>
+		{% for error in errors %}
+			<li>{{ error.message }}</li>
+		{% endfor %}
+		
+		</ul>
+	{% endif %}
+
+	{%if erreurDejaPris is null%}
+
+	{% else %}
+			<h3> Erreur d'intégrité des donnés </h3>
+			<p>{{erreurDejaPris}}</p>
+	{% endif %}
+
+	 {% form_theme formEvenement 'bootstrap_4_layout.html.twig' %} 
+
+	 {#{{ form(formEvenement) }}#}
+
+	{{form_start(formEvenement, { attr: { novalidate: 'novalidate' } })}}
+
+	{{ form_errors(formEvenement) }}
+	
+	{{form_row(formEvenement.nom , {'attr' : {'placeholder': "nom de l'événement"} ,  'label': "Nom"})}}
+	{{form_row(formEvenement.image, {'attr' : {'placeholder': "Url de l'image"},  'label': "Image"})}}
+	{{form_row(formEvenement.description, {'attr' : {'placeholder': "Description de l'événement"},  'label': "Description"})}}
+
+	<h4> Dates</h4>
+
+	<ul class="periode"  data-prototype="{{ form_widget(formEvenement.periode.vars.prototype)|e('html_attr') }}">
+		{% for periode in formEvenement.periode %}
+
+			{{form_row(periode)}}		
+
+		{% endfor %}
+	</ul>
+
+	<h4> Organisateurs </h4>
+
+	<ul class="organisateurs" data-prototype="{{ form_widget(formEvenement.organisateurs.vars.prototype)|e('html_attr') }}">
+		{% for organisateur in formEvenement.organisateurs %}
+
+			{{form_row(organisateur)}}
+
+			<ul class="contacts"  data-prototype="{{ form_widget(organisateur.contacts.vars.prototype)|e('html_attr') }}">
+				{% for contact in organisateur.contacts %}
+
+					{{form_row(contact)}}
+
+				{% endfor %}
+			</ul>
+
+			<br><br><br> 
+
+		{% endfor %}
+	</ul>
+
+
+	{#<h4> test organisateur </h4>
+
+	<div class="testOrganisteurs"  data-prototype="{{ form_widget(formEvenement.organisateurs.vars.prototype)|e('html_attr') }}">
+		{% for organisateur in formEvenement.organisateurs %}
+			
+			{{form_row(organisateur)}}
+
+
+		{% endfor%}
+	
+	</div>#}
+
+	{#{% dump formEvenement.periode %} #}
+
+	<script>
+		//https://symfony.com/doc/current/form/form_collections.html
+
+		var $collectionHolder;
+		var $collectionHolder2;
+		var $collectionHolder3;
+		//var $collectionHolder4;
+
+		// setup an "add a tag" link
+		var $addPeriodeButton = $('<button type="button" class="btn btn-success add_periode_link">Ajouter une période</button>');
+		var $newLinkLi = $('<li></li>').append($addPeriodeButton);
+
+		var $addOrganisateurButton = $('<button type="button" class="btn btn-success add_organsateurs_link">Ajouter un organisateur</button>');
+		var $newLinkLi2 = $('<li></li>').append($addOrganisateurButton);
+
+		var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
+		var $newLinkLi3 = $('<li></li>').append($addContactButton);
+
+		/*var $addTestOrganisateursButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un testOrganisateur</button>');
+		var $newLinkLi4; //= $('<li></li>').append($addContactButton);*/
+
+
+		jQuery(document).ready(function() {
+			// Get the ul that holds the collection of periode
+			$collectionHolder = $('ul.periode');
+			$collectionHolder2 = $('ul.organisateurs');
+			$collectionHolder3 = $('ul.contacts');
+			//$collectionHolder4 = $('div.testOrganisateurs');
+
+			// add the "add a periode" anchor and li to the periode ul
+			$collectionHolder.append($newLinkLi);
+			$collectionHolder2.append($newLinkLi2);
+			$collectionHolder3.append($newLinkLi3);
+			//$collectionHolder4.append($newLinkLi4);
+
+			// count the current form inputs we have (e.g. 2), use that as the new
+			// index when inserting a new item (e.g. 2)
+			$collectionHolder.data('index', $collectionHolder.find(':input').length);
+			$collectionHolder2.data('index', $collectionHolder2.find(':input').length);
+			$collectionHolder3.data('index', $collectionHolder3.find(':input').length);
+			//$collectionHolder4.data('index', $collectionHolder3.find(':input').length);
+
+			$addPeriodeButton.on('click', function(e) {
+				// add a new periode form (see next code block)
+				addForm($collectionHolder, $newLinkLi);
+			});
+
+			$addOrganisateurButton.on('click', function(e) {
+				// add a new organisateur form (see next code block)
+				addForm($collectionHolder2, $newLinkLi2);
+			});
+
+			$addContactButton.on('click', function(e) {
+				
+				//e.preventDefault();
+				
+				// add a new contact form (see next code block)
+				addForm($collectionHolder3, $newLinkLi3);
+			});
+
+			/*$addTestOrganisateurButton.on('click', function(e)) {
+				addTestOrganisateurForm($collectionHolder4, $newLinkLi4);
+			});*/
+		});
+
+		
+
+		function addForm($collectionHolder, $newLinkLi) {
+		// Get the data-prototype explained earlier
+		var prototype = $collectionHolder.data('prototype');
+		console.log(prototype);
+
+
+		// get the new index
+		var index = $collectionHolder.data('index');
+
+		var newForm = prototype;
+		// You need this only if you didn't set 'label' => false in your tags field in TaskType
+		// Replace '__name__label__' in the prototype's HTML to
+		// instead be a number based on how many items we have
+		// newForm = newForm.replace(/__name__label__/g, index);
+
+		// Replace '__name__' in the prototype's HTML to
+		// instead be a number based on how many items we have
+		newForm = newForm.replace(/__name__/g, index);
+
+		// increase the index with one for the next item
+		$collectionHolder.data('index', index + 1);
+
+		// Display the form in the page in an li, before the "Add a tag" link li
+		var $newFormLi = $('<li></li>').append(newForm);
+		$newLinkLi.before($newFormLi);
+	}
+
+	/*function addTestOrganisateurForm($collectionHolder, $newLinkLi) {
+		// Get the data-prototype explained earlier
+		var prototype = $collectionHolder.data('prototype');
+
+		// get the new index
+		var index = $collectionHolder.data('index');
+
+		var newForm = prototype;
+		// You need this only if you didn't set 'label' => false in your tags field in TaskType
+		// Replace '__name__label__' in the prototype's HTML to
+		// instead be a number based on how many items we have
+		// newForm = newForm.replace(/__name__label__/g, index);
+
+		// Replace '__name__' in the prototype's HTML to
+		// instead be a number based on how many items we have
+		newForm = newForm.replace(/__name__/g, index);
+
+		// increase the index with one for the next item
+		$collectionHolder.data('index', index + 1);
+
+		// Display the form in the page in an li, before the "Add a tag" link li
+		
+		$newLinkLi.before(newForm);
+	}*/
+
+	</script>
+	
+
+	 {{form_row(formEvenement.lieu)}}
+
+	 {% if editmode%}
+		<button type="submit" class="btn btn-success">Modifier</button> 
+	{%else %}
+		<button type="submit" class="btn btn-success">Créer</button> 
+	{% endif %}
+
+	{#{{ form_rest(formEvenement) }}#}
+
+	{#{{form_end(formEvenement)}}#}
+
+{% endblock body %}

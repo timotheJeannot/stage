@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{evenement.nom}}{% endblock %}
+
+{% block body %}
+
+	<article>
+
+		<h2> {{evenement.nom}} </h2>
+		<div class="metadata"> Publié le {{evenement.PublishedAt| date ('d/m/y')}} à {{evenement.PublishedAt | date('H:i')}}
+		</div>
+		<div class="Content">
+			<img src="{{evenement.image}}" alt="">
+
+			<p>{{evenement.description}} </p>
+
+			
+		</div>
+
+		<h3> Dates </h3>
+
+		{% for periode in evenement.periode %}
+
+			<p>Date de début : {{periode.debut | date('d/m/y H:i')}} </p>
+			<p>Date de fin : {{periode.fin | date('d/m/y H:i')}} </p>
+
+		{% endfor %}
+
+		<h3> Lieu </h3>
+
+			<p> Ville : {{evenement.lieu.ville}} </p>
+			<p> adresse : {{evenement.lieu.adresse}} </p>
+			<p> code postale : {{evenement.lieu.codePostal}} </p>
+			<p> nom : {{evenement.lieu.nom}} </p>
+
+		<a href="{{path('accueil')}}" class="btn btn-primary">accueil</a>
+
+
+	</article>
+
+{% endblock %}

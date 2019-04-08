@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\config",
+    "\\config\\packages",
+    "\\src",
+    "\\src\\Controller",
+    "\\src\\Entity",
+    "\\src\\Form",
+    "\\src\\Repository",
+    "\\templates",
+    "\\templates\\site"
+  ],
+  "SelectedNode": "\\src\\Entity\\Organisateur.php",
+  "PreviewInSolutionExplorer": false
+}

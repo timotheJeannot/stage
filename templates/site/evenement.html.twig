@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Evénements{% endblock %}
+
+{% block body %}
+
+<section class="articles">
+
+	{% for evenement in evenements %}
+
+	<article>
+
+		<h2> {{evenement.nom}} </h2>
+		{#<div class="metadata"> Publié le {{evenement.PublishedAt| date ('d/m/Y')}} à {{evenement.PublishedAt | date('H:i')}}
+		</div>#}
+		<div class="Content">
+			<img src="{{evenement.image}}" alt="">
+
+			<p>{{evenement.description}} </p>
+
+			<a href="{{path('show_evenement' , {id : evenement.id})}}" class="btn btn-primary"> Lire la suite </a>
+		</div>
+
+	</article>
+</section>
+
+	{% endfor %}
+
+
+{% endblock %}
