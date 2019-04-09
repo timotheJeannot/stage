@@ -21,23 +21,26 @@ class Organisateur
 
     /**
      * @ORM\Column(type="string", length=255)
-	 *@Assert\Length( min = 2 , minMessage ="La taille du nom doit faire au minimum 2 caractères")
+	 * @Assert\NotNull(message="Veuillez renseigner un nom pour l'organisateur")
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-	 *@Assert\Length( min = 2 , minMessage ="La taille du nom du site doit faire au minimum 2 caractères")
+	 * @Assert\Url(message="veuillez indiquer une url valide")
      */
     private $siteWeb;
 
     /**
      * @ORM\Column(type="string", length=255)
+	 * @Assert\Email(message="veuillez indiquer un email valide")
+	 * @Assert\NotNull(message="Veuillez renseigner un mail pour l'organisateur")
      */
     private $mail;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+	 * @Assert\Url(message="veuillez indiquer une url valide")
      */
     private $image;
 

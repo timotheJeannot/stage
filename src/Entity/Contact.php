@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ContactRepository")
@@ -20,21 +21,29 @@ class Contact
 
     /**
      * @ORM\Column(type="string", length=255)
+	 * @Assert\NotNull(message="Veuillez renseigner un nom pour le contact")
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
+	 * @Assert\NotNull(message="Veuillez renseigner un prenom pour le contact")
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
+	 * @Assert\Email(message="veuillez indiquer un email valide")
+	 * @Assert\NotNull(message="Veuillez renseigner un mail pour le contact")
      */
     private $mail;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+	 * @Assert\Regex(
+	 pattern ="/0\s*([0-9]\s*){9}/",
+	 message = "Le numéro de téléphone n'est pas valide"
+	 )
      */
     private $telephone;
 

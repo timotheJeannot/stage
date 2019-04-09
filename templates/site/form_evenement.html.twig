@@ -18,8 +18,7 @@
 		{% for error in errors %}
 			<li>{{ error.message }}</li>
 		{% endfor %}
-		
-		</ul>
+
 	{% endif %}
 
 	{%if erreurDejaPris is null%}
@@ -51,14 +50,30 @@
 		{% endfor %}
 	</ul>
 
+
+
 	<h4> Organisateurs </h4>
 
+	{% dump formEvenement.organisateurs.vars.prototype %}
+ 
+	{#{% set orga_prototype =  formEvenement.organisateurs.vars.prototype  %}#}
+
 	<ul class="organisateurs" data-prototype="{{ form_widget(formEvenement.organisateurs.vars.prototype)|e('html_attr') }}">
+	  
 		{% for organisateur in formEvenement.organisateurs %}
 
 			{{form_row(organisateur)}}
+			{% dump formEvenement.organisateurs.vars.prototype %}
+			
+
+			{# {{form_row(organisateur.contacts)}} #}
+				{#{% dump formEvenement.organisateurs %} 
+				{% dump organisateur.contacts %}
+				{% dump form_widget(formEvenement.organisateurs.vars.prototype) %}
+				{% dump form_widget(organisateur.contacts) %}#}
 
 			<ul class="contacts"  data-prototype="{{ form_widget(organisateur.contacts.vars.prototype)|e('html_attr') }}">
+
 				{% for contact in organisateur.contacts %}
 
 					{{form_row(contact)}}
@@ -70,6 +85,7 @@
 
 		{% endfor %}
 	</ul>
+	{% dump form_widget(formEvenement.organisateurs.vars.prototype) %}
 
 
 	{#<h4> test organisateur </h4>
@@ -139,9 +155,7 @@
 			});
 
 			$addContactButton.on('click', function(e) {
-				
-				//e.preventDefault();
-				
+
 				// add a new contact form (see next code block)
 				addForm($collectionHolder3, $newLinkLi3);
 			});
@@ -157,6 +171,7 @@
 		// Get the data-prototype explained earlier
 		var prototype = $collectionHolder.data('prototype');
 		console.log(prototype);
+		console.log($collectionHolder)
 
 
 		// get the new index

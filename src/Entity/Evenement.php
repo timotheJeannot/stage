@@ -21,13 +21,13 @@ class Evenement
 
     /**
      * @ORM\Column(type="string", length=255)
-	  * @Assert\Length( min = 10 , max = 255 , minMessage ="La taille du nom doit être compris entre 10 et 255 caractères")
+	 * @Assert\NotNull(message="Veuillez renseigner un nom pour l'événement")
      */
     private $nom;
 
     /**
      * @ORM\Column(type="text")
-	 * @Assert\Length( min = 10 , minMessage ="La taille de la description doit faire au minimum 10 caractères")
+	 * @Assert\NotNull(message="Veuillez renseigner une descpription pour l'événement")
      */
     private $description;
 

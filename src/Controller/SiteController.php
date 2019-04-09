@@ -198,9 +198,9 @@ class SiteController extends AbstractController
 
 		$organisateur = new Organisateur();
 
-		/*$contact = new Contact();
+		$contact = new Contact();
 
-		$organisateur->addContact($contact);*/
+		$organisateur->addContact($contact);
 
 		$evenement->addOrganisateur($organisateur);
 
@@ -219,7 +219,16 @@ class SiteController extends AbstractController
 				$evenement->setPublishedAt(new \DateTime( "now" , new \DateTimeZone("Europe/Paris")));
 			}
 			
+			$errors = $validator->validate($lieu);
+			if (count($errors) > 0) {
 
+				return $this->render('/site/form_evenement.html.twig'	,[
+				'formEvenement'=> $form2->createView() ,
+				'editmode' => false , 
+				'errors' => $errors,
+				'erreurDejaPris' =>$erreurDejaPris
+				]);
+			}
 			
 			/*	On vérifie que $lieu n'est pas déja enregistré dans la base de données */
 			$lieu2 = $repoLieu->findOneBy([
@@ -280,14 +289,7 @@ class SiteController extends AbstractController
 				{
 					$errors = $validator->validate($key);
 					if (count($errors) > 0) {
-						/*
-						 * Uses a __toString method on the $errors variable which is a
-						 * ConstraintViolationList object. This gives us a nice string
-						 * for debugging.
-						 */
-						//$errorsString = (string) $errors;
 
-						//return new Response($errorsString);
 						return $this->render('/site/form_evenement.html.twig'	,[
 						 'formEvenement'=> $form2->createView() ,
 						 'editmode' => false , 
@@ -297,18 +299,26 @@ class SiteController extends AbstractController
 					}
 					$manager->persist($key);
 				}
+
+
+				// il faudra changer pour le contact une fois qu'on aura fait l'insertion
+				// dynamique de formulaire
+				$errors = $validator->validate($contact);
+				if (count($errors) > 0) {
+
+					return $this->render('/site/form_evenement.html.twig'	,[
+					'formEvenement'=> $form2->createView() ,
+					'editmode' => false , 
+					'errors' => $errors,
+					'erreurDejaPris' =>$erreurDejaPris
+					]);
+				}
+				$manager->persist($contact);
 				foreach($evenement->getOrganisateurs() as $key )
 				{
 					$errors = $validator->validate($key);
 					if (count($errors) > 0) {
-						/*
-						 * Uses a __toString method on the $errors variable which is a
-						 * ConstraintViolationList object. This gives us a nice string
-						 * for debugging.
-						 */
-						//$errorsString = (string) $errors;
 
-						//return new Response($errorsString);
 						return $this->render('/site/form_evenement.html.twig'	,[
 						 'formEvenement'=> $form2->createView() ,
 						 'editmode' => false , 

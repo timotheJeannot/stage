@@ -20,7 +20,6 @@
 		<h3> Dates </h3>
 
 		{% for periode in evenement.periode %}
-
 			<p>Date de début : {{periode.debut | date('d/m/y H:i')}} </p>
 			<p>Date de fin : {{periode.fin | date('d/m/y H:i')}} </p>
 
@@ -29,9 +28,36 @@
 		<h3> Lieu </h3>
 
 			<p> Ville : {{evenement.lieu.ville}} </p>
-			<p> adresse : {{evenement.lieu.adresse}} </p>
-			<p> code postale : {{evenement.lieu.codePostal}} </p>
-			<p> nom : {{evenement.lieu.nom}} </p>
+			<p> Adresse : {{evenement.lieu.adresse}} </p>
+			<p> Code postale : {{evenement.lieu.codePostal}} </p>
+			<p> Nom : {{evenement.lieu.nom}} </p>
+
+		<h3> Organisateur </h3>
+
+		{% for organisateur in evenement.organisateurs %}
+
+			<p> Nom : {{organisateur.nom}} </p>
+			<p> Site web : {{organisateur.siteWeb}} </p>
+			<p> mail : {{organisateur.mail}} </p>
+			<img src="{{organisateur.image}}" alt="">
+			<br><br>
+
+			<h4> Contacts </h4>
+			{% for contact in organisateur.contacts%}
+
+				<p> ici il faudra faire une redirection vers un formulaire de contact
+				et pas laisser visible l'adresse mail et le numéro de téléphone du contact
+
+				<p> Nom : {{contact.nom}} </p>
+				<p> Prenom : {{contact.prenom}} </p>
+				<p> Mail : {{contact.mail}} </p>
+				<p> teléphone : {{contact.telephone}}</p>
+
+
+			{%endfor%}
+
+		{% endfor %}
+
 
 		<a href="{{path('accueil')}}" class="btn btn-primary">accueil</a>
 

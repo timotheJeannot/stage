@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LieuRepository")
@@ -20,16 +21,23 @@ class Lieu
 
     /**
      * @ORM\Column(type="string", length=255)
+	 * @Assert\NotNull(message="Veuillez renseigner la ville")
      */
     private $ville;
 
     /**
      * @ORM\Column(type="string", length=255)
+	 * @Assert\NotNull(message="Veuillez renseigner l'adresse")
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="string", length=255)
+	 * @Assert\Regex(
+		pattern= "/(([0-8][0-9])|(9[0-5]))[0-9]{3}/",
+		message="Le code postal n'est pas valide"
+		)
+	 * @Assert\NotNull(message="Veuillez renseigner le code postal")
      */
     private $codePostal;
 
@@ -40,6 +48,7 @@ class Lieu
 
     /**
      * @ORM\Column(type="string", length=255)
+	 * @Assert\NotNull(message="Veuillez renseigner un nom pour le lieu")
      */
     private $nom;
 
