@@ -11,6 +11,6 @@
     "\\templates",
     "\\templates\\site"
   ],
-  "SelectedNode": "\\templates\\site\\test.html",
+  "SelectedNode": "\\src\\Controller\\SiteController.php",
   "PreviewInSolutionExplorer": false
 }

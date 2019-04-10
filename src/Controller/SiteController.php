@@ -198,9 +198,9 @@ class SiteController extends AbstractController
 
 		$organisateur = new Organisateur();
 
-		$contact = new Contact();
+		/*$contact = new Contact();
 
-		$organisateur->addContact($contact);
+		$organisateur->addContact($contact);*/
 
 		$evenement->addOrganisateur($organisateur);
 
