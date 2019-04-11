@@ -33,9 +33,9 @@
 			  <li class="nav-item">
 				<a class="nav-link" href="{{path('document')}}">Documents</a>
 			  </li>
-			  <li class="nav-item ">
+			  {#<li class="nav-item ">
 				<a class="nav-link" href="{{path('chat')}}">Chat<span class="sr-only">(current)</span></a>
-			  </li>
+			  </li>#}
 			  <li class="nav-item">
 				<a class="nav-link" href="{{path('contact')}}">Contact</a>
 			  </li>			
@@ -77,6 +77,22 @@
 
 							<li><a class="nav-link" href="{{path('createArticle')}}">Création d'un article</a></li>
 							<li><a class="nav-link" href="{{path('createEvenement')}}">Création d'un événement</a></li>
+																	
+						  
+						</ul>
+					</div>
+			  
+			  </li>
+
+			  <li class="nav-item ">
+					
+					<div class="dropdown">
+						<a class="nav-link dropdown-toggle " data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Moteur de suppression</a>
+
+						<ul class="dropdown-menu bg-primary  ">
+
+							<li><a class="nav-link" href="{{path('suppression_article')}}">Suppression d'un article</a></li>
+							<li><a class="nav-link" href="{{path('suppression_evenement')}}">Suppression d'un événement</a></li>
 																	
 						  
 						</ul>

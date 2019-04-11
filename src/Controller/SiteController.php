@@ -359,4 +359,46 @@ class SiteController extends AbstractController
 	 {
 		return $this->render('site/erreur.html.twig',[ 'mess'=> $mess ]);
 	 }
+
+	 /**
+     * @Route("/suppression_evenement/", name="suppression_evenement")
+     */
+	 public function suppression_evenement(Request $request , ObjectManager $manager , LieuRepository $repoLieu)
+	 {
+
+		$evenement = new Evenement();
+
+		$form2 = $this->createForm(FormEvenementType::class , $evenement);
+
+		$form2->handleRequest($request);
+
+		// on ne vas pas faire de validation du formulaire
+		//car si ce n'est pas valide alors le repo trouvera rien
+		if($form2->isSubmitted())
+		{
+			/* ici il va falloir voir qu'elle champ est vide ou non pour savoir ce qu'on supprime
+			en base de donné */
+
+
+			/*il faudra renvoyer sur une page qui indique combien d'événements ont été supprimé */ 
+
+		}
+
+
+
+
+		return $this->render('site/suppression_evenement.html.twig',[
+								'formEvenement'=> $form2->createView(),
+							]);
+	 }
+
+	  /**
+     * @Route("/suppression_article/", name="suppression_article")
+     */
+	 public function suppression_article()
+	 {
+		
+
+		return $this->render('site/suppression_article.html.twig');
+	 }
 }

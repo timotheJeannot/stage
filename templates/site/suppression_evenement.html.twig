@@ -1,0 +1,20 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Suppression Evénement{% endblock %}
+
+{% block body %}
+
+<h1> Bienvenue sur la page de suppression des événements </h1>
+
+<p>Au niveau de la suppresion, faire une connection logique et entre les différents champs.
+Si il n'y a que le champs nom et le champ lieu.ville , supprimer tout les evénements qui 
+ont ce nom ET qui se déroulent à lieu.ville . Permetter aussi de supprimer en fonction de
+la date de publication et entre deux dates (le début et la fin de l'événement.) .</p>
+
+
+{% form_theme formEvenement 'bootstrap_4_layout.html.twig' %} 
+{{form(formEvenement)}}
+
+
+{% endblock %}

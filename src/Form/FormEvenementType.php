@@ -33,7 +33,8 @@ class FormEvenementType extends AbstractType
             'entry_type' => FormOrganisateurType::class,
 			'entry_options' => ['label' => false],
 			'allow_add' => true,
-			'prototype' => true,
+			//'by_reference' => false
+			//'prototype' => true,
 			])
 			 // ->add('PublishedAt')
         ;

@@ -64,7 +64,11 @@
 			{{form_row(organisateur.siteWeb)}}
 			{{form_row(organisateur.mail)}}
 			{{form_row(organisateur.image)}}
+			{{form_row(organisateur.contacts)}}
+			
 
+
+			
 			<ul class="contacts"  data-prototype="{{ form_widget(organisateur.contacts.vars.prototype)|e('html_attr') }}">
 
 				{% for contact in organisateur.contacts %}
@@ -73,6 +77,8 @@
 
 				{% endfor %}
 			</ul>
+
+
 
 			{% set test = false%}
 			{% if test%}
@@ -110,6 +116,22 @@
 
 
 		jQuery(document).ready(function() {
+
+
+			
+			/*$lastFormOrga = $('ul.organisateurs > li:nth-last-child(2) ');
+
+			//console.log($lastFormOrga);
+
+			var codeContact = $('ul.contacts:eq(0)');
+			console.log(codeContact);
+				
+			var copie = codeContact.clone();
+				
+			$($lastFormOrga).append(copie);*/
+
+
+
 			// Get the ul that holds the collection of periode
 			$collectionHolder = $('ul.periode');
 			$collectionHolder2 = $('ul.organisateurs');
@@ -138,17 +160,32 @@
 				// add a new organisateur form (see next code block)
 				addForm($collectionHolder2, $newLinkLi2);
 
+				// on va rajouter le code html et twig pour gérer les contacts
 
+				
+				/*$lastFormOrga = $('ul.organisateurs > li:nth-last-child(2) ');
+
+				//console.log($lastFormOrga);
+
+				var codeContact = $('ul.contacts:eq(0)');
+				//console.log(codeContact);
+				
+				var copie = codeContact.clone();
+				
+				$($lastFormOrga).append(copie);
+
+				//console.log($lastFormOrga);
+				
 				var $collectionHolder4;
 
-				//var nbOrga = $collectionHolder.data('index') -5;
+				var nbOrga = $collectionHolder2.data('index') -5;
 
 				var $addContactButton2 = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
 				var $newLinkLi4 = $('<li></li>').append($addContactButton2);
 
-				$collectionHolder4 = $('ul.contacts:eq(0)');
-				console.log($('ul.contacts:eq(0)'))
-
+				$collectionHolder4 = $('ul.contacts:eq(nbOrga)');
+				//console.log($('ul.contacts:eq(0)'))
+	
 				$collectionHolder4.append($newLinkLi4);
 
 				$collectionHolder4.data('index', $collectionHolder4.find(':input').length);
@@ -157,7 +194,9 @@
 
 				// add a new contact form (see next code block)
 				addForm($collectionHolder4, $newLinkLi4);
-				});
+				});*/
+
+
 
 			});
 
@@ -170,7 +209,7 @@
 			/*
 			function addForm($collectionHolder, $newLinkLi) {
 				// Get the data-prototype explained earlier
-
+				var prototype = $collectionHolder.data('prototype');
 
 				// get the new index
 				var index = $collectionHolder.data('index');
@@ -221,7 +260,7 @@
 		function addForm($collectionHolder, $newLinkLi) {
 		// Get the data-prototype explained earlier
 		var prototype = $collectionHolder.data('prototype');
-		console.log($collectionHolder.data('index'));
+		//console.log($collectionHolder.data('index'));
 
 
 		// get the new index
