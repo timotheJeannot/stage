@@ -30,8 +30,6 @@
 
 	 {% form_theme formEvenement 'bootstrap_4_layout.html.twig' %} 
 
-	 {#{{ form(formEvenement) }}#}
-
 	{{form_start(formEvenement, { attr: { novalidate: 'novalidate' } })}}
 
 	{{ form_errors(formEvenement) }}
@@ -42,6 +40,7 @@
 
 	<h4> Dates</h4>
 
+	
 	<ul class="periode"  data-prototype="{{ form_widget(formEvenement.periode.vars.prototype)|e('html_attr') }}">
 		{% for periode in formEvenement.periode %}
 
@@ -51,44 +50,35 @@
 	</ul>
 
 
-
 	<h4> Organisateurs </h4>
 
 
-	  <ul class="organisateurs" data-prototype="{{ form_widget(formEvenement.organisateurs.vars.prototype)|e('html_attr') }}">
+	<ul class="organisateurs" data-prototype="{{ form_widget(formEvenement.organisateurs.vars.prototype)|e('html_attr') }}">
 
 		{% for organisateur in formEvenement.organisateurs %}
 
 			<p> Bonjour </p>
-			{{form_row(organisateur.nom)}}
+			{#{{form_row(organisateur.nom)}}
 			{{form_row(organisateur.siteWeb)}}
 			{{form_row(organisateur.mail)}}
-			{{form_row(organisateur.image)}}
-			{{form_row(organisateur.contacts)}}
-			
+			{{form_row(organisateur.image)}}#}
 
-
+			{{form_row(organisateur)}}
 			
-			<ul class="contacts"  data-prototype="{{ form_widget(organisateur.contacts.vars.prototype)|e('html_attr') }}">
+			{#<ul class="contacts"  data-prototype="{{ form_widget(organisateur.contacts.vars.prototype)|e('html_attr') }}">
 
 				{% for contact in organisateur.contacts %}
 
 					{{form_row(contact)}}
 
 				{% endfor %}
-			</ul>
-
-
-
-			{% set test = false%}
-			{% if test%}
-
-			{% endif %}
+			</ul>#}
 
 			<br><br><br> 
 
 		{% endfor %}
 	</ul>
+
 
 
 
@@ -159,6 +149,10 @@
 			$addOrganisateurButton.on('click', function(e) {
 				// add a new organisateur form (see next code block)
 				addForm($collectionHolder2, $newLinkLi2);
+				//document.forms['{{formEvenement.vars.id}}'].submit();
+
+
+
 
 				// on va rajouter le code html et twig pour gérer les contacts
 
@@ -206,52 +200,7 @@
 				addForm($collectionHolder3, $newLinkLi3);
 
 			});
-			/*
-			function addForm($collectionHolder, $newLinkLi) {
-				// Get the data-prototype explained earlier
-				var prototype = $collectionHolder.data('prototype');
-
-				// get the new index
-				var index = $collectionHolder.data('index');
-
-				var newForm = prototype;
-				// You need this only if you didn't set 'label' => false in your tags field in TaskType
-				// Replace '__name__label__' in the prototype's HTML to
-				// instead be a number based on how many items we have
-				// newForm = newForm.replace(/__name__label__/g, index);
-
-				// Replace '__name__' in the prototype's HTML to
-				// instead be a number based on how many items we have
-				newForm = newForm.replace(/__name__/g, index);
-
-				// increase the index with one for the next item
-				$collectionHolder.data('index', index + 1);
-
-				// Display the form in the page in an li, before the "Add a tag" link li
-				var $newFormLi = $('<li></li>').append(newForm);
-				$newLinkLi.before($newFormLi);
-
-
-
-
-				var $collectionHolder4;
-
-				var $addContactButton2 = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
-				var $newLinkLi4 = $('<li></li>').append($addContactButton2);
-
-				$collectionHolder4 = $('ul.contacts');
-
-				$collectionHolder4.append($newLinkLi4);
-
-				$collectionHolder4.data('index', $collectionHolder4.find(':input').length);
-
-				$addContactButton2.on('click', function(e) {
-
-				// add a new contact form (see next code block)
-				addForm($collectionHolder4, $newLinkLi4);
-				});
-
-			}*/
+			
 
 		});
 

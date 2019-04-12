@@ -198,10 +198,6 @@ class SiteController extends AbstractController
 
 		$organisateur = new Organisateur();
 
-		/*$contact = new Contact();
-
-		$organisateur->addContact($contact);*/
-
 		$evenement->addOrganisateur($organisateur);
 
 		$evenement->addPeriode($periode1);
@@ -300,20 +296,7 @@ class SiteController extends AbstractController
 					$manager->persist($key);
 				}
 
-
-				// il faudra changer pour le contact une fois qu'on aura fait l'insertion
-				// dynamique de formulaire
-				$errors = $validator->validate($contact);
-				if (count($errors) > 0) {
-
-					return $this->render('/site/form_evenement.html.twig'	,[
-					'formEvenement'=> $form2->createView() ,
-					'editmode' => false , 
-					'errors' => $errors,
-					'erreurDejaPris' =>$erreurDejaPris
-					]);
-				}
-				$manager->persist($contact);
+				
 				foreach($evenement->getOrganisateurs() as $key )
 				{
 					$errors = $validator->validate($key);
@@ -326,6 +309,23 @@ class SiteController extends AbstractController
 						 'erreurDejaPris' =>$erreurDejaPris
 						 ]);
 					}
+					
+					// on va vérifier les contacts
+
+					/*foreach($key->getContacts() as $key2)
+					{
+						$errors = $validator->validate($key2);
+						if (count($errors) > 0) {
+
+							return $this->render('/site/form_evenement.html.twig'	,[
+							'formEvenement'=> $form2->createView() ,
+							'editmode' => false , 
+							'errors' => $errors ,
+							'erreurDejaPris' =>$erreurDejaPris
+							]);
+						}
+						$manager->persist($key2);
+					}*/
 					$manager->persist($key);
 				}
 				$manager->persist($evenement);
