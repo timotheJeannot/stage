@@ -45,7 +45,7 @@ class Organisateur
     private $image;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Evenement", inversedBy="organisateurs")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Evenement", mappedBy="organisateurs")
      */
     private $Evenement;
 
@@ -125,6 +125,7 @@ class Organisateur
     {
         if (!$this->Evenement->contains($evenement)) {
             $this->Evenement[] = $evenement;
+            $evenement->addOrganisateur($this);
         }
 
         return $this;
@@ -134,6 +135,7 @@ class Organisateur
     {
         if ($this->Evenement->contains($evenement)) {
             $this->Evenement->removeElement($evenement);
+            $evenement->removeOrganisateur($this);
         }
 
         return $this;
