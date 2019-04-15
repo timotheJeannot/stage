@@ -198,6 +198,11 @@ class SiteController extends AbstractController
 
 		$organisateur = new Organisateur();
 
+	/*	$contact = new Contact();
+		$organisateur->addContact($contact);*/
+
+		$contact2 = $organisateur->getContacts();
+
 		$evenement->addOrganisateur($organisateur);
 
 		$evenement->addPeriode($periode1);
@@ -312,7 +317,7 @@ class SiteController extends AbstractController
 					
 					// on va vérifier les contacts
 
-					/*foreach($key->getContacts() as $key2)
+					foreach($key->getContacts() as $key2)
 					{
 						$errors = $validator->validate($key2);
 						if (count($errors) > 0) {
@@ -325,7 +330,7 @@ class SiteController extends AbstractController
 							]);
 						}
 						$manager->persist($key2);
-					}*/
+					}
 					$manager->persist($key);
 				}
 				$manager->persist($evenement);

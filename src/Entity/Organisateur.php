@@ -50,7 +50,7 @@ class Organisateur
     private $Evenement;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Contact", mappedBy="organisateurs")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Contact", inversedBy="organisateurs")
      */
     private $contacts;
 
@@ -153,7 +153,7 @@ class Organisateur
     {
         if (!$this->contacts->contains($contact)) {
             $this->contacts[] = $contact;
-            $contact->addOrganisateur($this);
+            //$contact->addOrganisateur($this);
         }
 
         return $this;
@@ -163,7 +163,7 @@ class Organisateur
     {
         if ($this->contacts->contains($contact)) {
             $this->contacts->removeElement($contact);
-            $contact->removeOrganisateur($this);
+            //$contact->removeOrganisateur($this);
         }
 
         return $this;

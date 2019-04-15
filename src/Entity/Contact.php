@@ -40,15 +40,12 @@ class Contact
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-	 * @Assert\Regex(
-	 pattern ="/0\s*([0-9]\s*){9}/",
-	 message = "Le numéro de téléphone n'est pas valide"
-	 )
+	 * @Assert\Regex(pattern ="/0\s*([0-9]\s*){9}/",message = "Le numéro de téléphone n'est pas valide")
      */
     private $telephone;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Organisateur", inversedBy="contacts")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Organisateur", mappedBy="contacts")
      */
     private $organisateurs;
 
@@ -122,6 +119,7 @@ class Contact
     {
         if (!$this->organisateurs->contains($organisateur)) {
             $this->organisateurs[] = $organisateur;
+            $organisateur->addContact($this);
         }
 
         return $this;
@@ -131,6 +129,7 @@ class Contact
     {
         if ($this->organisateurs->contains($organisateur)) {
             $this->organisateurs->removeElement($organisateur);
+            $organisateur->removeContact($this);
         }
 
         return $this;

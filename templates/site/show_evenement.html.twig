@@ -32,9 +32,9 @@
 			<p> Code postale : {{evenement.lieu.codePostal}} </p>
 			<p> Nom : {{evenement.lieu.nom}} </p>
 
-		<h3> Organisateur </h3>
-
 		{% for organisateur in evenement.organisateurs %}
+
+			<h3> Organisateur </h3>
 
 			<p> Nom : {{organisateur.nom}} </p>
 			<p> Site web : {{organisateur.siteWeb}} </p>
@@ -44,7 +44,7 @@
 
 			{% for contact in organisateur.contacts%}
 				<h4> Contacts </h4>
-				
+
 				<p> ici il faudra faire une redirection vers un formulaire de contact
 				et pas laisser visible l'adresse mail et le numéro de téléphone du contact
 

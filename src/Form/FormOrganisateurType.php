@@ -18,12 +18,16 @@ class FormOrganisateurType extends AbstractType
             ->add('mail')
             ->add('image')
             //->add('Evenement')
-           /* ->add('contacts',CollectionType::class, 
+            ->add('contacts',CollectionType::class, 
 			[
             'entry_type' => FormContactType::class,
 			'entry_options' => ['label' => false],
-			'allow_add' => true,
-			])*/
+            'allow_add' => true,
+            'allow_delete' => true,
+			'by_reference' => false,
+            'prototype' => true,
+            //'prototype_name' => '__cont_prot__'
+			])
         ;
     }
 
