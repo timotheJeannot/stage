@@ -14,34 +14,12 @@
 
 	{{form_start(formArticle)}}
 
-	{#
-	<div class="form-group>
-		<label for="">Titre </label>
-		{{form_widget(formArticle.title)}}
-		
-	</div>
-
-	<div class="form-group>
-		<label for="">Contenue </label>
-		{{form_widget(formArticle.content)}}
-		
-	</div>
-
-	<div class="form-group>
-		<label for="">Image </label>
-		{{form_widget(formArticle.image)}}
-		
-	</div>
-	<div class="form-group">
-		<button type="submit" class="btn btn-success">Ajouter</button>
-	</div>
-	#}
 	
 	
 	{{form_row(formArticle.titre , {'attr' : {'placeholder': "Titre de l'article"} ,  'label': "Titre"})}}
 	{{form_row(formArticle.image, {'attr' : {'placeholder': "Url de l'image"},  'label': "Image"})}}
 	{{form_row(formArticle.contenu, {'attr' : {'placeholder': "Contenu de l'article"},  'label': "Contenu"})}}
-	 {# {{form_row(formArticle.submit , {'label' : "Ajouter un article"})}}; Cette ligne ne fonctionne pas #}
+	
 
 	 {% if editmode%}
 		<button type="submit" class="btn btn-success">Modifier</button> 
@@ -49,14 +27,7 @@
 		<button type="submit" class="btn btn-success">Créer</button> 
 	{% endif %}
 
-	{#
-	{{form_widget(formArticle)}} Permet de se passer  des div ou des form_row , mais il faut indiquer à twig
-	que le rendu se fait avec bootstrap et cela se fait dans le fichier de configuration de twig
-	ou avec {% form_theme formArticle 'bootstrap_4_layout.html.twig' %}
-	les lignes form-control deviennent inutiles dans le fichier BlogControler
-
-
-	#}
+	
 
 	{{form_end(formArticle)}}
 
