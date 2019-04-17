@@ -231,11 +231,12 @@
 
                 //le eq(0) ne sert surement à rien
                 var $collectionHolder4 = $('ul.contacts:eq(0)').clone();
+                
                 // on supprime les formulaires contact et le bouton
                 $collectionHolder4.find('li').remove();
             
 
-                var $addContactButton2 = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact!!!!!!</button>');
+                var $addContactButton2 = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
                 var $newLinkLi4 = $('<li></li>').append($addContactButton2);
                 
                 $collectionHolder4.append($newLinkLi4);

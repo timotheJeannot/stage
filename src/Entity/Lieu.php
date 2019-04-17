@@ -33,10 +33,7 @@ class Lieu
 
     /**
      * @ORM\Column(type="string", length=255)
-	 * @Assert\Regex(
-		pattern= "/(([0-8][0-9])|(9[0-5]))[0-9]{3}/",
-		message="Le code postal n'est pas valide"
-		)
+	 * @Assert\Regex(pattern= "/(([0-8][0-9])|(9[0-5]))[0-9]{3}/",message="Le code postal n'est pas valide")
 	 * @Assert\NotNull(message="Veuillez renseigner le code postal")
      */
     private $codePostal;

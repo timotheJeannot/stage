@@ -123,6 +123,7 @@ class Evenement
     {
         if (!$this->estDans->contains($estDan)) {
             $this->estDans[] = $estDan;
+            $estDan->addEvenement($this);
         }
 
         return $this;
@@ -132,6 +133,7 @@ class Evenement
     {
         if ($this->estDans->contains($estDan)) {
             $this->estDans->removeElement($estDan);
+            $estDan->removeEvenement($this);
         }
 
         return $this;

@@ -43,7 +43,7 @@ class Article
     private $createdAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Evenement", mappedBy="estDans")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Evenement", inversedBy="estDans")
      */
     private $evenements;
 
@@ -117,7 +117,7 @@ class Article
     {
         if (!$this->evenements->contains($evenement)) {
             $this->evenements[] = $evenement;
-            $evenement->addEstDan($this);
+            //$evenement->addEstDan($this);
         }
 
         return $this;
@@ -127,7 +127,7 @@ class Article
     {
         if ($this->evenements->contains($evenement)) {
             $this->evenements->removeElement($evenement);
-            $evenement->removeEstDan($this);
+            //$evenement->removeEstDan($this);
         }
 
         return $this;

@@ -127,52 +127,112 @@ class SiteController extends AbstractController
 	 {
 		$article = new Article();
 
-		/*$form = $this->createFormBuilder($article);
+		// cette evénement est là pour pouvoir rentrer dans la boucle for dans le twig
+		// pareil pour l'organisteur
+		$event = new Evenement();
 
-		$form ->add('titre',TextType::class , 
-				[
-					'attr'=>
-					[
-						'placeholder' =>'Titre de l\'article',
-						'class' => 'form-control'
-					]
-				])
-			 ->add('image',TextType::class, 
-				[
-					'attr'=>
-					[
-						'placeholder' =>'Image de l\'article',
-						'class' => 'form-control'
-					]
-				])
-			 ->add('contenu', TextareaType::class,
-				[
-					'attr'=>
-					[
-						'placeholder' =>'Contenue de l\'article',
-						'class' => 'form-control'
-					]
-				]);*/
+		$orga = new Organisateur();
+		$event->addOrganisateur($orga);
+		$article->addEvenement($event);
 
 		$form2 = $this->createForm(FormArticleType::class , $article);
 
 
-		//$form2 =$form->getForm();
 		$form2->handleRequest($request);
-		//dumb($article) ;
 
-		if($form2->isSubmitted() && $form2->isValid())
+
+		if($form2->isSubmitted() /*&& $form2->isValid()*/)
 		{
+
 			if($article->getId() == null)
 			{
 				$article->setCreatedAt(new \DateTime( "now" , new \DateTimeZone("Europe/Paris")));
 			}
 
+			// les variable testi sont la pour ne pas prendre en compte le 1er événement ($event)
+			// qui est là pour faciliter le rendu dans twig
+			$test1 =0;
+			$test2 =0;
+
+			// on va effectuer des tests sur le lieu (lieu déja occupé ?)
+			//lieu déja occupé dans les événements du formulaires ?
+			//voir pour la complexité avec floriant si c'est important
+
+			foreach($article->getEvenements() as $key)
+			{
+				if($test1 !=0)
+				{
+					foreach($article->getEvenements() as $key2)
+					{
+						if($test2 !=0)
+						{
+							//https://www.php.net/manual/fr/language.oop5.object-comparison.php
+							//si ce n'est pas le même lieu du même événement
+							if($key !== $key2)
+							{
+								// si c'est le même lieu et avec le test d'avant on sait que c'est
+								// deux événements différents
+								if($key == $key2)
+								{
+									foreach($key->getPeriode() as $key3)
+									{
+										foreach($key2->getPeriode() as $key4)
+										{
+											// un intervalle de temps en commun ?
+										}
+									}
+								}
+							}
+						}
+						$test2=1;
+					}
+				}
+
+				$test1 =1;
+				$test2= 0;
+			}
+			// la variable test est la pour ne pas prendre en compte le 1er événement ($event)
+			// qui est là pour faciliter le rendu dans twig
+			$test =0;
+			foreach($article->getEvenements() as $key)
+			{
+				// il faudra rajouter la validation aussi et le test du lieu avant
+				// attention pour le test du lieu , il faut le faire avec
+				// les informations du formulaire en plus des infos qui sont en
+				// base de données
+				if($test !=0)
+				{
+					foreach($key->getPeriode() as $key2)
+					{
+						$manager->persist($key2);
+					}
+					foreach($key->getOrganisateurs() as $key3)
+					{
+						foreach($key3->getContacts() as $key4)
+						{
+							$manager->persist($key4);
+						}
+						$manager->persist($key3);
+					}
+
+					$manager->persist($key->getLieu());
+
+					$key->setPublishedAt($article->getCreatedAt());
+					$manager->persist($key);	
+				}
+				
+				$test = 1;
+			}
+
+			$article->removeEvenement($event);
+
 			$manager->persist($article);
+
 			$manager->flush();
 			//return $this->redirectToRoute('blog_show',['id' => $article->getId()]);
 			return $this->redirectToRoute('article');
 		}
+
 
 	 	 return $this->render('/site/form_article.html.twig'	,[
 		 'formArticle'=> $form2->createView() ,

@@ -21,6 +21,74 @@
 	{{form_row(formArticle.contenu, {'attr' : {'placeholder': "Contenu de l'article"},  'label': "Contenu"})}}
 	
 
+	{# on est obligé d'instancier le prototype ici à cause du form_widget du 1 er ul 
+	{% set protoPeriode = form_widget(formArticle.evenements.vars.prototype.children['periode'].vars.prototype)|e('html_attr')  %}#}
+
+	<ul class="evenements" data-prototype="{{form_widget(formArticle.evenements.vars.prototype)|e('html_attr')}}">
+	
+		{#<ul class="periodes" data-prototype="{{protoPeriode}}">
+			
+		</ul>#}
+		{% set test =0 %}
+
+		{% for evenement in formArticle.evenements %}
+			
+			{% if test != 0 %}
+
+				{{form_row(evenement.nom)}}
+				{{form_row(evenement.image)}}
+				{{form_row(evenement.description)}}
+
+			{% endif %}
+			
+			<ul class="periodes" data-prototype="{{form_widget(evenement.periode.vars.prototype)|e('html_attr')}}">
+				{% for periode in evenement.periode %}
+
+					{{form_row(periode)}}
+
+				{% endfor %}
+		
+			</ul>
+
+			<ul class="organisateurs" data-prototype="{{form_widget(evenement.organisateurs.vars.prototype)|e('html_attr')}}">
+				{% for organisateur in evenement.organisateurs %}
+
+					{% if test != 0 %}
+
+						{{form_row(organisateur.nom)}}
+						{{form_row(organisateur.siteWeb)}}
+						{{form_row(organisateur.mail)}}
+						{{form_row(organisateur.image)}}
+
+					{% endif %}
+
+					<ul class="contacts" data-prototype="{{form_widget(organisateur.contacts.vars.prototype)|e('html_attr')}}">
+
+						{% for contact in organisateur.contacts %}
+
+							{{form_row(contact)}}
+						
+						{% endfor %}
+
+					</ul>
+				{% endfor %}
+			</ul>
+
+			{% if test !=0 %}
+
+				{{form_row(evenement.lieu)}}
+
+			{% endif %}	
+
+			{% set test = 1 %}
+
+		{% endfor %}
+		
+
+	</ul>
+
+	
+
 	 {% if editmode%}
 		<button type="submit" class="btn btn-success">Modifier</button> 
 	{%else %}
@@ -29,6 +97,205 @@
 
 	
 
-	{{form_end(formArticle)}}
+	{#{{form_end(formArticle)}}#}
+
+	<script>
+		//un code similaire est "commenté" dans form_evenement.html.twig
+		var $collectionHolder;
+
+		var $addEvenementButton = $('<button type="button" class="btn btn-success add_evenement_link">Ajouter un événement </button>');
+        var $newLinkLi = $('<li></li>').append($addEvenementButton);
+
+		
+
+		jQuery(document).ready(function() {
+			
+
+			$collectionHolder = $('ul.evenements');
+			console.log($collectionHolder);
+			$collectionHolder.append($newLinkLi);
+
+			$collectionHolder.data('index', $collectionHolder.find(':input').length);
+			
+			$addEvenementButton.on('click', function(e) {
+                // add a new periode form (see next code block)
+                addForm($collectionHolder, $newLinkLi);
+
+				var $collectionHolder2 = $('ul.periodes:eq(0)').clone();
+				var $collectionHolder3 = $('ul.organisateurs:eq(0)').clone();
+                // on supprime les formulaires periodes et le bouton
+                //$collectionHolder2.find('li').remove();
+            
+
+                var $addPeriodeButton = $('<button type="button" class="btn btn-success add_periode_link">Ajouter une période</button>');
+                var $newLinkLi2 = $('<li></li>').append($addPeriodeButton);
+
+				var $addOrganisateurButton = $('<button type="button" class="btn btn-success add_organisateur_link">Ajouter un organisateur</button>');
+                var $newLinkLi3 = $('<li></li>').append($addOrganisateurButton);
+                
+                $collectionHolder2.append($newLinkLi2);
+				$collectionHolder3.append($newLinkLi3);
+                // on recupère le le lien ajout organisateur
+                var $lienEvent = $('ul.evenements > li:nth-last-child(1)');
+
+                // on rajoute les liens d'ajout avant le lien ajout organisateur
+                $lienEvent.before($collectionHolder2);
+				$lienEvent.before($collectionHolder3);
+                $collectionHolder2.append($('<br><br><br>'));
+				$collectionHolder3.append($('<br><br><br>'));
+                $collectionHolder2.data('index', $collectionHolder2.find(':input').length);
+				$collectionHolder3.data('index', $collectionHolder2.find(':input').length);
+                
+                var $indexEvent = $collectionHolder.data('index')-1;
+                
+                $addPeriodeButton.on('click',function(e){
+
+                        addSubFormEvent($collectionHolder2,$newLinkLi2,$indexEvent);
+
+                })
+
+				$addOrganisateurButton.on('click',function(e){
+
+                        addSubFormEvent($collectionHolder3,$newLinkLi3,$indexEvent);
+
+						var $collectionHolder4 = $('ul.contacts:eq(0)').clone();
+
+						var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
+                		var $newLinkLi4 = $('<li></li>').append($addContactButton);
+
+						$collectionHolder4.append($newLinkLi4);
+
+						// on recupère le lien ajout organisateur
+                		//var $lienOrga = $('li:nth-last-child(1)',$collectionHolder3);
+						var $lienOrga = $collectionHolder3.find('li:last');
+						console.log('---------------------------------- \n');
+						console.log($lienOrga);
+						$lienOrga.before($collectionHolder4);
+
+						$collectionHolder4.append($('<br><br><br>'));
+                		$collectionHolder4.data('index', $collectionHolder4.find(':input').length);
+
+						var $indexOrga = $collectionHolder3.data('index')-1;
+
+						$addContactButton.on('click',function(e){
+
+                        addSubFormEventSubFormOrga($collectionHolder4,$newLinkLi4,$indexOrga,$indexEvent);
+
+                		})
+
+
+                })
+            });
+		
+
+		});
+
+		function addForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+            //console.log($collectionHolder.data('index'));
+            //console.log(prototype);
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            var newForm = prototype;
+            // You need this only if you didn't set 'label' => false in your tags field in TaskType
+            // Replace '__name__label__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            // newForm = newForm.replace(/__name__label__/g, index);
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            newForm = newForm.replace(/__name__/g, index);
+
+            /* console.log('::::::::::::\n');
+            console.log($collectionHolder.data('prototype'));*/
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+        }
+
+		function addSubFormEvent($collectionHolder, $newLinkLi,$indexEvent) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+            //console.log($collectionHolder.data('index'));
+            console.log(prototype);
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            var newForm = prototype;
+            // You need this only if you didn't set 'label' => false in your tags field in TaskType
+            // Replace '__name__label__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            // newForm = newForm.replace(/__name__label__/g, index);
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            newForm = newForm.replace(/__name__/g, index);
+			console.log('//////////////////////////\n');
+			console.log(newForm);
+            
+            //on va lier avec les regex au bon prototype organisateur
+            newForm=newForm.replace(/evenements_\d*/g,"evenements_"+$indexEvent);
+            newForm=newForm.replace(/evenements\]\[\d*/g,"evenements]["+$indexEvent);
+            console.log('?????????????????????????????????????\n');
+            console.log(newForm);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+        }
+
+		function addSubFormEventSubFormOrga($collectionHolder, $newLinkLi,$indexOrga,$indexEvent) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+            //console.log($collectionHolder.data('index'));
+            console.log(prototype);
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            var newForm = prototype;
+            // You need this only if you didn't set 'label' => false in your tags field in TaskType
+            // Replace '__name__label__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            // newForm = newForm.replace(/__name__label__/g, index);
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            newForm = newForm.replace(/__name__/g, index);
+			console.log('//////////////////////////\n');
+			console.log(newForm);
+
+			newForm=newForm.replace(/evenements_\d*/g,"evenements_"+$indexEvent);
+            newForm=newForm.replace(/evenements\]\[\d*/g,"evenements]["+$indexEvent);
+
+            
+            //on va lier avec les regex au bon prototype organisateur
+            newForm=newForm.replace(/organisateurs_\d*/g,"organisateurs_"+$indexOrga);
+            newForm=newForm.replace(/organisateurs\]\[\d*/g,"organisateurs]["+$indexOrga);
+            console.log('?????????????????????????????????????\n');
+            console.log(newForm);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+        }
+
+	</script>
+
 
 {% endblock body %}
+
