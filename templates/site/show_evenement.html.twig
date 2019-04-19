@@ -6,7 +6,7 @@
 
 	<article>
 
-		<h2> {{evenement.nom}} </h2>
+		<h2 class="text-primary"> {{evenement.nom}} </h2>
 		<div class="metadata"> Publié le {{evenement.PublishedAt| date ('d/m/y')}} à {{evenement.PublishedAt | date('H:i')}}
 		</div>
 		<div class="Content">
@@ -17,7 +17,7 @@
 			
 		</div>
 
-		<h3> Dates </h3>
+		<h3 class="text-primary"> Dates </h3>
 
 		{% for periode in evenement.periode %}
 			<p>Date de début : {{periode.debut | date('d/m/y H:i')}} </p>
@@ -25,7 +25,7 @@
 
 		{% endfor %}
 
-		<h3> Lieu </h3>
+		<h3 class="text-primary"> Lieu </h3>
 
 			<p> Ville : {{evenement.lieu.ville}} </p>
 			<p> Adresse : {{evenement.lieu.adresse}} </p>
@@ -34,7 +34,7 @@
 
 		{% for organisateur in evenement.organisateurs %}
 
-			<h3> Organisateur </h3>
+			<h3 class="text-primary"> Organisateur </h3>
 
 			<p> Nom : {{organisateur.nom}} </p>
 			<p> Site web : {{organisateur.siteWeb}} </p>
@@ -43,7 +43,7 @@
 			<br><br>
 
 			{% for contact in organisateur.contacts%}
-				<h4> Contacts </h4>
+				<h4 class="text-primary"> Contacts </h4>
 
 				<p> ici il faudra faire une redirection vers un formulaire de contact
 				et pas laisser visible l'adresse mail et le numéro de téléphone du contact

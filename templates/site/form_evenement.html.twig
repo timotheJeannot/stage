@@ -12,21 +12,28 @@
 
 	{%if errors is null%}
 
-	{%else %}
+	{% else %}
 		<h3>Erreurs dans le formulaire</h3>
 		<ul>
 		{% for error in errors %}
 			<li>{{ error.message }}</li>
 		{% endfor %}
-
+        </ul>
 	{% endif %}
 
 	{%if erreurDejaPris is null%}
 
 	{% else %}
-			<h3> Erreur d'intégrité des donnés </h3>
-			<p>{{erreurDejaPris}}</p>
+		<h3> Erreur d'intégrité des donnés </h3>
+		<p>{{erreurDejaPris}}</p>
 	{% endif %}
+
+    {% if erreurPeriode is null %}
+
+    {% else %}
+        <h3> Erreur d'intégrité des donnés </h3>
+		<p>{{erreurPeriode}}</p>
+    {% endif %}
 
 	 {% form_theme formEvenement 'bootstrap_4_layout.html.twig' %} 
 

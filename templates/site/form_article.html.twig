@@ -4,15 +4,47 @@
 
 {% block body%}
 
+	{% if lieuDejaPrisForm is null %}
+
+	{% else %}
+		<h3> Erreur d'intégrité des donnés </h3>
+		<p> {{lieuDejaPrisForm}} </p>
+	{% endif %} 
+
+	{% if lieuDejaPrisBd is null %}
+
+	{% else %}
+		<h3> Erreur d'intégrité des donnés </h3>
+		<p> {{lieuDejaPrisBd}} </p>
+	{% endif %}
+
+	{% if erreurValidation is null %}
+
+	{% else %}
+		<h3> Erreur sur la validation du formulaire </h3>
+		<ul>
+		{% for error in erreurValidation %}
+			<li>{{ error.message }}</li>
+		{% endfor %}
+        </ul>
+	{% endif %}
+
+	{% if erreurPeriode is null %}
+
+	{% else %}
+		<h3> Erreur d'intégrité des donnés </h3>
+		<p> {{erreurPeriode}} </p>
+	{% endif %}
+
 	{% if editmode%}
 		<h1> Modification d'un article ! </h1>
-	{%else %}
+	{% else %}
 		<h1> Création d'un article ! </h1>
 	{% endif %}
 
 	 {% form_theme formArticle 'bootstrap_4_layout.html.twig' %} 
 
-	{{form_start(formArticle)}}
+	{{form_start(formArticle, { attr: { novalidate: 'novalidate' } })}}
 
 	
 	

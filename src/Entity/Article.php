@@ -21,13 +21,11 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255)
-	 * @Assert\Length( min = 10 , max = 255 , minMessage ="La taille du titre doit être compris entre 10 et 255 caractères")
      */
     private $titre;
 
     /**
      * @ORM\Column(type="text")
-	 * @Assert\Length( min = 10 , minMessage ="La taille du contenu doit faire au minimum 10 caractères")
      */
     private $contenu;
 
