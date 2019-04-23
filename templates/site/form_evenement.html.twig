@@ -74,7 +74,6 @@
 
 		{% for organisateur in formEvenement.organisateurs %}
 
-			<p> Bonjour </p>
 			{{form_row(organisateur.nom)}}
 			{{form_row(organisateur.siteWeb)}}
 			{{form_row(organisateur.mail)}}
@@ -166,8 +165,8 @@
         var $addOrganisateurButton = $('<button type="button" class="btn btn-success add_organsateurs_link">Ajouter un organisateur</button>');
         var $newLinkLi2 = $('<li></li>').append($addOrganisateurButton);
 
-        var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
-        var $newLinkLi3 = $('<li></li>').append($addContactButton);
+        /*var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
+        var $newLinkLi3 = $('<li></li>').append($addContactButton);*/
 
 
 
@@ -191,20 +190,68 @@
             // Get the ul that holds the collection of periode
             $collectionHolder = $('ul.periode');
             $collectionHolder2 = $('ul.organisateurs');
-            $collectionHolder3 = $(' ul.contacts:eq(0)');
+            //$collectionHolder3 = $(' ul.contacts:eq(0)');
+            $collectionHolder3 = $(' ul.contacts');
+            //console.log($(' ul.contacts:eq(0)'));
+            //console.log($collectionHolder3);
+            
 
 
             // add the "add a periode" anchor and li to the periode ul
             $collectionHolder.append($newLinkLi);
             $collectionHolder2.append($newLinkLi2);
-            $collectionHolder3.append($newLinkLi3);
+           // $collectionHolder3.append($newLinkLi3);
             //$collectionHolder4.append($newLinkLi4);
 
             // count the current form inputs we have (e.g. 2), use that as the new
             // index when inserting a new item (e.g. 2)
             $collectionHolder.data('index', $collectionHolder.find(':input').length);
             $collectionHolder2.data('index', $collectionHolder2.find(':input').length);
-            $collectionHolder3.data('index', $collectionHolder3.find(':input').length);
+           // $collectionHolder3.data('index', $collectionHolder3.find(':input').length);
+
+            /*$collectionHolder3.each( function( i ) {
+
+                var $addContactButton2 = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
+                var $newLinkLi32 = $('<li></li>').append($addContactButton2);
+
+                //console.log($(this));
+                //console.log(this);
+                $(this).append($newLinkLi3);
+                $(this).data('index', $(this).find(':input').length);
+                console.log($(this));
+                //console.log(this);
+                console.log($(' ul.contacts:eq(0)'))
+
+                $addContactButton2.on('click', function(e) {
+
+                // add a new contact form (see next code block)
+                addForm($(this), $newLinkLi32);
+
+                });
+            })*/
+
+            for( var i=0 ; i<$collectionHolder3.length ; i++)
+            {
+                $collectionHolderContacti = $('ul.contacts:eq('+i+')');
+                console.log($collectionHolderContacti);
+                console.log($('ul.contacts:eq(0)'));
+
+                var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
+                var $newLinkLi3 = $('<li></li>').append($addContactButton);
+
+                $('ul.contacts:eq('+i+')').after($collectionHolderContacti);
+
+                $collectionHolderContacti.append($newLinkLi3);
+                $collectionHolderContacti.data('index', $collectionHolderContacti.find(':input').length);
+
+                $addContactButton.on('click', function(e) {
+
+                // add a new contact form (see next code block)
+                addForm($collectionHolderContacti, $newLinkLi3);
+
+                });
+
+            } 
             
 
             $addPeriodeButton.on('click', function(e) {
@@ -265,12 +312,12 @@
                 
             });
 
-            $addContactButton.on('click', function(e) {
+            /*$addContactButton.on('click', function(e) {
 
                 // add a new contact form (see next code block)
                 addForm($collectionHolder3, $newLinkLi3);
 
-            });
+            });*/
             
 
         });

@@ -268,14 +268,14 @@ class Evenement
                 }
             }
             
+
             for($j=0 ; $j<count($orgaI->getContacts()) ; $j++)
             {
                 $orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$j]]->setTelephone(str_replace(" ","",$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$j]]->getTelephone()))  ;
                 for($k=$j+1 ; $k<count($orgaI->getContacts()) ; $k++)
                 {
                     
-                    $orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]]->setTelephone( str_replace(" ","",$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]]->getTelephone())) ;
-
+                    //$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]]->setTelephone( str_replace(" ","",$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]]->getTelephone())) ;
                     // l'égalité portent sur tous les attributs , mais il faudrait peut être pas prendre en compte le téléphone
                     if($orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$j]] == $orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]])
                     {

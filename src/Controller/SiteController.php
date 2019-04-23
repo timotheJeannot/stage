@@ -153,13 +153,14 @@ class SiteController extends AbstractController
 				$article->setCreatedAt(new \DateTime( "now" , new \DateTimeZone("Europe/Paris")));
 			}
 
+
 			// on va supprimer les espcases blancs des numéros de téléphone
 			// commencer les prénoms et les noms avec des majuscules
 			//voir ici si il y a d'autres saisies qu'il faut modifier
 			//code postal ? (modifier l'expression régulière pour accepeter les espaces)
 			foreach($article->getEvenements() as $key)
 			{
-				foreach($key->getOrganisateur() as $key2)
+				foreach($key->getOrganisateurs() as $key2)
 				{
 					foreach($key2->getContacts() as $key3)
 					{
@@ -171,6 +172,31 @@ class SiteController extends AbstractController
 						// on n'a pas pris en compte les noms et prenoms composés
 					}
 				}
+			}
+
+			// on va appeller le validateur sur les événements avant la suppression des doublons du formulaire
+			// pour envoyer un message d'erreur si il y a des doublons contacts au sein du même organisateur
+			// il faudra enlever la validation des événements plus bas
+
+			$test1 = 0 ; // est ici pour ne pas traité le premier événement qui est crée juste pour les for du rendu
+			foreach($article->getEvenements() as $key)
+			{
+				if($test1 ==1)
+				{
+					$erreurValidation = $validator->validate($key);
+						if (count($erreurValidation) > 0) {
+
+							return $this->render('/site/form_article.html.twig'	,[
+								'formArticle'=> $form2->createView() ,
+								'editmode' => false,
+								'lieuDejaPrisForm' => $lieuDejaPrisForm,
+								'lieuDejaPrisBd' => $lieuDejaPrisBd,
+								'erreurValidation' => $erreurValidation,
+								'erreurPeriode'	=>$erreurPeriode,
+								]);
+						}
+				}
+				$test1 =1;	
 			}
 
 
@@ -277,9 +303,11 @@ class SiteController extends AbstractController
 					{
 						for($n=0 ; $n<count( $article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ) ; $n++)
 						{
+							//https://www.php.net/manual/fr/language.oop5.references.php
+
 							//les variables sont juste là pour plus de lisibilité
-							$orgaI = &$article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs();
-							$orgaJ = &$article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ;
+							$orgaI = $article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs();
+							$orgaJ = $article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ;
 
 							// on va supposer que deux organisateurs différents ne peuvent pas avoir le même nom
 							if($orgaI[$orgaI->getKeys()[$k]]->getNom() == $orgaJ[$orgaJ->getKeys()[$n]]->getNom())
@@ -303,15 +331,15 @@ class SiteController extends AbstractController
 							}
 							else
 							{
-								$orgaI = &$article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs();
-								$orgaJ = &$article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ;
+								$orgaI = $article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs();
+								$orgaJ = $article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ;
 								foreach($orgaI[$orgaI->getKeys()[$k]]->getContacts() as $key)
 								{
 									// on en profite pour supprimer les espaces dans le numéro de téléphone
-									$key->setTelephone(str_replace(" ","",$key->getTelepehone()));
+									//$key->setTelephone(str_replace(" ","",$key->getTelephone()));
 									foreach($orgaJ[$orgaJ->getKeys()[$n]]->getContacts() as $key2)
 									{
-										$key2->setTelephone(str_replace(" ","",$key2->getTelepehone()));
+										//$key2->setTelephone(str_replace(" ","",$key2->getTelephone()));
 
 										if($key == $key2)
 										{
@@ -365,7 +393,7 @@ class SiteController extends AbstractController
 						}
 						else
 						{
-							$key->removePeriod($key2);
+							$key->removePeriode($key2);
 							$key->addPeriode($periode2);
 						}
 					}
@@ -470,9 +498,9 @@ class SiteController extends AbstractController
 						//on va vérifier que le lieu n'est pas pris par un autre événements au même moment
 						foreach($evenements as $key2)
 						{
-							foreach($key2->getPeriod as $key3)
+							foreach($key2->getPeriode() as $key3)
 							{
-								foreach($key->getPeriod as $key4)
+								foreach($key->getPeriode() as $key4)
 								{
 									if($key3->isInSameTime($key4))
 									{
@@ -497,6 +525,8 @@ class SiteController extends AbstractController
 
 					$manager->persist($key->getLieu());
 
+					// on à déja valider plus haut
+					/*
 					//on va valider 
 					$erreurValidation = $validator->validate($key);
 					if (count($erreurValidation) > 0) {
@@ -510,6 +540,8 @@ class SiteController extends AbstractController
 							'erreurPeriode'	=>$erreurPeriode,
 							]);
 					}
+					*/
+
 					//voir pour les doublons des événements ici
 
 					//on va vérifier que les intervalles de temps pour l'événement sont bien disjoint
@@ -607,7 +639,7 @@ class SiteController extends AbstractController
 
 			// on va modifier un peu la saisie de l'utilisateur
 			
-			foreach($evenement->getOrganisateur() as $key)
+			foreach($evenement->getOrganisateurs() as $key)
 			{
 				foreach($key->getContacts() as $key2)
 				{
