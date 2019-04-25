@@ -137,7 +137,6 @@
 
 		var $addEvenementButton = $('<button type="button" class="btn btn-success add_evenement_link">Ajouter un événement </button>');
         var $newLinkLi = $('<li></li>').append($addEvenementButton);
-
 		
 
 		jQuery(document).ready(function() {
@@ -148,6 +147,257 @@
 			$collectionHolder.append($newLinkLi);
 
 			$collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+			// *******************
+
+			var $collectionHolderOrganisateur = $('ul.organisateurs');
+
+			var tabUlOrganisateurs = [];
+			var tabButtonOrganisateurs = [];
+			var tabIndexEvenementOrganisateurs = [];
+			var tabLinkOrganisateurs = [];
+
+			var tabOrganisateursUlContacts = [[]];
+			var tabOrganisateursButtonContacts = [[]];
+			var tabOrganisateursIndexOrganisateurContacts = [[]];
+			var tabOrganisateursLinkContacts = [[]];
+			// on commence i à 1 car le 1er ul.organisateurs est bidon
+			// voir le controller pour comprendre , il nous fallait un événement et un organisateur bidon
+			// pour pouvoir rentrer dans les for au moin une fois et avoir accés aux ul
+			for(var i =1; i < $collectionHolderOrganisateur.length ; i++)
+			{
+				var $collectionHolderOrganisateuri = $('ul.organisateurs:eq('+i+')');
+
+				var $addOrgaButton = $('<button type="button" class="btn btn-success add_organisateur_link">Ajouter un organisteur</button>');
+                var $newLinkLi3 = $('<li></li>').append($addOrgaButton);
+
+				$collectionHolderOrganisateuri.append($newLinkLi3);
+
+				// on va s'occuper des contacts 
+				console.log("test1");
+				var tabUlContacts = [];
+				var tabButtonContacts = [];
+				var tabIndexOrganisateurContacts = [];
+				var tabLinkContacts = [];
+
+				var $collectionHolderOrganisateuriContact = $collectionHolderOrganisateuri.find('ul.contacts')
+
+				for(var j=0 ; j<$collectionHolderOrganisateuriContact.length ; j++)
+				{
+					var $collectionHolderOrganisateuriContactj = $('ul.organisateurs:eq('+i+') ul.contacts:eq('+j+')');
+
+					var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
+					var $newLinkLi4 = $('<li></li>').append($addContactButton);
+
+					$collectionHolderOrganisateuriContactj.append($newLinkLi4);
+
+					// on commence à compter à 1 et pas à 0 d'où le +1 (différent de la page de création d'un événément)
+					$collectionHolderOrganisateuriContactj.data('index', ($collectionHolderOrganisateuriContactj.find(':input').length-1)/4+1);
+
+					 // on récupère la <div> juste avant le ul.contact qui contient l'indice dans l'id
+					var $preceding = $collectionHolderOrganisateuriContactj.prev();
+
+					// on récupère le input dans le div
+
+					var $input = $preceding.find('input');
+
+					// il y a deux nombres dans l'id de l'input et l'indice qui nous faut est le second
+					//var $array = /\d+/g.exec($input.attr('id'));
+					var $array = $input.attr('id').match(/\d+/g);
+					console.log("test40");
+					console.log($array);
+					console.log($input);
+					console.log($array);
+					var $indexOrga = $array[1];
+					console.log("test41");
+					tabUlContacts.push($collectionHolderOrganisateuriContactj);
+					tabButtonContacts.push($addContactButton);
+					tabIndexOrganisateurContacts.push($indexOrga);
+					tabLinkContacts.push($newLinkLi4);
+					
+				}
+
+				console.log("test2");
+
+				tabOrganisateursUlContacts.push(tabUlContacts);
+				tabOrganisateursButtonContacts.push(tabButtonContacts);
+				tabOrganisateursIndexOrganisateurContacts.push(tabIndexOrganisateurContacts);
+				tabOrganisateursLinkContacts.push(tabLinkContacts);
+
+				// on reprend le traitement des organisateurs
+
+				// on enlève les input qui sont lié aux contacts
+				var calcIndex = $collectionHolderOrganisateuri.find('input').length - $collectionHolderOrganisateuriContact.find('input').length;
+				
+				// Il semblerait que cela n'est pas pris en compte les boutons dans calcIndex , il reste à 
+				// donc à diviser par le nombre de champs d'un formulaire organisateur (4)
+				// il faut addition 1 car l'indice commence à partir de 1 et non de 0
+				calcIndex = calcIndex /4 +1;
+				console.log("calcIndex : ");
+				console.log(calcIndex);
+				console.log($collectionHolderOrganisateuri.find('input').length);
+				console.log($collectionHolderOrganisateuriContact.find('input').length);
+
+				$collectionHolderOrganisateuri.data('index',calcIndex);
+
+				// on récupère la <div> juste après le ul.organisateur qui contient l'indice dans l'id
+				var $following = $collectionHolderOrganisateuri.next();
+
+				console.log($following);
+
+
+				// on récupère le input dans le div
+				var $input = $following.find('input');
+
+				// Il n'y a que un nombre dans l'attribut id qui est l'indice qu'on cherche
+				var $array = /\d+/g.exec($input.attr('id'));
+
+				var $indexEvenement = $array[0];
+				tabUlOrganisateurs.push($collectionHolderOrganisateuri);
+				tabButtonOrganisateurs.push($addOrgaButton);
+				tabIndexEvenementOrganisateurs.push($indexEvenement);
+				tabLinkOrganisateurs.push($newLinkLi3);
+
+				console.log("test4");
+
+			}
+			console.log("test41");
+
+			// on va faire pour les périodes maintenant
+
+			var $collectionHolderPeriode = $('ul.periodes');
+
+			var tabUlPeriodes = [];
+			var tabButtonPeriodes = [];
+			var tabIndexEvenementPeriodes = [];
+			var tabLinkPeriodes = [];
+
+			// on commence à 1 et pas à 0 pour la même raison que les organisateurs
+			for(var i =1 ; i< $collectionHolderPeriode.length ; i++)
+			{
+				var $collectionHolderPeriodei = $('ul.periodes:eq('+i+')');
+
+				var $addPeriodeButton = $('<button type="button" class="btn btn-success add_periode_link">Ajouter une période</button>');
+                var $newLinkLi2 = $('<li></li>').append($addPeriodeButton);
+
+				$collectionHolderPeriodei.append($newLinkLi2);
+
+				//var calcIndex = $collectionHolderPeriodei.find('input').length ;
+				//calcIndex = calcIndex/5 +1;
+
+				var calcIndex = $collectionHolderPeriodei.children('fieldset').length ;
+				calcIndex = calcIndex +1;
+
+				console.log(calcIndex);
+
+				$collectionHolderPeriodei.data('index',calcIndex);
+
+				// on récupère la <div> juste après le ul.organisateur qui contient l'indice dans l'id
+				// le ul.organisateur est juste après le ul.periode
+				var $following = $collectionHolderPeriodei.next().next();
+
+				console.log("j'en ai trop marre des ces bidouillages que je fais parce que je code mal ");
+				console.log($following);
+
+
+				// on récupère le input dans le div
+				var $input = $following.find('input');
+
+				// Il n'y a que un nombre dans l'attribut id qui est l'indice qu'on cherche
+				var $array = /\d+/g.exec($input.attr('id'));
+
+				var $indexEvenement = $array[0];
+				tabUlPeriodes.push($collectionHolderPeriodei);
+				tabButtonPeriodes.push($addPeriodeButton);
+				tabIndexEvenementPeriodes.push($indexEvenement);
+				tabLinkPeriodes.push($newLinkLi2);
+			}
+
+			// On va s'occuper des clicks sur les boutons ajout organisateur
+
+			tabButtonOrganisateurs.forEach( function (evenement) {
+
+				evenement.on('click',function(e) {
+
+					var index = tabButtonOrganisateurs.indexOf(evenement);
+
+					console.log("tttttteeeeeeeessssssssssssssssttttttttttt  !!!");
+					console.log(tabIndexEvenementOrganisateurs[index]);
+					console.log(tabUlOrganisateurs[index]);
+					console.log(tabUlOrganisateurs[index].data('index'));
+
+					addSubFormEvent(tabUlOrganisateurs[index],tabLinkOrganisateurs[index],tabIndexEvenementOrganisateurs[index]);
+
+					var $collectionHolder4 = $('ul.contacts:eq(0)').clone();
+
+					var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
+					var $newLinkLi4 = $('<li></li>').append($addContactButton);
+
+					$collectionHolder4.append($newLinkLi4);
+
+					// on recupère le lien ajout organisateur
+					//var $lienOrga = $('li:nth-last-child(1)',$collectionHolder3);
+					var $lienOrga = tabUlOrganisateurs[index].find('li:last');
+					console.log('---------------------------------- \n');
+					console.log($lienOrga);
+					$lienOrga.before($collectionHolder4);
+
+					$collectionHolder4.append($('<br><br><br>'));
+					$collectionHolder4.data('index', $collectionHolder4.find(':input').length);
+
+					var $indexOrga = tabUlOrganisateurs[index].data('index')-1;
+
+					$addContactButton.on('click',function(e){
+
+						addSubFormEventSubFormOrga($collectionHolder4,$newLinkLi4,$indexOrga,tabIndexEvenementOrganisateurs[index]);
+
+					})
+
+				})
+
+			});
+			
+
+			//On va s'occuper des clicks sur les boutons ajout contact
+			console.log("test42");
+			console.log(tabOrganisateursUlContacts,tabOrganisateursLinkContacts,tabOrganisateursIndexOrganisateurContacts,tabIndexEvenementOrganisateurs);
+
+			tabOrganisateursButtonContacts.forEach( function (evenement){ 
+
+				var i = tabOrganisateursButtonContacts.indexOf(evenement);
+
+				evenement.forEach( function (evenement2) {
+
+					var j = evenement.indexOf(evenement2);
+
+					evenement2.on('click',function(e){
+
+						//console.log(tabOrganisateursUlContacts[i][j])// ,tabOrganisateursLinkContacts[i][j] , tabOrganisateursIndexOrganisateurContacts[i][j] , tabIndexEvenementOrganisateurs[i]);
+						addSubFormEventSubFormOrga(tabOrganisateursUlContacts[i][j] ,tabOrganisateursLinkContacts[i][j] , tabOrganisateursIndexOrganisateurContacts[i][j] , tabIndexEvenementOrganisateurs[i]  );
+
+					});
+
+				});
+
+			});
+
+			// on va s'occuper des clicks sur les boutons ajout periode
+
+			tabButtonPeriodes.forEach(function(evenement) {
+				
+				evenement.on('click',function(e){
+
+					var index = tabButtonPeriodes.indexOf(evenement);
+
+					addSubFormEvent(tabUlPeriodes[index],tabLinkPeriodes[index],tabIndexEvenementPeriodes[index]);
+					
+				});
+
+			});
+
+
+
+			// *******************
 			
 			$addEvenementButton.on('click', function(e) {
                 // add a new periode form (see next code block)
@@ -157,6 +407,15 @@
 				var $collectionHolder3 = $('ul.organisateurs:eq(0)').clone();
                 // on supprime les formulaires periodes et le bouton
                 //$collectionHolder2.find('li').remove();
+
+				//  ***********************   
+				//cela ne sert à rien de vider car il n'y a rien à l'intérieur 
+
+				// on va vider ce qu'il y a à l'intérieur des ul
+				//$collectionHolder2.empty();
+				//$collectionHolder3.empty();
+
+				//  ***********************   
             
 
                 var $addPeriodeButton = $('<button type="button" class="btn btn-success add_periode_link">Ajouter une période</button>');

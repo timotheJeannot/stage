@@ -230,29 +230,162 @@
                 });
             })*/
 
+            /*
             for( var i=0 ; i<$collectionHolder3.length ; i++)
             {
                 $collectionHolderContacti = $('ul.contacts:eq('+i+')');
                 console.log($collectionHolderContacti);
-                console.log($('ul.contacts:eq(0)'));
 
                 var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
                 var $newLinkLi3 = $('<li></li>').append($addContactButton);
 
-                $('ul.contacts:eq('+i+')').after($collectionHolderContacti);
-
                 $collectionHolderContacti.append($newLinkLi3);
-                $collectionHolderContacti.data('index', $collectionHolderContacti.find(':input').length);
+                //$collectionHolderContacti.data('index', $collectionHolderContacti.find(':input').length);
+                $collectionHolderContacti.data('index', ($collectionHolderContacti.find(':input').length-1)/4);
+                //$collectionHolderContacti.data('index',i);
+                console.log($collectionHolderContacti);
+                console.log("wtf ? : "+$collectionHolderContacti.data('index'));
+
+                // on récupère l'indice de l'organisateur pour lier les fomulaires qui vont êter crée au bon organisateur 
+
+                //les indices passent de 0 à 5 pour les organisateurs
+                // et de 0 à 11 pour les périodes ( c'est pourquoi on passe par le tableau getKeys()
+                // dans le controlleur )
+
+                //on peut essayer de récupèrer l'indice par un sélecteur et une regex
+                // ou essayer de le calculer
+
+                // on récupère la <div> juste avant le ul.contact qui contient l'indice dans l'id
+                var $preceding = $collectionHolderContacti.prev();
+
+                // on récupère le input dans le div
+
+                var $input = $preceding.find('input');
+
+                // il n'y a que un nombre dans l'id de l'input et c'est l'indice
+                var $array = /\d+/g.exec($input.attr('id'));
+
+                console.log($preceding);
+                console.log($array);
+                console.log('pls : '+$array[0]);
+
+                var $indexOrga = $array[0];
+               
 
                 $addContactButton.on('click', function(e) {
 
                 // add a new contact form (see next code block)
-                addForm($collectionHolderContacti, $newLinkLi3);
+                addContact2($collectionHolderContacti, $newLinkLi3,$indexOrga);
+                //addForm($collectionHolderContacti, $newLinkLi3);
+
+                });
+                console.log($collectionHolderContacti);
+
+            } 
+            */
+
+            var tab1 =[];
+            var tab2 =[];
+            var tab3 =[];
+            var tab4 =[];
+
+
+            for( var i=0 ; i<$collectionHolder3.length ; i++)
+            {
+                $collectionHolderContacti = $('ul.contacts:eq('+i+')');
+                console.log($collectionHolderContacti);
+
+                var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
+                var $newLinkLi3 = $('<li></li>').append($addContactButton);
+
+                $collectionHolderContacti.append($newLinkLi3);
+                //$collectionHolderContacti.data('index', $collectionHolderContacti.find(':input').length);
+                // le -1 c'est pour le bouton ajout contact, et le 4 c'est le nombre de input dans 
+                // un formulaire de contact
+                $collectionHolderContacti.data('index', ($collectionHolderContacti.find(':input').length-1)/4);
+                //$collectionHolderContacti.data('index',i);
+                console.log($collectionHolderContacti);
+                console.log("wtf ? : "+$collectionHolderContacti.data('index'));
+
+                // on récupère l'indice de l'organisateur pour lier les fomulaires qui vont êter crée au bon organisateur 
+
+                //les indices passent de 0 à 5 pour les organisateurs
+                // et de 0 à 11 pour les périodes ( c'est pourquoi on passe par le tableau getKeys()
+                // dans le controlleur )
+
+                //on peut essayer de récupèrer l'indice par un sélecteur et une regex
+                // ou essayer de le calculer mais il faut redéfinir les $collectionHolder.data('index')
+                // parce que la il compte les input mais ce n'est pas exactement ca qu'il faut faire.
+
+                //on va donc le faire par une recherche
+
+                //l'optimisation du code n'est pas forcément important étant donné que
+                // seuls les chargés de missions utilisiront les formulaires d'insertion/modification
+
+                // on récupère la <div> juste avant le ul.contact qui contient l'indice dans l'id
+                var $preceding = $collectionHolderContacti.prev();
+
+                // on récupère le input dans le div
+
+                var $input = $preceding.find('input');
+
+                // il n'y a que un nombre dans l'id de l'input et c'est l'indice
+                var $array = /\d+/g.exec($input.attr('id'));
+
+                console.log($preceding);
+                console.log($array);
+                console.log('pls : '+$array[0]);
+
+                var $indexOrga = $array[0];
+                tab1.push($collectionHolderContacti);
+                tab2.push($addContactButton);
+                tab3.push($indexOrga);
+                tab4.push($newLinkLi3);
+
+                console.log("mais ppppppppppppppppppppppkkkkkkkkkkkkkkkkkkkkkkk ?");
+                console.log(tab1[i]);
+                console.log($collectionHolderContacti)
+
+                /*$addContactButton.on('click', function(e) {
+
+                    // add a new contact form (see next code block)
+                    addContact2($collectionHolderContacti, $newLinkLi3,$indexOrga);
+                    //addForm($collectionHolderContacti, $newLinkLi3);
+
+                });*/
+
+                // le code ci dessous ne fonctionne pas tab1[i] == undefined
+                /*tab2[i].on('click', function(e) {
+
+                    console.log(" ||||||||||||||||||||||");
+                    console.log(tab1[i]);
+                    console.log(" ||||||||||||||||||||||");
+
+
+                    // add a new contact form (see next code block)
+                    addContact2(tab1[i], tab4[i],tab3[i]);
+                    //addForm($collectionHolderContacti, $newLinkLi3);
 
                 });
 
-            } 
-            
+                */
+
+                console.log($collectionHolderContacti);
+
+            }
+
+            tab2.forEach(function(element){
+                
+                var index = tab2.indexOf(element);
+                
+                element.on('click',function(e) {
+                    console.log("<<<<<<<<<<<<<<<<<<<<");
+                    console.log(tab1[index]);
+                    console.log(">>>>>>>>>>>>>>>>>>>>");
+
+                    addContact2(tab1[index], tab4[index],tab3[index]);
+                });
+            });
 
             $addPeriodeButton.on('click', function(e) {
                 // add a new periode form (see next code block)
@@ -287,7 +420,10 @@
                 var $collectionHolder4 = $('ul.contacts:eq(0)').clone();
                 
                 // on supprime les formulaires contact et le bouton
-                $collectionHolder4.find('li').remove();
+                //$collectionHolder4.find('li').remove();
+                
+                //on va vider ce qu'il pouvait y avoir dans le ul
+                $collectionHolder4.empty();
             
 
                 var $addContactButton2 = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
@@ -300,7 +436,8 @@
                 // on rajoute le lien ajout contact avant le lien ajout organisateur
                 $lienOrga.before($collectionHolder4);
                 $collectionHolder4.append($('<br><br><br>'));
-                $collectionHolder4.data('index', $collectionHolder4.find(':input').length);
+                // on veut commencer de compter à partir de 0 donc il faut pas prendre le bouton ajout contact
+                $collectionHolder4.data('index', $collectionHolder4.find(':input').length-1);
                 
                 var $indexOrga = $collectionHolder2.data('index')-1;
                 
@@ -325,6 +462,7 @@
         
 
         function addForm($collectionHolder, $newLinkLi) {
+
             // Get the data-prototype explained earlier
             var prototype = $collectionHolder.data('prototype');
             //console.log($collectionHolder.data('index'));
@@ -356,6 +494,9 @@
         }
 
         function addContact2($collectionHolder, $newLinkLi,$indexOrga) {
+
+            console.log($collectionHolder);
+
             // Get the data-prototype explained earlier
             var prototype = $collectionHolder.data('prototype');
             //console.log($collectionHolder.data('index'));
@@ -375,8 +516,8 @@
             newForm = newForm.replace(/__name__/g, index);
             
             //on va lier avec les regex au bon prototype organisateur
-            newForm=newForm.replace(/organisateurs_\d*/g,"organisateurs_"+$indexOrga);
-            newForm=newForm.replace(/organisateurs\]\[\d*/g,"organisateurs]["+$indexOrga);
+            newForm=newForm.replace(/organisateurs_\d+/g,"organisateurs_"+$indexOrga);
+            newForm=newForm.replace(/organisateurs\]\[\d+/g,"organisateurs]["+$indexOrga);
             console.log('?????????????????????????????????????\n');
             console.log(newForm);
 
@@ -387,6 +528,7 @@
             var $newFormLi = $('<li></li>').append(newForm);
             $newLinkLi.before($newFormLi);
         }
+
 
 	</script>
 	
