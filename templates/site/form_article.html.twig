@@ -63,6 +63,12 @@
 		</ul>#}
 		{% set test =0 %}
 
+		{% if editmode %}
+
+			{% set test =1 %}
+
+		{% endif %}
+
 		{% for evenement in formArticle.evenements %}
 			
 			{% if test != 0 %}
@@ -161,10 +167,21 @@
 			var tabOrganisateursButtonContacts = [[]];
 			var tabOrganisateursIndexOrganisateurContacts = [[]];
 			var tabOrganisateursLinkContacts = [[]];
+
 			// on commence i à 1 car le 1er ul.organisateurs est bidon
 			// voir le controller pour comprendre , il nous fallait un événement et un organisateur bidon
 			// pour pouvoir rentrer dans les for au moin une fois et avoir accés aux ul
-			for(var i =1; i < $collectionHolderOrganisateur.length ; i++)
+
+			var start = 1;
+			var editmode = '{{editmode}}';
+			if(editmode == true)
+			{
+				// si on est en mode édition , le 1er ul n'est pas bidon
+				start = 0;
+			}
+			console.log("start = "+start);
+			console.log(" editmode = "+editmode);
+			for(var i =start; i < $collectionHolderOrganisateur.length ; i++)
 			{
 				var $collectionHolderOrganisateuri = $('ul.organisateurs:eq('+i+')');
 
@@ -273,7 +290,7 @@
 			var tabLinkPeriodes = [];
 
 			// on commence à 1 et pas à 0 pour la même raison que les organisateurs
-			for(var i =1 ; i< $collectionHolderPeriode.length ; i++)
+			for(var i =start ; i< $collectionHolderPeriode.length ; i++)
 			{
 				var $collectionHolderPeriodei = $('ul.periodes:eq('+i+')');
 

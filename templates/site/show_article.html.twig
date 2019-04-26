@@ -17,6 +17,9 @@
 			
 		</div>
 
+        <a href="{{path('modifArticle' , {id : article.id})}}" class="btn btn-primary">Modifier l'article</a>
+        <a href="{{path('suppression_show_article' , {id : article.id})}}" id="testSuppression" class="btn btn-primary">Supprimer l'article</a>
+
         <h3 class="text-primary"> Événements </h3>
 
         {% for evenement in article.evenements %}
@@ -75,5 +78,13 @@
 
 
 	</article>
+
+    <script>
+
+        $('#testSuppression').on('click',function(e){
+            return confirm("Etes vous sûr de vouloir supprimer ?");
+        });
+
+    </script>
 
 {% endblock %}

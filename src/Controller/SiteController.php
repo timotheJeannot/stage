@@ -118,22 +118,32 @@ class SiteController extends AbstractController
         return $this->render('site/missionEcoleEntreprise.html.twig', [
             'controller_name' => 'SiteController',
         ]);
-    }
+	}
+	
+	/* regarder https://www.youtube.com/watch?v=_cgZheTv-FQ
+	 vers 44min40 , il explique comment faire la création et la modification en même temps*/
+
 
 	/**
      * @Route("/createArticle", name="createArticle")
+	 * @Route("/modifArticle/{id}", name="modifArticle")
      */
-	 public function createArticle(Request $request , ObjectManager $manager , LieuRepository $repoLieu, ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode , ValidatorInterface $validator )
+	 public function createArticle(Article $article = null,Request $request , ObjectManager $manager , LieuRepository $repoLieu, ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode , ValidatorInterface $validator )
 	 {
-		$article = new Article();
+		$editmode = true;
+		if(!$article )
+		{
+			$article = new Article();
 
-		// cette evénement est là pour pouvoir rentrer dans la boucle for dans le twig
-		// pareil pour l'organisteur
-		$event = new Evenement();
+			// cette evénement est là pour pouvoir rentrer dans la boucle for dans le twig
+			// pareil pour l'organisteur		
+			$event = new Evenement();
 
-		$orga = new Organisateur();
-		$event->addOrganisateur($orga);
-		$article->addEvenement($event);
+			$orga = new Organisateur();
+			$event->addOrganisateur($orga);
+			$article->addEvenement($event);
+			$editmode = false;
+		}
 
 		$form2 = $this->createForm(FormArticleType::class , $article);
 
@@ -179,6 +189,12 @@ class SiteController extends AbstractController
 			// il faudra enlever la validation des événements plus bas
 
 			$test1 = 0 ; // est ici pour ne pas traité le premier événement qui est crée juste pour les for du rendu
+
+			if($editmode)
+			{
+				$test1 = 1;
+			}
+
 			foreach($article->getEvenements() as $key)
 			{
 				if($test1 ==1)
@@ -188,7 +204,7 @@ class SiteController extends AbstractController
 
 							return $this->render('/site/form_article.html.twig'	,[
 								'formArticle'=> $form2->createView() ,
-								'editmode' => false,
+								'editmode' => $editmode,
 								'lieuDejaPrisForm' => $lieuDejaPrisForm,
 								'lieuDejaPrisBd' => $lieuDejaPrisBd,
 								'erreurValidation' => $erreurValidation,
@@ -204,6 +220,12 @@ class SiteController extends AbstractController
 			// qui est là pour faciliter le rendu dans twig
 			$test1 =0;
 			$test2 =0;
+
+			if($editmode)
+			{
+				$test1 = 1;
+				$test2 = 1;
+			}
 
 			// on va effectuer des tests sur le lieu (lieu déja occupé ?)
 			//lieu déja occupé dans les événements du formulaires ?
@@ -241,7 +263,7 @@ class SiteController extends AbstractController
 
 												return $this->render('/site/form_article.html.twig'	,[
 													'formArticle'=> $form2->createView() ,
-													'editmode' => false,
+													'editmode' => $editmode,
 													'lieuDejaPrisForm' => $lieuDejaPrisForm,
 													'lieuDejaPrisBd' => $lieuDejaPrisBd,
 													'erreurValidation' => $erreurValidation,
@@ -260,9 +282,13 @@ class SiteController extends AbstractController
 
 				$test1 =1;
 				$test2= 0;
+				if($editmode)
+				{
+					$test2 = 1;
+				}
 			}
 			
-			// on va faire en sorte de ne pas insérer de doublons qui seraient présent dans 
+			// on va faire en sorte de ne pas insérer de doublons qui serait présent dans 
 			//le formulaire 
 
 			for($i =0 ; $i < count($article->getEvenements()) ; $i++)
@@ -358,6 +384,10 @@ class SiteController extends AbstractController
 			// la variable test est la pour ne pas prendre en compte le 1er événement ($event)
 			// qui est là pour faciliter le rendu dans twig
 			$test =0;
+			if($editmode)
+			{
+				$test = 1;
+			}
 			foreach($article->getEvenements() as $key)
 			{
 				// il faudra rajouter la validation aussi et le test du lieu avant
@@ -374,7 +404,7 @@ class SiteController extends AbstractController
 
 							return $this->render('/site/form_article.html.twig'	,[
 								'formArticle'=> $form2->createView() ,
-								'editmode' => false,
+								'editmode' => $editmode,
 								'lieuDejaPrisForm' => $lieuDejaPrisForm,
 								'lieuDejaPrisBd' => $lieuDejaPrisBd,
 								'erreurValidation' => $erreurValidation,
@@ -407,7 +437,7 @@ class SiteController extends AbstractController
 
 								return $this->render('/site/form_article.html.twig'	,[
 									'formArticle'=> $form2->createView() ,
-									'editmode' => false,
+									'editmode' => $editmode,
 									'lieuDejaPrisForm' => $lieuDejaPrisForm,
 									'lieuDejaPrisBd' => $lieuDejaPrisBd,
 									'erreurValidation' => $erreurValidation,
@@ -438,7 +468,7 @@ class SiteController extends AbstractController
 
 							return $this->render('/site/form_article.html.twig'	,[
 								'formArticle'=> $form2->createView() ,
-								'editmode' => false,
+								'editmode' => $editmode,
 								'lieuDejaPrisForm' => $lieuDejaPrisForm,
 								'lieuDejaPrisBd' => $lieuDejaPrisBd,
 								'erreurValidation' => $erreurValidation,
@@ -470,7 +500,7 @@ class SiteController extends AbstractController
 
 						return $this->render('/site/form_article.html.twig'	,[
 							'formArticle'=> $form2->createView() ,
-							'editmode' => false,
+							'editmode' => $editmode,
 							'lieuDejaPrisForm' => $lieuDejaPrisForm,
 							'lieuDejaPrisBd' => $lieuDejaPrisBd,
 							'erreurValidation' => $erreurValidation,
@@ -498,26 +528,31 @@ class SiteController extends AbstractController
 						//on va vérifier que le lieu n'est pas pris par un autre événements au même moment
 						foreach($evenements as $key2)
 						{
-							foreach($key2->getPeriode() as $key3)
+							if($key2->getId() != $key->getId())
 							{
-								foreach($key->getPeriode() as $key4)
-								{
-									if($key3->isInSameTime($key4))
-									{
-										$lieuDejaPrisBd = "l'événement ".$key2->getNom()."qui est déja enregistré en base de donnée
-										utilise déja ce lieu à un même créneau horaire , veuillez changer le lieu ou les créneaux horaires pour l'évenement
-										 ".$key->getNom();
 
-										 return $this->render('/site/form_article.html.twig'	,[
-											'formArticle'=> $form2->createView() ,
-											'editmode' => false,
-											'lieuDejaPrisForm' => $lieuDejaPrisForm,
-											'lieuDejaPrisBd' => $lieuDejaPrisBd,
-											'erreurValidation' => $erreurValidation,
-											'erreurPeriode'	=>$erreurPeriode,
-											]);
+								foreach($key2->getPeriode() as $key3)
+								{
+									foreach($key->getPeriode() as $key4)
+									{
+										if($key3->isInSameTime($key4))
+										{
+											$lieuDejaPrisBd = "l'événement ".$key2->getNom()."qui est déja enregistré en base de donnée
+											utilise déja ce lieu à un même créneau horaire , veuillez changer le lieu ou les créneaux horaires pour l'évenement
+											".$key->getNom();
+
+											return $this->render('/site/form_article.html.twig'	,[
+												'formArticle'=> $form2->createView() ,
+												'editmode' => $editmode,
+												'lieuDejaPrisForm' => $lieuDejaPrisForm,
+												'lieuDejaPrisBd' => $lieuDejaPrisBd,
+												'erreurValidation' => $erreurValidation,
+												'erreurPeriode'	=>$erreurPeriode,
+												]);
+										}
 									}
 								}
+
 							}
 						}
 						
@@ -544,6 +579,8 @@ class SiteController extends AbstractController
 
 					//voir pour les doublons des événements ici
 
+					// cela doit être fait dans la validation de l'événement , voir Evenement.php
+					// et si on appelle bien le validateur
 					//on va vérifier que les intervalles de temps pour l'événement sont bien disjoint
 
 					/*for($i =0 ; $i< count($key->getPeriode()) ; $i++)
@@ -575,8 +612,10 @@ class SiteController extends AbstractController
 				
 				$test = 1;
 			}
-
-			$article->removeEvenement($event);
+			if(!$editmode)
+			{
+				$article->removeEvenement($event);
+			}
 
 			$manager->persist($article);
 
@@ -588,7 +627,7 @@ class SiteController extends AbstractController
 
 		return $this->render('/site/form_article.html.twig'	,[
 			'formArticle'=> $form2->createView() ,
-			'editmode' => false,
+			'editmode' => $editmode,
 			'lieuDejaPrisForm' => $lieuDejaPrisForm,
 			'lieuDejaPrisBd' => $lieuDejaPrisBd,
 			'erreurValidation' => $erreurValidation,
@@ -601,27 +640,41 @@ class SiteController extends AbstractController
 	 
 	/**
      * @Route("/createEvenement", name="createEvenement")
+	 * @Route("/modifEvenement/{id}", name="modifEvenement")
      */
-	 public function createEvenement(Request $request , ObjectManager $manager , LieuRepository $repoLieu , ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode ,ValidatorInterface $validator)
+	 public function createEvenement( Evenement $evenement = null ,Request $request , ObjectManager $manager , LieuRepository $repoLieu , ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode ,ValidatorInterface $validator)
 	 {
-		$evenement = new Evenement();
 
-		$lieu = new Lieu();
+		$editmode = true;
+		if(!$evenement)
+		{
 
-		$evenement->setLieu($lieu);
+			$evenement = new Evenement();
 
-		$periode1 = new IntervalleTemps();
+			$lieu = new Lieu();
 
-		$organisateur = new Organisateur();
+			$evenement->setLieu($lieu);
 
-	/*	$contact = new Contact();
-		$organisateur->addContact($contact);*/
+			$periode1 = new IntervalleTemps();
 
-		$contact2 = $organisateur->getContacts();
+			$organisateur = new Organisateur();
 
-		$evenement->addOrganisateur($organisateur);
+			/*$contact = new Contact();
+			$organisateur->addContact($contact);*/
 
-		$evenement->addPeriode($periode1);
+			$contact2 = $organisateur->getContacts();
+
+			$evenement->addOrganisateur($organisateur);
+
+			$evenement->addPeriode($periode1);
+
+			$editmode = false;
+
+		}
+		else
+		{
+			$lieu = $evenement->getLieu();
+		}
 
 		$errors = null;
 		$erreurDejaPris = null;
@@ -657,7 +710,7 @@ class SiteController extends AbstractController
 
 				return $this->render('/site/form_evenement.html.twig'	,[
 					'formEvenement'=> $form2->createView() ,
-					'editmode' => false, 
+					'editmode' => $editmode, 
 				   'errors' => $errors ,
 				   'erreurDejaPris' =>$erreurDejaPris,
 				   'erreurPeriode' => $erreurPeriode ,
@@ -690,17 +743,26 @@ class SiteController extends AbstractController
 				$nomEvenement = null;
 				foreach($evenements as $key)
 				{
-					foreach($evenement->getPeriode() as $key2)
+					/*if($editmode)
 					{
-						foreach($key->getPeriode() as $key3)
+						$eveId = $evenement->getId();
+					}*/
+					// il ne faut pas tester si on modifie et que $key est le même événement
+					if($key->getId() != $evenement->getId())
+					{
+						foreach($evenement->getPeriode() as $key2)
 						{
-							if($key2->isInSameTime($key3))
+							foreach($key->getPeriode() as $key3)
 							{
-								$nomEvenement = $key->getNom();
-								$lieuDejaPris= true;
+								if($key2->isInSameTime($key3))
+								{
+									$nomEvenement = $key->getNom();
+									$lieuDejaPris= true;
+								}
 							}
 						}
-					}
+					}	
+					
 				}
 			}
 
@@ -711,7 +773,7 @@ class SiteController extends AbstractController
 				$erreurDejaPris = "l'évenement: ".$nomEvenement." utilise déja le lieu dans un même créneau horaire";
 				return $this->render('/site/form_evenement.html.twig'	,[
 					'formEvenement'=> $form2->createView() ,
-					'editmode' => false, 
+					'editmode' => $editmode, 
 				   'errors' => $errors ,
 				   'erreurDejaPris' =>$erreurDejaPris,
 				   'erreurPeriode' => $erreurPeriode ,
@@ -720,18 +782,29 @@ class SiteController extends AbstractController
 			}
 			else 
 			{
+				
 				// on va faire en sorte de ne pas insérer les doublons qui sont dans le formulaire
 
 				for ($i =0 ; $i < count($evenement->getOrganisateurs()) ; $i++)
 				{
-					for($j = $i+1 ; $j < count($evenement->getOrganisateurs()) ; $j++ )
+					/* je n'ai pas compris le code que j'ai fais qui est en commentaire
+					juste en dessous si il y a deux fois le même organisateur dans l'événement , c'est
+					une erreur de validation que le validateur indiquera
+					je le laisse en commentaire pour le moment , mais si jamais il n'y a pas de bug ,
+					il faudra l'enlever
+					je pense que j'avais copier le code de createArticle et que je l'ai mal
+					adapté
+
+					*/
+
+					/*for($j = $i+1 ; $j < count($evenement->getOrganisateurs()) ; $j++ )
 					{
 						if($evenement->getOrganisateurs()[$evenement->getOrganisateurs()->getKeys()[$i]]->getNom() == $evenement->getOrganisateurs()[$evenement->getOrganisateurs()->getKeys()[$j]]->getNom() )
 						{
 							$evenement->removeOrganisateur($evenement->getOrganisateurs()[$evenement->getOrganisateurs()->getKeys()[$j]]);
 							$evenement->addOrganisateur($evenement->getOrganisateurs()[$evenement->getOrganisateurs()->getKeys()[$i]]);
 						}
-					}
+					}*/
 
 					foreach($evenement->getOrganisateurs()[$evenement->getOrganisateurs()->getKeys()[$i]]->getContacts() as $key)
 					{
@@ -759,7 +832,7 @@ class SiteController extends AbstractController
 
 						return $this->render('/site/form_evenement.html.twig'	,[
 							'formEvenement'=> $form2->createView() ,
-							'editmode' => false, 
+							'editmode' => $editmode, 
 						   'errors' => $errors ,
 						   'erreurDejaPris' =>$erreurDejaPris,
 						   'erreurPeriode' => $erreurPeriode ,
@@ -792,7 +865,7 @@ class SiteController extends AbstractController
 
 						return $this->render('/site/form_evenement.html.twig'	,[
 							'formEvenement'=> $form2->createView() ,
-							'editmode' => false, 
+							'editmode' => $editmode, 
 						   'errors' => $errors ,
 						   'erreurDejaPris' =>$erreurDejaPris,
 						   'erreurPeriode' => $erreurPeriode ,
@@ -808,7 +881,7 @@ class SiteController extends AbstractController
 
 							return $this->render('/site/form_evenement.html.twig'	,[
 								'formEvenement'=> $form2->createView() ,
-								'editmode' => false, 
+								'editmode' => $editmode, 
 							   'errors' => $errors ,
 							   'erreurDejaPris' =>$erreurDejaPris,
 							   'erreurPeriode' => $erreurPeriode ,
@@ -828,8 +901,8 @@ class SiteController extends AbstractController
 						}
 						else
 						{
-							$key3->removeContact($key2);
-							$key3->addContact($contact2);
+							$key->removeContact($key2);
+							$key->addContact($contact2);
 						}
 						
 						
@@ -902,7 +975,7 @@ class SiteController extends AbstractController
 		}
 		return $this->render('/site/form_evenement.html.twig'	,[
 			'formEvenement'=> $form2->createView() ,
-			'editmode' => false, 
+			'editmode' => $editmode, 
 		   'errors' => $errors ,
 		   'erreurDejaPris' =>$erreurDejaPris,
 		   'erreurPeriode' => $erreurPeriode ,
@@ -977,4 +1050,34 @@ class SiteController extends AbstractController
 
 		return $this->render('site/suppression_article.html.twig');
 	 }
+
+	 /**
+     * @Route("/suppression_show_article/{id}", name="suppression_show_article")
+     */
+	public function suppression_show_article(ArticleRepository $repository,$id, ObjectManager $manager)
+	{
+		$article = $repository->find($id);
+
+		$manager->remove($article);
+
+		$manager->flush();
+
+	   return $this->render('site/accueil.html.twig');
+	}
+
+	/**
+     * @Route("/suppression_show_evenement/{id}", name="suppression_show_evenement")
+     */
+	public function suppression_show_evenement(EvenementRepository $repository,$id, ObjectManager $manager)
+	{
+		$evenement = $repository->find($id);
+
+		$manager->remove($evenement);
+
+		$manager->flush();
+
+	   return $this->render('site/accueil.html.twig');
+	}
+
+
 }
