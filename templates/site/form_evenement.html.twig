@@ -172,21 +172,6 @@
 
         jQuery(document).ready(function() {
 
-
-            
-            //$lastFormOrga = $('ul.organisateurs > li:nth-last-child(2) ');
-
-            //console.log($lastFormOrga);
-
-            //var codeContact = $('ul.contacts:eq(0)');
-            //console.log(codeContact);
-                
-            //var copie = codeContact.clone();
-                
-            //$($lastFormOrga).append(copie);
-
-
-
             // Get the ul that holds the collection of periode
             $collectionHolder = $('ul.periode');
             $collectionHolder2 = $('ul.organisateurs');
@@ -207,82 +192,7 @@
             // index when inserting a new item (e.g. 2)
             $collectionHolder.data('index', $collectionHolder.find(':input').length);
             $collectionHolder2.data('index', $collectionHolder2.find(':input').length);
-           // $collectionHolder3.data('index', $collectionHolder3.find(':input').length);
-
-            /*$collectionHolder3.each( function( i ) {
-
-                var $addContactButton2 = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
-                var $newLinkLi32 = $('<li></li>').append($addContactButton2);
-
-                //console.log($(this));
-                //console.log(this);
-                $(this).append($newLinkLi3);
-                $(this).data('index', $(this).find(':input').length);
-                console.log($(this));
-                //console.log(this);
-                console.log($(' ul.contacts:eq(0)'))
-
-                $addContactButton2.on('click', function(e) {
-
-                // add a new contact form (see next code block)
-                addForm($(this), $newLinkLi32);
-
-                });
-            })*/
-
-            /*
-            for( var i=0 ; i<$collectionHolder3.length ; i++)
-            {
-                $collectionHolderContacti = $('ul.contacts:eq('+i+')');
-                console.log($collectionHolderContacti);
-
-                var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
-                var $newLinkLi3 = $('<li></li>').append($addContactButton);
-
-                $collectionHolderContacti.append($newLinkLi3);
-                //$collectionHolderContacti.data('index', $collectionHolderContacti.find(':input').length);
-                $collectionHolderContacti.data('index', ($collectionHolderContacti.find(':input').length-1)/4);
-                //$collectionHolderContacti.data('index',i);
-                console.log($collectionHolderContacti);
-                console.log("wtf ? : "+$collectionHolderContacti.data('index'));
-
-                // on récupère l'indice de l'organisateur pour lier les fomulaires qui vont êter crée au bon organisateur 
-
-                //les indices passent de 0 à 5 pour les organisateurs
-                // et de 0 à 11 pour les périodes ( c'est pourquoi on passe par le tableau getKeys()
-                // dans le controlleur )
-
-                //on peut essayer de récupèrer l'indice par un sélecteur et une regex
-                // ou essayer de le calculer
-
-                // on récupère la <div> juste avant le ul.contact qui contient l'indice dans l'id
-                var $preceding = $collectionHolderContacti.prev();
-
-                // on récupère le input dans le div
-
-                var $input = $preceding.find('input');
-
-                // il n'y a que un nombre dans l'id de l'input et c'est l'indice
-                var $array = /\d+/g.exec($input.attr('id'));
-
-                console.log($preceding);
-                console.log($array);
-                console.log('pls : '+$array[0]);
-
-                var $indexOrga = $array[0];
-               
-
-                $addContactButton.on('click', function(e) {
-
-                // add a new contact form (see next code block)
-                addContact2($collectionHolderContacti, $newLinkLi3,$indexOrga);
-                //addForm($collectionHolderContacti, $newLinkLi3);
-
-                });
-                console.log($collectionHolderContacti);
-
-            } 
-            */
+           
 
             var tab1 =[];
             var tab2 =[];
@@ -346,29 +256,7 @@
                 console.log(tab1[i]);
                 console.log($collectionHolderContacti)
 
-                /*$addContactButton.on('click', function(e) {
-
-                    // add a new contact form (see next code block)
-                    addContact2($collectionHolderContacti, $newLinkLi3,$indexOrga);
-                    //addForm($collectionHolderContacti, $newLinkLi3);
-
-                });*/
-
-                // le code ci dessous ne fonctionne pas tab1[i] == undefined
-                /*tab2[i].on('click', function(e) {
-
-                    console.log(" ||||||||||||||||||||||");
-                    console.log(tab1[i]);
-                    console.log(" ||||||||||||||||||||||");
-
-
-                    // add a new contact form (see next code block)
-                    addContact2(tab1[i], tab4[i],tab3[i]);
-                    //addForm($collectionHolderContacti, $newLinkLi3);
-
-                });
-
-                */
+                
 
                 console.log($collectionHolderContacti);
 

@@ -49,9 +49,15 @@ class Contact
      */
     private $organisateurs;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\ListeContact", mappedBy="contact")
+     */
+    private $listeContact;
+
     public function __construct()
     {
         $this->organisateurs = new ArrayCollection();
+        $this->listeContact = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -130,6 +136,34 @@ class Contact
         if ($this->organisateurs->contains($organisateur)) {
             $this->organisateurs->removeElement($organisateur);
             $organisateur->removeContact($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ListeContact[]
+     */
+    public function getListeContact(): Collection
+    {
+        return $this->listeContact;
+    }
+
+    public function addListeContact(ListeContact $listeContact): self
+    {
+        if (!$this->listeContact->contains($listeContact)) {
+            $this->listeContact[] = $listeContact;
+            $listeContact->addContact($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListeContact(ListeContact $listeContact): self
+    {
+        if ($this->listeContact->contains($listeContact)) {
+            $this->listeContact->removeElement($listeContact);
+            $listeContact->removeContact($this);
         }
 
         return $this;

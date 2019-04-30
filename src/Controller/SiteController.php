@@ -27,6 +27,8 @@ use App\Form\FormOrganisateurType;
 use App\Entity\Contact;
 use App\Repository\ContactRepository;
 use App\Form\FormContactType;
+use App\Entity\ListeContact;
+use App\Repository\ListeContactRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -128,7 +130,7 @@ class SiteController extends AbstractController
      * @Route("/createArticle", name="createArticle")
 	 * @Route("/modifArticle/{id}", name="modifArticle")
      */
-	 public function createArticle(Article $article = null,Request $request , ObjectManager $manager , LieuRepository $repoLieu, ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode , ValidatorInterface $validator )
+	 public function createArticle(Article $article = null,Request $request , ObjectManager $manager , LieuRepository $repoLieu, ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode , ListeContactRepository $repoListeContact , ValidatorInterface $validator )
 	 {
 		$editmode = true;
 		if(!$article )
@@ -177,9 +179,19 @@ class SiteController extends AbstractController
 						$key3->setTelephone(str_replace(" ","",$key3->getTelephone()));
 						$key3->setNom(trim($key3->getNom()));
 						$key3->setPrenom(trim($key3->getPrenom()));
-						$key3->setNom(str_replace(substr($key3->getNom(),0,1),strtoupper(substr($key3->getNom(),0,1)),$key3->getNom()));
-						$key3->setPrenom(str_replace(substr($key3->getPrenom(),0,1),strtoupper(substr($key3->getPrenom(),0,1)),$key3->getPrenom()));
+						//$key3->setNom(str_replace(substr($key3->getNom(),0,1),strtoupper(substr($key3->getNom(),0,1)),$key3->getNom()));
+						//$key3->setPrenom(str_replace(substr($key3->getPrenom(),0,1),strtoupper(substr($key3->getPrenom(),0,1)),$key3->getPrenom()));
 						// on n'a pas pris en compte les noms et prenoms composés
+
+						// le code au dessus va changer les répétions de la première lettre en majuscule aussi
+						// essayer le code suivant
+
+						/*
+							$key3->setNom()
+
+						*/
+
+
 					}
 				}
 			}
@@ -314,6 +326,21 @@ class SiteController extends AbstractController
 					}
 				}
 
+				// on va créer la liste de contacts des organisateurs et les rattacher à l'événement
+				foreach($article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs() as $key)
+				{
+					$listeContact = new ListeContact();
+					foreach($key->getContacts() as $key2)
+					{
+						$listeContact->addContact($key2);
+					}
+					$key->addListeContact($listeContact);
+					$article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->addListesContact($listeContact);
+				}
+			}
+			
+			for($i =0 ; $i < count($article->getEvenements()) ; $i++)
+			{
 				// on va regarder si il y a plusieurs fois le même contact
 				// situé chez des organisateurs différents (quelque soit l'événement)
 				// et si il y a plusieurs fois le même organisateur
@@ -325,26 +352,8 @@ class SiteController extends AbstractController
 
 				for($k=0 ; $k<count( $article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs() ) ; $k++)
 				{
-					for( $j =$i+1 ; $j <count($article->getEvenements()) ; $j++)
-					{
-						for($n=0 ; $n<count( $article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ) ; $n++)
-						{
-							//https://www.php.net/manual/fr/language.oop5.references.php
 
-							//les variables sont juste là pour plus de lisibilité
-							$orgaI = $article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs();
-							$orgaJ = $article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ;
-
-							// on va supposer que deux organisateurs différents ne peuvent pas avoir le même nom
-							if($orgaI[$orgaI->getKeys()[$k]]->getNom() == $orgaJ[$orgaJ->getKeys()[$n]]->getNom())
-							{
-								$article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->removeOrganisateur($orgaJ[$orgaJ->getKeys()[$n]]);
-								$article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->addOrganisateur($orgaI[$orgaI->getKeys()[$k]]);
-							}
-						}
-					}
-
-					// on va s'occuper des contacts maintenant
+					// on va s'occuper des contacts 
 
 					for( $j=$i ; $j<count($article->getEvenements()) ; $j++)
 					{
@@ -358,7 +367,7 @@ class SiteController extends AbstractController
 							else
 							{
 								$orgaI = $article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs();
-								$orgaJ = $article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ;
+								$orgaJ = $article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs();
 								foreach($orgaI[$orgaI->getKeys()[$k]]->getContacts() as $key)
 								{
 									// on en profite pour supprimer les espaces dans le numéro de téléphone
@@ -371,9 +380,43 @@ class SiteController extends AbstractController
 										{
 											$orgaJ[$orgaJ->getKeys()[$n]]->removeContact($key2);
 											$orgaJ[$orgaJ->getKeys()[$n]]->addContact($key);
+
+											// ne pas oublier de remove et add dans la seule (pour l'instant) liste des contacts de l'organisateur
+											$orgaJ[$orgaJ->getKeys()[$n]]->getListeContact()[0]->removeContact($key2);
+											$orgaJ[$orgaJ->getKeys()[$n]]->getListeContact()[0]->addContact($key);
 										}
 									}
 								}
+							}
+						}
+					}
+					
+					// on va s'occuper des organisateurs
+
+					for( $j =$i+1 ; $j <count($article->getEvenements()) ; $j++)
+					{
+						for($n=0 ; $n<count( $article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ) ; $n++)
+						{
+							//https://www.php.net/manual/fr/language.oop5.references.php
+
+							//les variables sont juste là pour plus de lisibilité
+							$orgaI = $article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs();
+							$orgaJ = $article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->getOrganisateurs() ;
+
+							// on va supposer que deux organisateurs différents ne peuvent pas avoir le même nom
+							if($orgaI[$orgaI->getKeys()[$k]]->getNom() == $orgaJ[$orgaJ->getKeys()[$n]]->getNom())
+							{
+								// on n'oublie pas d'associer les contacts et les listes de contacts 
+
+								foreach($orgaJ[$orgaJ->getKeys()[$n]]->getContacts() as $key)
+								{
+									$orgaI[$orgaI->getKeys()[$k]]->addContact($key);
+								}
+								// on rajoute la liste de contact du formulaire
+								$orgaI[$orgaI->getKeys()[$k]]->addListeContact($orgaJ[$orgaJ->getKeys()[$n]]->getListeContact()[0]);
+
+								$article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->removeOrganisateur($orgaJ[$orgaJ->getKeys()[$n]]);
+								$article->getEvenements()[$article->getEvenements()->getKeys()[$j]]->addOrganisateur($orgaI[$orgaI->getKeys()[$k]]);
 							}
 						}
 					}
@@ -459,8 +502,24 @@ class SiteController extends AbstractController
 							{
 								$key3->removeContact($key4);
 								$key3->addContact($contact2);
+
+								// on va fait attention aux doublons dans les liste des contacts aussi
+								foreach($key3->getListeContact() as $key5)
+								{
+									foreach($key5->getContact() as $key6)
+									{
+										if($key6 == $key4)
+										{
+											$key5->removeContact($key4);
+											$key5->addContact($contact2);
+										}
+									}
+								}
+
 							}
 						}
+						
+						
 
 						//on va valider 
 						$erreurValidation = $validator->validate($key3);
@@ -485,10 +544,120 @@ class SiteController extends AbstractController
 						]);
 						if($orga2 == null)
 						{
+							// on va persist les listes de contacts
+
+							foreach($key3->getListeContact() as $key4)
+							{
+								// j'ai eu une erreur me disant qu'une entité non persisté
+								// avait été trouvé par la relation listeContact#Contact
+								// j'ai du coup rajouté le persist pour les contacts dans la liste de contact
+								foreach($key4->getContact() as $key5)
+								{
+									$manager->persist($key5);
+								}
+								//$key->addListesContact($key4);
+								$manager->persist($key4);
+							}
 							$manager->persist($key3);
 						}
 						else
 						{
+							//l'organisateur existe déja en base de donné , donc
+							// on va vérifier que notre liste de contact n'existe pas déja en base de donnée
+							$listeContactKey3 = $repoListeContact->findOneBy([
+								"organisateur_id"=>$key3->getId(),
+								"evenement_id"=>$key->getId(),
+							]);
+							
+							if($listeContactKey3 != null)
+							{
+								// on va enlever les contacts de cette liste
+								//puis on va rajouter les contacts de la bonne liste
+
+								foreach($listeContactKey3->getContact() as $key4)
+								{
+									$listeContactKey3->removeContact($key4);
+								}
+
+								foreach($key->getListesContact() as $key4)
+								{
+									if($key4->getOrganisateur()->getNom() == $key3->getNom())
+									{
+										foreach($key4->getContact() as $key5)
+										{
+											$listeContactKey3->addContact($key5);
+										}
+
+										$key4 = $listeContactKey3 ; // on garde l'ancient id comme ca
+										
+									}
+								}
+							}
+
+							/*
+							$listesContactKey3 = $repoListeContact->findBy([
+								"organisateur_id"=>$key3->getId()
+							]);
+
+							$testListeContact1 = false;
+							$testListeContact2 = true;
+
+							// des while seraient plus appropriés. Il faudra voir l'optimisation du code car
+							//on a vraimment abusé dans le controller
+							foreach($listeContactKey3 as $key4)
+							{
+
+								foreach($key3->getListeContact() as $key5)
+								{
+									foreach($key5->getContact() as $key6)
+									{
+										foreach($key4->getContact() as $key7)
+										{
+											if($key7 == $key6)
+											{
+												$testListeContact1 = true;
+											}
+										}
+										if($testListeContact1 == false)
+										{
+											$testListeContact2 = false;
+										}
+										$testListeContact1 = false;
+									}
+									if($testListeContact2)
+									{
+										$key5 = $key4;
+									}
+									$testListeContact2 = true;
+								}
+							}
+							*/
+							/* on rajoute les contacts dans la relation organisateur_contacts*/
+							foreach($key3->getContacts() as $key4)
+							{
+								$orga2->addContact($key4);
+							}
+
+							// on rajoute les listes de contacts pour $orga2
+
+							foreach($key3->getListeContact() as $key4)
+							{
+								$orga2->addListeContact($key4);
+
+
+								// j'ai eu une erreur me disant qu'une entité non persisté
+								// avait été trouvé par la relation listeContact#Contact
+								// j'ai du coup rajouté le persist pour les contacts dans la liste de contact
+								foreach($key4->getContact() as $key5)
+								{
+									$manager->persist($key5);
+								}
+
+								//$key->addListesContact($key4);
+								$manager->persist($key4);
+							}
+
+
 							$key->removeOrganisateur($key3);
 							$key->addOrganisateur($orga2);
 						}
@@ -560,52 +729,6 @@ class SiteController extends AbstractController
 
 					$manager->persist($key->getLieu());
 
-					// on à déja valider plus haut
-					/*
-					//on va valider 
-					$erreurValidation = $validator->validate($key);
-					if (count($erreurValidation) > 0) {
-
-						return $this->render('/site/form_article.html.twig'	,[
-							'formArticle'=> $form2->createView() ,
-							'editmode' => false,
-							'lieuDejaPrisForm' => $lieuDejaPrisForm,
-							'lieuDejaPrisBd' => $lieuDejaPrisBd,
-							'erreurValidation' => $erreurValidation,
-							'erreurPeriode'	=>$erreurPeriode,
-							]);
-					}
-					*/
-
-					//voir pour les doublons des événements ici
-
-					// cela doit être fait dans la validation de l'événement , voir Evenement.php
-					// et si on appelle bien le validateur
-					//on va vérifier que les intervalles de temps pour l'événement sont bien disjoint
-
-					/*for($i =0 ; $i< count($key->getPeriode()) ; $i++)
-					{
-						if($i != count($key->getPeriode()) -1)
-						{
-							for($j=$i+1 ; $j<count($key->getPeriode()) ; $j++)
-							{
-								if($$key->getPeriode()[$key->getPeriode()->getKeys()[$i]]->isInSameTime($key->getPeriode()[$key->getPeriode()->getKeys()[$j]]))
-								{
-									$erreurPeriode = "deux intervalles de temps pour l'événement".$key->getNom()."partagent un même créneau horaire";
-									return $this->render('/site/form_article.html.twig'	,[
-										'formArticle'=> $form2->createView() ,
-										'editmode' => false,
-										'lieuDejaPrisForm' => $lieuDejaPrisForm,
-										'lieuDejaPrisBd' => $lieuDejaPrisBd,
-										'erreurValidation' => $erreurValidation,
-										'erreurPeriode'	=>$erreurPeriode,
-										]);
-								}
-							}
-						}
-
-					}*/
-
 					$key->setPublishedAt($article->getCreatedAt());
 					$manager->persist($key);	
 				}
@@ -642,7 +765,7 @@ class SiteController extends AbstractController
      * @Route("/createEvenement", name="createEvenement")
 	 * @Route("/modifEvenement/{id}", name="modifEvenement")
      */
-	 public function createEvenement( Evenement $evenement = null ,Request $request , ObjectManager $manager , LieuRepository $repoLieu , ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode ,ValidatorInterface $validator)
+	 public function createEvenement( Evenement $evenement = null ,Request $request , ObjectManager $manager , LieuRepository $repoLieu , ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode , ListeContactRepository $repoListeContact ,ValidatorInterface $validator)
 	 {
 
 		$editmode = true;
@@ -699,8 +822,9 @@ class SiteController extends AbstractController
 					$key2->setTelephone(str_replace(" ","",$key2->getTelephone()));
 					$key2->setNom(trim($key2->getNom()));
 					$key2->setPrenom(trim($key2->getPrenom()));
-					$key2->setNom(str_replace(substr($key2->getNom(),0,1),strtoupper(substr($key2->getNom(),0,1)),$key2->getNom()));
+					/*$key2->setNom(str_replace(substr($key2->getNom(),0,1),strtoupper(substr($key2->getNom(),0,1)),$key2->getNom()));
 					$key2->setPrenom(str_replace(substr($key2->getPrenom(),0,1),strtoupper(substr($key2->getPrenom(),0,1)),$key2->getPrenom()));
+					*/
 				}
 			}
 			
@@ -817,12 +941,20 @@ class SiteController extends AbstractController
 								{
 									$evenement->getOrganisateurs()[$evenement->getOrganisateurs()->getKeys()[$j]]->removeContact($key2);
 									$evenement->getOrganisateurs()[$evenement->getOrganisateurs()->getKeys()[$j]]->addContact($key);
+
+									// ici on ne s'occupe pas des listes de contact des organisateurs pour l'instant car il ne peut y avoir 
+									//plusieurs fois le même organisateur dans l'événement et donc 
+									// il ne peut y avoir qu'une seule liste de contact pour l'organisateur <==> organisateur->getContacts()
 								}
 							}
 
 						}
 
+
 					}
+
+					
+
 				}
 
 				foreach($evenement->getPeriode() as $key )
@@ -872,7 +1004,9 @@ class SiteController extends AbstractController
 						]);
 					}
 					
-					// on va vérifier les contacts
+					// on va vérifier les contacts et créer la liste de contact de l'organisateur
+
+					$listeContact = new ListeContact();
 
 					foreach($key->getContacts() as $key2)
 					{
@@ -898,11 +1032,13 @@ class SiteController extends AbstractController
 						if($contact2 == null)
 						{
 							$manager->persist($key2);
+							$listeContact->addContact($key2);
 						}
 						else
 						{
 							$key->removeContact($key2);
 							$key->addContact($contact2);
+							$listeContact->addContact($contact2);
 						}
 						
 						
@@ -918,12 +1054,90 @@ class SiteController extends AbstractController
 					]);
 					if($orga2 == null)
 					{
+						$evenement->addListesContact($listeContact);
+						$key->addListeContact($listeContact);
+						$manager->persist($listeContact);
 						$manager->persist($key);
 					}
 					else
 					{
+						//l'organisateur existe déja en base de donné , donc
+						// on va vérifier que notre liste de contact n'existe pas déja en base de donnée
+						$listeContactKey3 = $repoListeContact->findOneBy([
+							"organisateur_id"=>$key->getId(),
+							"evenement_id"=>$evenement->getId(),
+						]);
+						
+						if($listeContactKey3 != null)
+						{
+							// on va enlever les contacts de cette liste
+							//puis on va rajouter les contacts de la bonne liste
+							/*foreach($listeContactKey3->getContact() as $key4)
+							{
+								$listeContactKey3->removeContact($key4);
+							}
+							foreach($evenement->getListesContact() as $key4)
+							{
+								if($key4->getOrganisateur()->getNom() == $key->getNom())
+								{*/
+									foreach($listeContact->getContact() as $key5)
+									{
+										$listeContactKey3->addContact($key5);
+									}
+
+									$listeContact = $listeContactKey3 ; // on garde l'ancient id comme ca
+								/*		
+								}
+							}*/
+						}
+						/*
+
+						$listesContactKey = $repoListeContact->findBy([
+							"organisateur"=>$key->getId()
+						]);
+
+						$testListeContact1 = false;
+						$testListeContact2 = true;
+
+						// des while seraient plus appropriés. Il faudra voir l'optimisation du code car
+						//on a vraimment abusé dans le controller
+						foreach($listesContactKey as $key2)
+						{
+							foreach($listeContact->getContact() as $key3)
+							{
+								foreach($key->getContact() as $key4)
+								{
+									if($key4 == $key3)
+									{
+										$testListeContact1 = true;
+									}
+								}
+								if($testListeContact1 == false)
+								{
+									$testListeContact2 = false;
+								}
+								$testListeContact1 = false;
+							}
+							if($testListeContact2)
+							{
+								$listeContact = $key2;
+							}
+							$testListeContact2 = true;
+						}
+						*/
+
+						/* on rajoute les contacts dans dans la relation organisateur_contacts*/
+						foreach($key->getContacts() as $key2)
+						{
+							$orga2->addContact($key2);
+						}
+
+						$evenement->addListesContact($listeContact);
 						$evenement->removeOrganisateur($key);
+						$orga2->addListeContact($listeContact);
 						$evenement->addOrganisateur($orga2);
+						$manager->persist($listeContact);
+						$manager->persist($orga2);
 					}
 					
 				}

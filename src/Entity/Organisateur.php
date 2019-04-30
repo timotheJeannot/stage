@@ -54,10 +54,16 @@ class Organisateur
      */
     private $contacts;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\ListeContact", mappedBy="organisateur")
+     */
+    private $listeContact;
+
     public function __construct()
     {
         $this->Evenement = new ArrayCollection();
         $this->contacts = new ArrayCollection();
+        $this->listeContact = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,6 +170,37 @@ class Organisateur
         if ($this->contacts->contains($contact)) {
             $this->contacts->removeElement($contact);
             //$contact->removeOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ListeContact[]
+     */
+    public function getListeContact(): Collection
+    {
+        return $this->listeContact;
+    }
+
+    public function addListeContact(ListeContact $listeContact): self
+    {
+        if (!$this->listeContact->contains($listeContact)) {
+            $this->listeContact[] = $listeContact;
+            $listeContact->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListeContact(ListeContact $listeContact): self
+    {
+        if ($this->listeContact->contains($listeContact)) {
+            $this->listeContact->removeElement($listeContact);
+            // set the owning side to null (unless already changed)
+            if ($listeContact->getOrganisateur() === $this) {
+                $listeContact->setOrganisateur(null);
+            }
         }
 
         return $this;
