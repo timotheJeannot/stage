@@ -55,7 +55,20 @@
                     <p> mail : {{organisateur.mail}} </p>
                     <img src="{{organisateur.image}}" alt="">
 
-                    {% for contact in organisateur.contacts %}
+                    {% set listeContact = 0 %}
+
+                    {% for i in organisateur.listeContact %}
+
+                        {% if i.evenement == evenement %}
+
+                            {% set listeContact = i %}
+
+                        {% endif %}
+
+                    {% endfor %}
+                    
+
+                    {% for contact in listeContact.contact %}
                         <h5 class="text-primary"> Contacts </h5>
 
                         <p> ici il faudra faire une redirection vers un formulaire de contact
@@ -67,7 +80,7 @@
                         <p> teléphone : {{contact.telephone}}</p>
 
 
-                    {%endfor%}
+                    {% endfor %} 
 
                 {% endfor %}
                 

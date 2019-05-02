@@ -339,6 +339,8 @@ class SiteController extends AbstractController
 				}
 			}
 			
+			
+
 			for($i =0 ; $i < count($article->getEvenements()) ; $i++)
 			{
 				// on va regarder si il y a plusieurs fois le même contact
@@ -390,8 +392,16 @@ class SiteController extends AbstractController
 							}
 						}
 					}
+				}
+			}
+
+			// on va s'occuper des organisateurs
+			for($i =0 ; $i < count($article->getEvenements()) ; $i++)
+			{
+
+				for($k=0 ; $k<count( $article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs() ) ; $k++)
+				{
 					
-					// on va s'occuper des organisateurs
 
 					for( $j =$i+1 ; $j <count($article->getEvenements()) ; $j++)
 					{
@@ -422,6 +432,74 @@ class SiteController extends AbstractController
 					}
 				}
 			}
+
+			// on va vérifier qu'on n'insére pas deux fois la même liste de contact dans un même organisateur
+			//en fait on peut pas car , la liste de contact est relié qu'a un organisateur et
+			// surtout elle est relié qu'a un événement
+			//ce qui fait qu'on est obligé de faire deux listes de contacts différenets même si 
+			// elles possédent les mêmes contacts
+			// pour corriger ca il va falloir changer la relation en ManyToMany au moin au niveau ListeContact Evenement
+
+			/*foreach($article->getEvenements() as $key)
+			{
+				foreach($key->getOrganisateurs() as $key2)
+				{
+					for($i = 0 ; $i < count($key2->getListeContact()) ; $i++)
+					{
+						for($j = $i+1 ; $j<count($key2->getListeContact()) ; $j++)
+						{
+							$correspond = false;
+							$testDoublonsListeContact = true;
+							
+							if(count($key2->getListeContact()[$key2->getListeContact()->getKeys()[$i]]->getContact()) == count($key2->getListeContact()[$key2->getListeContact()->getKeys()[$j]]->getContact()))
+							{
+								// des whiles sont plus adapté car dès que $testDoublonsListeContact == false
+								// on peut arréter de boucler
+								foreach($key2->getListeContact()[$key2->getListeContact()->getKeys()[$i]]->getContact() as $key3)
+								{
+									$correspond = false;
+									foreach($key2->getListeContact()[$key2->getListeContact()->getKeys()[$j]]->getContact() as $key4)
+									{
+										if($key3 == $key4)
+										{
+											$correspond = true;
+										}
+									}
+									if($correspond == false)
+									{
+										$testDoublonsListeContact = false;
+									}
+								}
+
+								if($testDoublonsListeContact)
+								{
+
+									// on va trouver l'événement où la liste de contact apparait
+									// pour pouvoir supprimer la copie et ajouter "l'original"
+
+									foreach($article->getEvenements() as $key3)
+									{
+										foreach($key3->getListesContact() as $key4)
+										{
+											if($key4 == $key2->getListeContact()[$key2->getListeContact()->getKeys()[$j]])
+											{
+												$key3->removeListesContact($key2->getListeContact()[$key2->getListeContact()->getKeys()[$j]]);
+												$key3->addListesContact($key2->getListeContact()[$key2->getListeContact()->getKeys()[$i]]);
+											}
+										}
+									}
+
+									//$key->removeListesContact($key2->getListeContact()[$key2->getListeContact()->getKeys()[$j]]);
+									$key2->removeListeContact($key2->getListeContact()[$key2->getListeContact()->getKeys()[$j]]);
+									
+									//$key->addListesContact($key2->getListeContact()[$key2->getListeContact()->getKeys()[$i]]);
+								}
+							}	
+
+						}
+					}
+				}
+			}*/
 
 
 			// la variable test est la pour ne pas prendre en compte le 1er événement ($event)
@@ -536,14 +614,27 @@ class SiteController extends AbstractController
 						}
 						//on va faire en sorte de pas mettre de doublons dans la bd
 
+						// on regarde si on est en train de modifier un organisateur (formulaire de modification)
+
 						$orga2 = $repoOrga->findOneBy([
-							"nom"=>$key3->getNom(),
-							"siteWeb"=>$key3->getSiteWeb(),
-							"mail"=>$key3->getMail(),
-							"image"=>$key3->getImage()
+							"id"=>$key3->getId(),
 						]);
+
 						if($orga2 == null)
 						{
+							// on regarde si on est en train de créer un organisateur qui existe déja (formulaire de création)
+
+							$orga2 = $repoOrga->findOneBy([
+								"nom"=>$key3->getNom(),
+								"siteWeb"=>$key3->getSiteWeb(),
+								"mail"=>$key3->getMail(),
+								"image"=>$key3->getImage()
+							]);
+						}
+						if($orga2 == null)
+						{
+							// on est en train de créer un organisateur qui existe pas en base de données
+
 							// on va persist les listes de contacts
 
 							foreach($key3->getListeContact() as $key4)
@@ -1285,6 +1376,11 @@ class SiteController extends AbstractController
 	public function suppression_show_evenement(EvenementRepository $repository,$id, ObjectManager $manager)
 	{
 		$evenement = $repository->find($id);
+
+		foreach($evenement->getListesContact() as $key)
+		{
+			$manager->remove($key);
+		}
 
 		$manager->remove($evenement);
 

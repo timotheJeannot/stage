@@ -45,19 +45,32 @@
 			<img src="{{organisateur.image}}" alt="">
 			<br><br>
 
-			{% for contact in organisateur.contacts%}
-				<h4 class="text-primary"> Contacts </h4>
+			{% set listeContact = 0 %}
 
-				<p> ici il faudra faire une redirection vers un formulaire de contact
-				et pas laisser visible l'adresse mail et le numéro de téléphone du contact
+                {% for i in organisateur.listeContact %}
 
-				<p> Nom : {{contact.nom}} </p>
-				<p> Prenom : {{contact.prenom}} </p>
-				<p> Mail : {{contact.mail}} </p>
-				<p> teléphone : {{contact.telephone}}</p>
+                    {% if i.evenement == evenement %}
+
+                        {% set listeContact = i %}
+
+                    {% endif %}
+
+                {% endfor %}
+                    
+
+                {% for contact in listeContact.contact %}
+                    <h5 class="text-primary"> Contacts </h5>
+
+                    <p> ici il faudra faire une redirection vers un formulaire de contact
+                    et pas laisser visible l'adresse mail et le numéro de téléphone du contact
+
+                    <p> Nom : {{contact.nom}} </p>
+                    <p> Prenom : {{contact.prenom}} </p>
+                    <p> Mail : {{contact.mail}} </p>
+                    <p> teléphone : {{contact.telephone}}</p>
 
 
-			{%endfor%}
+                {% endfor %}
 
 		{% endfor %}
 
