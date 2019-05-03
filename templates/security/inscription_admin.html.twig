@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création admin{% endblock %}
+
+{% block body %}
+
+    <h1> Création d'un compte administrateur </h1>
+
+    {% form_theme form 'bootstrap_4_layout.html.twig' %} 
+
+	{{form_start(form, { attr: { novalidate: 'novalidate' } })}}
+    {{form_row(form)}}
+    <button type="submit" class="btn btn-success">Créer</button> 
+    {{form_end(form)}}
+
+{% endblock body %}
