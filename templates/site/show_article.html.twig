@@ -17,8 +17,12 @@
 			
 		</div>
 
-        <a href="{{path('modifArticle' , {id : article.id})}}" class="btn btn-primary">Modifier l'article</a>
-        <a href="{{path('suppression_show_article' , {id : article.id})}}" id="testSuppression" class="btn btn-primary">Supprimer l'article</a>
+        {% if is_granted('ROLE_ADMIN') %}
+
+            <a href="{{path('modifArticle' , {id : article.id})}}" class="btn btn-primary">Modifier l'article</a>
+            <a href="{{path('suppression_show_article' , {id : article.id})}}" id="testSuppression" class="btn btn-primary">Supprimer l'article</a>
+
+        {% endif %}
 
         <h3 class="text-primary"> Événements </h3>
 

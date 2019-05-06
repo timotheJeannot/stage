@@ -132,6 +132,17 @@ class SiteController extends AbstractController
      */
 	 public function createArticle(Article $article = null,Request $request , ObjectManager $manager , LieuRepository $repoLieu, ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode , ListeContactRepository $repoListeContact , ValidatorInterface $validator )
 	 {
+
+		//https://symfony.com/doc/current/security.html
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+		/*
+		$this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+    	// or add an optional message - seen by developers
+    	$this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'User tried to access a page without having ROLE_ADMIN');
+		*/
+
 		$editmode = true;
 		if(!$article )
 		{
@@ -859,6 +870,8 @@ class SiteController extends AbstractController
 	 public function createEvenement( Evenement $evenement = null ,Request $request , ObjectManager $manager , LieuRepository $repoLieu , ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode , ListeContactRepository $repoListeContact ,ValidatorInterface $validator)
 	 {
 
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
 		$editmode = true;
 		if(!$evenement)
 		{
@@ -1320,6 +1333,8 @@ class SiteController extends AbstractController
 	 public function suppression_evenement(Request $request , ObjectManager $manager , LieuRepository $repoLieu)
 	 {
 
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
 		$evenement = new Evenement();
 
 		$form2 = $this->createForm(FormEvenementType::class , $evenement);
@@ -1361,6 +1376,8 @@ class SiteController extends AbstractController
      */
 	public function suppression_show_article(ArticleRepository $repository,$id, ObjectManager $manager)
 	{
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
 		$article = $repository->find($id);
 
 		$manager->remove($article);
@@ -1375,6 +1392,9 @@ class SiteController extends AbstractController
      */
 	public function suppression_show_evenement(EvenementRepository $repository,$id, ObjectManager $manager)
 	{
+
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
 		$evenement = $repository->find($id);
 
 		foreach($evenement->getListesContact() as $key)

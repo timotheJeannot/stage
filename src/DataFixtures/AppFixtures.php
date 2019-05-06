@@ -30,6 +30,8 @@ class AppFixtures extends Fixture
 
         $admin->setUsername("administrateur");
 
+        
+
         $manager->persist($admin);
         $manager->flush();
     }
