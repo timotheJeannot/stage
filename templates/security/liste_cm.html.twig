@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}liste des chargés de missions{% endblock %}
+
+{% block body %}
+
+<h1> Bienvenue dans la liste des chargés de mission </h1>
+
+{% for user in users %}
+
+    {% if 'ROLE_ADMIN' in user.getRoles %}
+    
+        {#
+            l'utilisateur est un administrateur. Doit on pouvoir le supprimer ?
+            Faire gaffe à ce qui se passe quand on supprime un utilisateur connecté
+        #}
+
+    {% else %}
+
+        <p> //////////////////// </p>
+            {{user.getUsername}}
+            <br>
+            <a href="{{path('suppression_cm' , {id : user.id})}}" id="testSuppression" class="btn btn-primary">Supprimer le chargé de mission</a>
+            <br><br>
+        <p> \\\\\\\\\\\\\\\\\\\\ </p>
+
+    {% endif %}
+
+{% endfor %}
+
+    <script>
+
+            $('#testSuppression').on('click',function(e){
+                return confirm("Etes vous sûr de vouloir supprimer ?");
+            });
+
+    </script>
+
+
+{% endblock body %}

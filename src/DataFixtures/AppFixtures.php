@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Admin;
+use App\Entity\Utilisateur;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -22,17 +22,19 @@ class AppFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
 
-        $admin = new Admin();
+        $Utilisateur = new Utilisateur();
         //$hash = "salut";
-        //$hash = $encoder->encodePassword($admin,"3zHtV7U7n");
-        //$admin->setPassword($hash);
-        $admin->setPassword($this->passwordEncoder->encodePassword($admin,"3zHtV7U7n"));
+        //$hash = $encoder->encodePassword($Utilisateur,"3zHtV7U7n");
+        //$Utilisateur->setPassword($hash);
+        $Utilisateur->setPassword($this->passwordEncoder->encodePassword($Utilisateur,"3zHtV7U7n"));
 
-        $admin->setUsername("administrateur");
+        $Utilisateur->setEmail("administrateur@gmail.com");
+
+        $Utilisateur->setRoles(['ROLE_ADMIN']);
 
         
 
-        $manager->persist($admin);
+        $manager->persist($Utilisateur);
         $manager->flush();
     }
 }

@@ -67,8 +67,27 @@
 			  
 			  </li>			 
 			  
-
 				{% if is_granted('ROLE_ADMIN') %}
+
+					<li class="nav-item ">
+					
+						<div class="dropdown">
+							<a class="nav-link dropdown-toggle " data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">CM</a>
+
+							<ul class="dropdown-menu bg-primary  ">
+
+								<li><a class="nav-link" href="{{path('security_registration')}}">Création</a></li>
+								<li><a class="nav-link" href="{{path('liste_cm')}}">liste</a></li>
+																		
+								
+							</ul>
+						</div>
+			  
+			  	</li>
+
+				{% endif %}
+
+				{% if is_granted('ROLE_USER') %}
 			  <li class="nav-item ">
 					
 					<div class="dropdown">
@@ -85,7 +104,23 @@
 			  
 			  </li>
 
+					<li class="nav-item">
+					<a class="nav-link" href="{{path('app_logout')}}">Deconnexion</a>
+					</li>	
+
 				{% endif %}
+
+				{% if not(is_granted('ROLE_USER')) %}
+
+					<li class="nav-item">
+					<a class="nav-link" href="{{path('app_login')}}">Connexion</a>
+					</li>	
+
+				{% endif %}
+
+				
+
+
 
 			 {# <li class="nav-item ">
 					
