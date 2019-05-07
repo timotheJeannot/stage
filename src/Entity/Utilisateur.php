@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -22,6 +24,7 @@ class Utilisateur implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Email(message="veuillez indiquer un email valide")
      */
     private $email;
 
@@ -34,6 +37,8 @@ class Utilisateur implements UserInterface
      * @Assert\NotBlank(message="Veuillez renseigner un mot de passe")
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\Regex(pattern ="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W)/",message = "Le mot de passe n'est pas valide , il doit faire au moin 8 caractères avec une majuscule , un chiffre et un caractère spécial")
+     * @Assert\Length(min = 8 , minMessage=" Votre mot de passen doit faire au moin 8 caractéres")
      */
     private $password;
 
@@ -41,6 +46,22 @@ class Utilisateur implements UserInterface
      * @Assert\EqualTo(propertyPath="password",message="Vous n'avez pas rentré le même mot de passe")
      */
     private $confirmPassword ;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="utilisateur")
+     */
+    private $articles;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Evenement", mappedBy="utilisateur")
+     */
+    private $evenements;
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+        $this->evenements = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -130,5 +151,67 @@ class Utilisateur implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|Article[]
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    public function addArticle(Article $article): self
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles[] = $article;
+            $article->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(Article $article): self
+    {
+        if ($this->articles->contains($article)) {
+            $this->articles->removeElement($article);
+            // set the owning side to null (unless already changed)
+            if ($article->getUtilisateur() === $this) {
+                $article->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Evenement[]
+     */
+    public function getEvenements(): Collection
+    {
+        return $this->evenements;
+    }
+
+    public function addEvenement(Evenement $evenement): self
+    {
+        if (!$this->evenements->contains($evenement)) {
+            $this->evenements[] = $evenement;
+            $evenement->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvenement(Evenement $evenement): self
+    {
+        if ($this->evenements->contains($evenement)) {
+            $this->evenements->removeElement($evenement);
+            // set the owning side to null (unless already changed)
+            if ($evenement->getUtilisateur() === $this) {
+                $evenement->setUtilisateur(null);
+            }
+        }
+
+        return $this;
     }
 }

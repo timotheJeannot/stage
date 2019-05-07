@@ -136,6 +136,8 @@ class SiteController extends AbstractController
 		//https://symfony.com/doc/current/security.html
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+		$user = $this->getUser();
+
 		/*
 		$this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -667,8 +669,8 @@ class SiteController extends AbstractController
 							//l'organisateur existe déja en base de donné , donc
 							// on va vérifier que notre liste de contact n'existe pas déja en base de donnée
 							$listeContactKey3 = $repoListeContact->findOneBy([
-								"organisateur_id"=>$key3->getId(),
-								"evenement_id"=>$key->getId(),
+								"organisateur"=>$key3->getId(),
+								"evenement"=>$key->getId(),
 							]);
 							
 							if($listeContactKey3 != null)
@@ -831,6 +833,8 @@ class SiteController extends AbstractController
 
 					$manager->persist($key->getLieu());
 
+					$user->addEvenement($key);
+
 					$key->setPublishedAt($article->getCreatedAt());
 					$manager->persist($key);	
 				}
@@ -841,8 +845,9 @@ class SiteController extends AbstractController
 			{
 				$article->removeEvenement($event);
 			}
-
+			$user->addArticle($article);
 			$manager->persist($article);
+			$manager->persist($user);
 
 			$manager->flush();
 			//return $this->redirectToRoute('blog_show',['id' => $article->getId()]);
@@ -871,6 +876,7 @@ class SiteController extends AbstractController
 	 {
 
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+		$user = $this->getUser();
 
 		$editmode = true;
 		if(!$evenement)
@@ -1168,8 +1174,8 @@ class SiteController extends AbstractController
 						//l'organisateur existe déja en base de donné , donc
 						// on va vérifier que notre liste de contact n'existe pas déja en base de donnée
 						$listeContactKey3 = $repoListeContact->findOneBy([
-							"organisateur_id"=>$key->getId(),
-							"evenement_id"=>$evenement->getId(),
+							"organisateur"=>$key->getId(),
+							"evenement"=>$evenement->getId(),
 						]);
 						
 						if($listeContactKey3 != null)
@@ -1284,8 +1290,9 @@ class SiteController extends AbstractController
 					}
 
 				}
-
+				$user->addEvenement($evenement);
 				$manager->persist($evenement);
+				$manager->persist($user);
 				$manager->flush();
 				return $this->redirectToRoute('evenement');
 				//return $this->redirectToRoute('blog_show',['id' => $article->getId()]);*/
@@ -1407,6 +1414,40 @@ class SiteController extends AbstractController
 		$manager->flush();
 
 	   return $this->render('site/accueil.html.twig');
+	}
+
+	/**
+	 *  @Route("/mes_publications_articles",name="mes_publications_articles")
+	 */
+	 public function mes_publications_articles(ArticleRepository $repository)
+	 {
+		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+		$articles = $repository->findBy([
+			"utilisateur"=>$this->getUser(),
+		]);
+
+		return $this->render('site/article.html.twig', [
+			'articles'=> $articles
+		 ]);
+
+	 }
+
+	 /**
+	 *  @Route("/mes_publications_evenements",name="mes_publications_evenements")
+	 */
+	public function mes_publications_evenements(EvenementRepository $repository)
+	{
+	   $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+	   $evenements = $repository->findBy([
+		   "utilisateur"=>$this->getUser(),
+	   ]);
+
+	   return $this->render('site/evenement.html.twig', [
+		   'evenements'=> $evenements
+		]);
+
 	}
 
 

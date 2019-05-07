@@ -45,6 +45,11 @@ class Article
      */
     private $evenements;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="articles")
+     */
+    private $utilisateur;
+
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
@@ -127,6 +132,18 @@ class Article
             $this->evenements->removeElement($evenement);
             //$evenement->removeEstDan($this);
         }
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): self
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }

@@ -20,6 +20,8 @@ class SecurityController extends AbstractController
      */
     public function registration(Request $request , ObjectManager $manager , UserPasswordEncoderInterface $passwordEncoder)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $user = new Utilisateur();
         $form = $this->createForm(FormUtilisateurType::class,$user);
         //https://github.com/symfony/symfony/issues/13663
@@ -48,6 +50,8 @@ class SecurityController extends AbstractController
      */
     public function liste_cm(UtilisateurRepository $repoUser)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $users = $repoUser->findAll();
 
         return $this->render("security/liste_cm.html.twig",[
@@ -60,6 +64,11 @@ class SecurityController extends AbstractController
      */
     public function suppression(UtilisateurRepository $repoUser,$id, ObjectManager $manager )
     {
+        //https://symfony.com/doc/current/security.html
+        // voir la section securiting controllers and other code
+
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $user = $repoUser->find($id);
 
         $manager->remove($user);

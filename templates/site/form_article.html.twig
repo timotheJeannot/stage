@@ -102,10 +102,41 @@
 
 					<ul class="contacts" data-prototype="{{form_widget(organisateur.contacts.vars.prototype)|e('html_attr')}}">
 
-						{% for contact in organisateur.contacts %}
+						{#{% for contact in organisateur.contacts %}
 
 							{{form_row(contact)}}
 						
+						{% endfor %}#}
+
+						{% for listeContact in organisateur.vars["value"].listeContact %}
+							{#<p> test </p>
+							{% dump listeContact.evenement %}#}
+							{% if listeContact.evenement == evenement.vars["value"] %}
+								{% for contact in listeContact.contact %}
+
+									{#{{form_row(contact)}}#}
+									{% dump contact %}
+									{% dump organisateur.contacts %}
+
+									{# contact est une entity et pas un formView , je ne sais pas comment générer le formView
+									à partir du twig , donc pour l'instant on va récupérer le bon contact dans organisateurs.contacts
+									qui est un formView
+									#}
+
+									{% for contact2 in organisateur.contacts %}
+
+										{% if contact == contact2.vars["value"] %}
+
+											{{form_row(contact2)}}
+
+										{% endif %}
+
+									{% endfor %}
+			
+								{% endfor %}
+
+							{% endif %}
+
 						{% endfor %}
 
 					</ul>
