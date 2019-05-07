@@ -18,4 +18,5 @@ return [
     Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
     AlexanderMatveev\PopperBundle\AlexanderMatveevPopperBundle::class => ['all' => true],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
+    CalendarBundle\CalendarBundle::class => ['all' => true],
 ];

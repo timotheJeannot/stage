@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EvenementRepository")
@@ -341,6 +342,51 @@ class Evenement
         $this->utilisateur = $utilisateur;
 
         return $this;
+    }
+
+    // cette fonction renvoie le DateTime de départ de l'événement
+    public function getBeginAt()
+    {
+        //$start = new DateTime();
+        if(count($this->getPeriode()) >0)
+        {
+            $start = $this->getPeriode()[$this->getPeriode()->getKeys()[0]]->getDebut();
+
+            foreach($this->getPeriode() as $key)
+            {
+                if($start->getTimeStamp() > $key->getDebut()->getTimeStamp())
+                {
+                    $start = $key->getDebut();
+                }                
+            }
+            return $start;
+        }
+        // je ne sais pas quoi renvoyer si l'événement n'a pas de date
+        // cette fonction est à pour le calendrier , qui est fait grâce au bundle
+        // https://github.com/tattali/CalendarBundle/blob/HEAD/src/Resources/doc/doctrine-crud.md#full-listener
+        return new DateTime();
+    }
+
+    // cette fonction renvoie le DateTime de fin de l'événement
+    public function getEndAt()
+    {
+        //$start = new DateTime();
+        if(count($this->getPeriode()) >0)
+        {
+            $start = $this->getPeriode()[$this->getPeriode()->getKeys()[0]]->getFin();
+            foreach($this->getPeriode() as $key)
+            {
+                if($start->getTimeStamp() < $key->getFin()->getTimeStamp())
+                {
+                    $start = $key->getFin();
+                }                
+            }
+            return $start;
+        }
+        // je ne sais pas quoi renvoyer si l'événement n'a pas de date
+        // cette fonction est à pour le calendrier , qui est fait grâce au bundle
+        // https://github.com/tattali/CalendarBundle/blob/HEAD/src/Resources/doc/doctrine-crud.md#full-listener
+        return new DateTime();
     }
     
     
