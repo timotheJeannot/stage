@@ -25,7 +25,6 @@ class EvenementController extends AbstractController
      */
     public function calendar(): Response
     {
-        echo'test <br>';
         return $this->render('evenement/calendar.html.twig');
     }
 }

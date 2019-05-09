@@ -42,20 +42,6 @@ class CalendarListener
             new \DateTime('Friday this week')
         ));*/
 
-        // You may want to make a custom query to fill the calendar
-
-        $calendar->addEvent(new Event(
-            'Event 1',
-            new \DateTime('08-05-2019'),
-            new \DateTime('08-05-2019')
-        ));
-
-        // If the end date is null or not defined, it creates a all day event
-        $calendar->addEvent(new Event(
-            'All day event',
-            new \DateTime('Friday this week')
-        ));
-
         // Modify the query to fit to your entity and needs
         // Change Evenement.beginAt by your start date property
         /*$Evenements = $this->EvenementRepository
@@ -69,15 +55,36 @@ class CalendarListener
         //dans la requête du dessus , on n'a pas de champs beginAt en bdd
         // je pense pas qu'on puisse trouver un événement qui sorte des dates du calendrier , donc on va
         // faire plus simple
+        
         $Evenements = $this->EvenementRepository->findAll();
 
         foreach ($Evenements as $Evenement) {
             // this create the events with your data (here Evenement data) to fill calendar
-            $EvenementEvent = new Event(
+           /*$EvenementEvent = new Event(
                 $Evenement->getNom(),
                 $Evenement->getBeginAt(),
                 $Evenement->getEndAt() // If the end date is null or not defined, a all day event is created.
-            );
+            );*/
+
+            foreach($Evenement->getPeriode() as $periode)
+            {
+                $EvenementEvent = new Event(
+                    $Evenement->getNom(),
+                    $periode->getDebut(),
+                    $periode->getFin()
+                );
+                $EvenementEvent->addOption(
+                    'url',
+                    $this->router->generate('show_evenement', [
+                        'id' => $Evenement->getId(),
+                    ])
+                );
+
+                $calendar->addEvent($EvenementEvent);
+            }
+
+            
+
             /*
              * Add custom options to events
              *
@@ -85,19 +92,22 @@ class CalendarListener
              * and: https://github.com/fullcalendar/fullcalendar/blob/master/src/core/options.ts
              */
 
+            /*
             $EvenementEvent->setOptions([
                 'backgroundColor' => 'red',
                 'borderColor' => 'red',
             ]);
             $EvenementEvent->addOption(
                 'url',
-                $this->router->generate('Evenement_show', [
+                $this->router->generate('show_evenement', [
                     'id' => $Evenement->getId(),
                 ])
             );
-
+            */
             // finally, add the event to the CalendarEvent to fill the calendar
-            $calendar->addEvent($EvenementEvent);
+            //$calendar->addEvent($EvenementEvent);
+            
         }
+        
     }
 }

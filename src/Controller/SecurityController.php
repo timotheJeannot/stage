@@ -26,9 +26,9 @@ class SecurityController extends AbstractController
         $form = $this->createForm(FormUtilisateurType::class,$user);
         //https://github.com/symfony/symfony/issues/13663
         //https://github.com/symfony/symfony/issues/25697
-        //echo 'test1 <br><br>';
+        echo 'test1 <br><br>';
         $form->handleRequest($request);
-        //echo 'test2<br><br>';
+        echo 'test2<br><br>';
 
         if($form->isSubmitted() && $form->isValid())
 		{

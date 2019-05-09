@@ -47,4 +47,26 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    //cette fonction a été fait par moi et n'a pas été généré par la cli
+    public function findOrderByDate()
+    {
+        //https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/query-builder.html
+
+       /* return $this->createQueryBuilder('a')
+           // ->orderBy('a.createdAt','ASC')
+            ->getQuery()
+            ->getOneOrNullResult()
+
+            ;
+        */
+        //https://stackoverflow.com/questions/6635601/doctrine-limit-syntax-error
+        return $this->getEntityManager()
+                    ->createQuery(
+                        'Select a from App:Article a ORDER BY a.createdAt DESC'
+                    )
+                    ->setMaxResults(10)
+                    ->getResult();
+        
+    }
 }

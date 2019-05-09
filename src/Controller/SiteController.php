@@ -40,10 +40,13 @@ class SiteController extends AbstractController
      *@Route("/accueil", name="accueil")
 	 *@Route("/", name="accueil2")
      */
-    public function accueil()
+    public function accueil(ArticleRepository $repository)
     {
+		$articles = $repository->findOrderByDate();
+
         return $this->render('site/accueil.html.twig', [
-            'controller_name' => 'SiteController',
+			'controller_name' => 'SiteController',
+			'articles' => $articles
         ]);
     }
 
