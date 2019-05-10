@@ -60,12 +60,7 @@
 	<h4> Organisateurs </h4>
 
     
-	{% dump formEvenement.organisateurs %}
-	{% dump formEvenement.organisateurs.vars.prototype %}
-	{% dump formEvenement.organisateurs.vars.prototype.children['contacts'].vars.prototype %}
 	
-	{#{% dump form_widget(formEvenement.organisateurs.vars.prototype.children['contacts'].vars.prototype) %}#}
-    
 
 
     {%set organisateurP = formEvenement.organisateurs.vars.prototype %}
@@ -80,8 +75,6 @@
 			{{form_row(organisateur.image)}}
 
 		
-
-			{% dump form_widget(formEvenement.organisateurs.vars.prototype.children['contacts'].vars.prototype) %}
 			
 			<ul class="contacts"  data-prototype="{{ form_widget(organisateur.contacts.vars.prototype)|e('html_attr') }}">
 		
@@ -91,17 +84,14 @@
 					{{form_row(contact)}}
 
 				{% endfor %}
-                {% dump organisateur %}
-                {% dump formEvenement %}#}
+                #}
+               
                 {% for listeContact in organisateur.vars["value"].listeContact %}
-                    {#<p> test </p>
-                    {% dump listeContact.evenement %}#}
+
                     {% if listeContact.evenement == formEvenement.vars["value"] %}
                         {% for contact in listeContact.contact %}
 
                             {#{{form_row(contact)}}#}
-                            {% dump contact %}
-                            {% dump organisateur.contacts %}
 
                             {# contact est une entity et pas un formView , je ne sais pas comment générer le formView
                             à partir du twig , donc pour l'instant on va récupérer le bon contact dans organisateurs.contacts
@@ -125,7 +115,6 @@
                 {% endfor %}
 
 
-                {% dump form_widget(formEvenement.organisateurs.vars.prototype.children['contacts'].vars.prototype) %}
 			</ul>
 
 			
