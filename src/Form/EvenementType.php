@@ -11,6 +11,7 @@ class EvenementType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        // ce formulaire a été généré lors de l'intégration du calendrier. , il n'est, il me semble pas utile.
         $builder
             ->add('nom')
             ->add('description')

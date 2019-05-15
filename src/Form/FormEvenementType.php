@@ -13,8 +13,8 @@ class FormEvenementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom')//	,['attr' => ['placeholder'=> "nom de l'�v�nement"] ,  'label'=> "Nom"])
-            ->add('description')//,['attr' => ['placeholder'=> "Description de l'�v�nement"],  'label'=> "Description"])
+            ->add('nom')//	,['attr' => ['placeholder'=> "nom de l'événement"] ,  'label'=> "Nom"])
+            ->add('description')//,['attr' => ['placeholder'=> "Description de l'événement"],  'label'=> "Description"])
             ->add('image')//,['attr' => ['placeholder'=> "Url de l'image"],  'label'=> "Image"])
             //->add('estDans')
             ->add('periode', CollectionType::class, 
@@ -36,7 +36,7 @@ class FormEvenementType extends AbstractType
             'allow_delete' => true,
 			'by_reference' => false,
             'prototype' => true,
-            //'prototype_name' => '__org_prot__'
+            
 			])
 			 // ->add('PublishedAt')
         ;

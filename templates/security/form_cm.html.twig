@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création CM{% endblock %}
+
+{% block body %}
+
+    {% if editmode == false %}
+        <h1> Création d'un compte chargé de mission </h1>
+    {% else %}
+        <h1> Modification du profile</h1>
+    {% endif %}
+
+    {% form_theme form 'bootstrap_4_layout.html.twig' %} 
+
+	{{form_start(form)}}
+    {{form_row(form)}}
+    {% if editmode == false %}
+        <button type="submit" class="btn btn-success">Créer</button> 
+    {% else %}
+        <button type="submit" class="btn btn-success">Modifier</button> 
+    {% endif %}    
+    {{form_end(form)}}
+
+{% endblock body %}

@@ -3,7 +3,9 @@
 {% block title %}Contact{% endblock %}
 
 {% block body %}
-<h1> Bienvenue sur la page Contact </h1>
+<h1> Formulaire d'envoie de mail à {{contact.nom}} {{contact.prenom}}</h1>
+
+<p> Le sujet du mail sera celui de l'événement : {{evenement.nom}} <p>
 
 {#
     https://codereviewvideos.com/course/symfony-4-beginners-tutorial/video/symfony-4-contact-form

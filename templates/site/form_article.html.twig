@@ -109,14 +109,14 @@
 						{% endfor %}#}
 
 						{% for listeContact in organisateur.vars["value"].listeContact %}
-							{#<p> test </p>
-							{% dump listeContact.evenement %}#}
+							
+							
 							{% if listeContact.evenement == evenement.vars["value"] %}
 								{% for contact in listeContact.contact %}
 
 									{#{{form_row(contact)}}#}
-									{% dump contact %}
-									{% dump organisateur.contacts %}
+									
+									
 
 									{# contact est une entity et pas un formView , je ne sais pas comment générer le formView
 									à partir du twig , donc pour l'instant on va récupérer le bon contact dans organisateurs.contacts

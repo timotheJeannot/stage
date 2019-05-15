@@ -4,8 +4,12 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ContactType extends AbstractType
 {
@@ -25,10 +29,21 @@ class ContactType extends AbstractType
                 ]
                 
             ])
-            ->add('nom')
-            ->add('prenom')
-            ->add('email')
-            ->add('contenu')
+            ->add('nom',TextType::class,[
+                'constraints' => new notBlank(),
+            ])
+            ->add('prenom',TextType::class,[
+                'constraints' => new notBlank(),
+            ])
+            ->add('email',TextType::class,[
+                'constraints' => [new notBlank(),
+                                 new Email(),
+                ],
+
+            ])
+            ->add('contenu',TextareaType::class,[
+                'constraints' => new notBlank(),
+            ])
         ;
     }
 

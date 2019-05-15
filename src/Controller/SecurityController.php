@@ -24,15 +24,12 @@ class SecurityController extends AbstractController
 
         $user = new Utilisateur();
         $form = $this->createForm(FormUtilisateurType::class,$user);
-        //https://github.com/symfony/symfony/issues/13663
-        //https://github.com/symfony/symfony/issues/25697
-        echo 'test1 <br><br>';
+
         $form->handleRequest($request);
-        echo 'test2<br><br>';
+
 
         if($form->isSubmitted() && $form->isValid())
 		{
-            //echo 'test3 <br><br>';
             $user->setPassword($passwordEncoder->encodePassword($user,$user->getPassword()));
             $manager->persist($user);
             $manager->flush();
@@ -40,8 +37,9 @@ class SecurityController extends AbstractController
             return $this->render("site/accueil.html.twig");
         }
 
-        return $this->render("security/inscription.html.twig",[
-            'form' => $form->createView()
+        return $this->render("security/form_cm.html.twig",[
+            'form' => $form->createView(),
+            'editmode'=> false
         ]);
     }
 
@@ -94,5 +92,34 @@ class SecurityController extends AbstractController
     public function logout()
     {
         return $this->render('accueil');
+    }
+
+    /**
+     * @Route("/profile", name="profile")
+     */
+    public function profile(Request $request , ObjectManager $manager , UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $user = $this->getUser();
+
+        $form = $this->createForm(FormUtilisateurType::class,$user);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+		{
+            $user->setPassword($passwordEncoder->encodePassword($user,$user->getPassword()));
+            $manager->persist($user);
+            $manager->flush();
+
+            return $this->render("site/accueil.html.twig");
+        }
+
+        return $this->render("security/form_cm.html.twig",[
+            'form' => $form->createView(),
+            'editmode' => true
+        ]);
+
     }
 }

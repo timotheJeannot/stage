@@ -53,13 +53,6 @@ class ArticleRepository extends ServiceEntityRepository
     {
         //https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/query-builder.html
 
-       /* return $this->createQueryBuilder('a')
-           // ->orderBy('a.createdAt','ASC')
-            ->getQuery()
-            ->getOneOrNullResult()
-
-            ;
-        */
         //https://stackoverflow.com/questions/6635601/doctrine-limit-syntax-error
         return $this->getEntityManager()
                     ->createQuery(

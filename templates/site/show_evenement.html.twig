@@ -75,20 +75,22 @@
                 {% for contact in listeContact.contact %}
                     <h5 class="text-primary"> Contacts </h5>
 
-                    <p> ici il faudra faire une redirection vers un formulaire de contact
-                    et pas laisser visible l'adresse mail et le numéro de téléphone du contact
+                    
 
                     <p> Nom : {{contact.nom}} </p>
                     <p> Prenom : {{contact.prenom}} </p>
-                    <p> Mail : {{contact.mail}} </p>
-                    <p> teléphone : {{contact.telephone}}</p>
+                    {#<p> Mail : {{contact.mail}} </p>
+                    <p> teléphone : {{contact.telephone}}</p>#}
+					<a href="{{path('contactEvenement' , {idContact : contact.id , idEvenement : evenement.id})}}" class="btn btn-primary">Contacter</a>
+
 
 
                 {% endfor %}
 
 		{% endfor %}
 
-
+		<br>
+		<br>
 		<a href="{{path('accueil')}}" class="btn btn-primary">accueil</a>
 
 

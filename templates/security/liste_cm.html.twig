@@ -20,6 +20,12 @@
         <p> //////////////////// </p>
             {{user.getUsername}}
             <br>
+            {{user.nom}}
+            <br>
+            {{user.prenom}}
+            <br>
+            {{user.service}}
+            <br>
             <a href="{{path('suppression_cm' , {id : user.id})}}" id="testSuppression" class="btn btn-primary">Supprimer le chargé de mission</a>
             <br><br>
         <p> \\\\\\\\\\\\\\\\\\\\ </p>

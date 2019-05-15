@@ -94,15 +94,6 @@ class SiteController extends AbstractController
         ]);
     }
 
-	/**
-     * @Route("/contact", name="contact")
-     */
-    public function contact()
-    {
-        return $this->render('site/contact.html.twig', [
-            'controller_name' => 'SiteController',
-        ]);
-    }
 
 	/**
      * @Route("/info", name="info")

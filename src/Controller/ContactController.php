@@ -2,26 +2,103 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Evenement;
+use App\Entity\Contact;
+use App\Form\ContactType;
+use App\Form\ContactEvenementType;
+use App\Repository\ContactRepository;
+use App\Repository\EvenementRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ContactController extends AbstractController
 {
     /**
      * @Route("/contact", name="contact")
      */
-    public function index()
+    public function index(Request $request, \Swift_Mailer $mailer)
     {
 
        //https://codereviewvideos.com/course/symfony-4-beginners-tutorial/video/symfony-4-contact-form
        //https://codereviewvideos.com/course/symfony-4-beginners-tutorial/video/send-email-symfony-4
        //https://symfony.com/doc/current/email.html 
 
-        return $this->render('contact/index.html.twig', [
-            'controller_name' => 'ContactController',
+       $form = $this->createForm(ContactType::class);
+
+       $form->handleRequest($request);
+
+
+       if ($form->isSubmitted() && $form->isValid()) 
+       {
+    
+        $contactFormData = $form->getData();
+
+        $message = (new \Swift_Message($contactFormData['sujet']))
+                ->setFrom($contactFormData['email'])
+                ->setTo('timothe.jeannot@gmail.com')
+                ->setBody(
+                   $contactFormData['contenu'],
+                   'text/html'
+                )
+            ;
+        
+        $mailer->send($message);
+
+        $this->addFlash('success', 'It sent!');
+
+        return $this->redirectToRoute('accueil');
+
+       }
+
+       return $this->render('site/contact.html.twig', [
+        'form'=> $form->createView(),
+        ]);
+
+    }
+
+    /**
+     * @Route("/contact/{idContact}/evenement/{idEvenement}", name="contactEvenement")
+     */
+    public function contactEvenement(Request $request, \Swift_Mailer $mailer , $idContact , $idEvenement , EvenementRepository $repositoryE , ContactRepository $repositoryC)
+    {
+       $form = $this->createForm(ContactEvenementType::class);
+
+       $form->handleRequest($request);
+
+       $evenement = $repositoryE->find($idEvenement);
+
+       $contact = $repositoryC->find($idContact);
+
+
+       if ($form->isSubmitted() && $form->isValid()) 
+       {
+    
+        $contactFormData = $form->getData();
+
+        $message = (new \Swift_Message($evenement->getNom()))
+                ->setFrom($contactFormData['email'])
+                ->setTo($contact->getMail())
+                ->setBody(
+                   $contactFormData['contenu'],
+                   'text/html'
+                )
+            ;
+        
+        $mailer->send($message);
+
+        $this->addFlash('success', 'It sent!');
+
+        return $this->redirectToRoute('accueil');
+
+       }
+
+       return $this->render('site/contactEvenement.html.twig', [
+        'form'=> $form->createView(),
+        'evenement' => $evenement,
+        'contact' => $contact,
         ]);
     }
 
-    // ici  il va falloir gérer une autre route avec l'id d'un événement ou d'un article
-    // avec un autre type de formulaire 
+
 }

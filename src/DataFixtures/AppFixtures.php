@@ -19,8 +19,11 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager )
     {
-        // $product = new Product();
-        // $manager->persist($product);
+        // php bin/console doctrine:fixtures:load --append
+
+        printf("Bienvenue dans le script pour insérer un administrateur , les accents ne sont pas supporté.\n
+        Si vous voulez utilisé des accents vous allez devoir modifier le profil depusi le site \n\n");
+
         printf("Renseigner un email pour l'administrateur !!\n\n");
         $email = fgets(STDIN);
         $email = trim($email);
@@ -70,6 +73,19 @@ class AppFixtures extends Fixture
 
                     //appeller le validateur sur $Utilisateur aurait peut être été
                     //plus simple et plus propre
+
+                    printf("Veuiller rentrer un nom \n\n");
+                    $nom = fgets(STDIN);
+                    $nom = trim($nom);
+
+                    printf("Veuillez rentrer un prénom \n\n");
+                    $prenom = fgets(STDIN);
+                    $prenom = trim($prenom);
+
+                    printf("Le service de l'adminitrateur est celui de Besançon automatiquement");
+                    $Utilisateur->setNom($nom);
+                    $Utilisateur->setPrenom($prenom);
+                    $Utilisateur->setService('Besançon');
 
                     $manager->persist($Utilisateur);
                     $manager->flush();

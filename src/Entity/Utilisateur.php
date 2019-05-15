@@ -39,11 +39,13 @@ class Utilisateur implements UserInterface
      * @ORM\Column(type="string")
      * @Assert\Regex(pattern ="/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W)/",message = "Le mot de passe n'est pas valide , il doit faire au moin 8 caractères avec une majuscule , un chiffre et un caractère spécial")
      * @Assert\Length(min = 8 , minMessage=" Votre mot de passen doit faire au moin 8 caractéres")
+     * @Assert\NotNull
      */
     private $password;
 
     /**
      * @Assert\EqualTo(propertyPath="password",message="Vous n'avez pas rentré le même mot de passe")
+     * @Assert\NotNull
      */
     private $confirmPassword ;
 
@@ -56,6 +58,23 @@ class Utilisateur implements UserInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Evenement", mappedBy="utilisateur")
      */
     private $evenements;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull
+     */
+    private $nom;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull
+     */
+    private $prenom;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $service;
 
     public function __construct()
     {
@@ -211,6 +230,42 @@ class Utilisateur implements UserInterface
                 $evenement->setUtilisateur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getService(): ?string
+    {
+        return $this->service;
+    }
+
+    public function setService(string $service): self
+    {
+        $this->service = $service;
 
         return $this;
     }
