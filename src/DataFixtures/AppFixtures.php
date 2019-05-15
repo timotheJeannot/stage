@@ -21,8 +21,7 @@ class AppFixtures extends Fixture
     {
         // php bin/console doctrine:fixtures:load --append
 
-        printf("Bienvenue dans le script pour insérer un administrateur , les accents ne sont pas supporté.\n
-        Si vous voulez utilisé des accents vous allez devoir modifier le profil depusi le site \n\n");
+        printf("Bienvenue dans le script pour insérer un administrateur , les accents ne sont pas supporté.\nSi vous voulez utilisé des accents vous allez devoir modifier le profil depusi le site \n\n");
 
         printf("Renseigner un email pour l'administrateur !!\n\n");
         $email = fgets(STDIN);

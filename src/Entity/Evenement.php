@@ -76,6 +76,11 @@ class Evenement
      */
     private $utilisateur;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $domaine;
+
     public function __construct()
     {
         $this->estDans = new ArrayCollection();
@@ -238,68 +243,68 @@ class Evenement
     */
     
 	public function validate(ExecutionContextInterface $context, $payload)
-                        	{
-                        		
-                                // on va vérifier que les intervalles de temps n'ont pas de temps en commun
-                        
-                                for($i =0 ; $i< count($this->periode) ; $i++)
-                                {
-                        
-                                    for($j=$i+1 ; $j<count($this->periode) ; $j++)
-                                    {
-                                        if($this->periode[$this->periode->getKeys()[$i]]->isInSameTime($this->periode[$this->periode->getKeys()[$j]]))
-                                        {
-                                            $context->buildViolation('Il y a deux intervalles de temps qui partagent un même créneau horaire dans l\' événement '.$this->nom)
-                        					->atPath('periode')
-                        					->addViolation();
-                                        }
-                                    }
-                                    
-                        
-                                }
-                        
-                                // ici il va falloir vérifier que il n'y a pas plusieurs fois le 
-                                //même organisateur et qu'il n'y a pas plusieurs fois le même contact
-                                //au sein d'un même organisateur , par contre il peut y
-                                // avoir plusieurs fois le même contact si il apparait chez des organisateurs
-                                //différents
-                        
-                                for($i=0 ; $i <count($this->organisateurs) ; $i++)
-                                {
-                                    $orgaI = &$this->organisateurs[$this->organisateurs->getKeys()[$i]];
-                                    for($j=$i+1 ; $j<count($this->organisateurs) ; $j++)
-                                    {
-                                        // on va supposer que deux organisateurs différents ne peuvent pas avoir le même nom
-                                        if($orgaI->getNom() == $this->organisateurs[$this->organisateurs->getKeys()[$j]]->getNom())
-                                        {
-                                            
-                                            $context->buildViolation('Il y a deux organisateurs qui portent le même nom dans l\'événément '.$this->nom)
-                        					->atPath('organisateurs')
-                        					->addViolation();
-                                            
-                                        }
-                                    }
-                                    
-                        
-                                    for($j=0 ; $j<count($orgaI->getContacts()) ; $j++)
-                                    {
-                                        $orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$j]]->setTelephone(str_replace(" ","",$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$j]]->getTelephone()))  ;
-                                        for($k=$j+1 ; $k<count($orgaI->getContacts()) ; $k++)
-                                        {
-                                            
-                                            //$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]]->setTelephone( str_replace(" ","",$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]]->getTelephone())) ;
-                                            // l'égalité portent sur tous les attributs , mais il faudrait peut être pas prendre en compte le téléphone
-                                            if($orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$j]] == $orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]])
-                                            {
-                                                $context->buildViolation('Il y a deux contacts identiques dans l\'événément '.$this->nom." dans l'organisateur ".$orgaI->getNom())
-                        					    ->atPath('organisateurs')
-                        					    ->addViolation();
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                            }
+                                 	{
+                                 		
+                                         // on va vérifier que les intervalles de temps n'ont pas de temps en commun
+                                 
+                                         for($i =0 ; $i< count($this->periode) ; $i++)
+                                         {
+                                 
+                                             for($j=$i+1 ; $j<count($this->periode) ; $j++)
+                                             {
+                                                 if($this->periode[$this->periode->getKeys()[$i]]->isInSameTime($this->periode[$this->periode->getKeys()[$j]]))
+                                                 {
+                                                     $context->buildViolation('Il y a deux intervalles de temps qui partagent un même créneau horaire dans l\' événement '.$this->nom)
+                                 					->atPath('periode')
+                                 					->addViolation();
+                                                 }
+                                             }
+                                             
+                                 
+                                         }
+                                 
+                                         // ici il va falloir vérifier que il n'y a pas plusieurs fois le 
+                                         //même organisateur et qu'il n'y a pas plusieurs fois le même contact
+                                         //au sein d'un même organisateur , par contre il peut y
+                                         // avoir plusieurs fois le même contact si il apparait chez des organisateurs
+                                         //différents
+                                 
+                                         for($i=0 ; $i <count($this->organisateurs) ; $i++)
+                                         {
+                                             $orgaI = &$this->organisateurs[$this->organisateurs->getKeys()[$i]];
+                                             for($j=$i+1 ; $j<count($this->organisateurs) ; $j++)
+                                             {
+                                                 // on va supposer que deux organisateurs différents ne peuvent pas avoir le même nom
+                                                 if($orgaI->getNom() == $this->organisateurs[$this->organisateurs->getKeys()[$j]]->getNom())
+                                                 {
+                                                     
+                                                     $context->buildViolation('Il y a deux organisateurs qui portent le même nom dans l\'événément '.$this->nom)
+                                 					->atPath('organisateurs')
+                                 					->addViolation();
+                                                     
+                                                 }
+                                             }
+                                             
+                                 
+                                             for($j=0 ; $j<count($orgaI->getContacts()) ; $j++)
+                                             {
+                                                 $orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$j]]->setTelephone(str_replace(" ","",$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$j]]->getTelephone()))  ;
+                                                 for($k=$j+1 ; $k<count($orgaI->getContacts()) ; $k++)
+                                                 {
+                                                     
+                                                     //$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]]->setTelephone( str_replace(" ","",$orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]]->getTelephone())) ;
+                                                     // l'égalité portent sur tous les attributs , mais il faudrait peut être pas prendre en compte le téléphone
+                                                     if($orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$j]] == $orgaI->getContacts()[$orgaI->getContacts()->getKeys()[$k]])
+                                                     {
+                                                         $context->buildViolation('Il y a deux contacts identiques dans l\'événément '.$this->nom." dans l'organisateur ".$orgaI->getNom())
+                                 					    ->atPath('organisateurs')
+                                 					    ->addViolation();
+                                                     }
+                                                 }
+                                             }
+                                         }
+                                         
+                                     }
 
     /**
      * @return Collection|ListeContact[]
@@ -387,6 +392,18 @@ class Evenement
         // cette fonction est à pour le calendrier , qui est fait grâce au bundle
         // https://github.com/tattali/CalendarBundle/blob/HEAD/src/Resources/doc/doctrine-crud.md#full-listener
         return new DateTime();
+    }
+
+    public function getDomaine(): ?string
+    {
+        return $this->domaine;
+    }
+
+    public function setDomaine(string $domaine): self
+    {
+        $this->domaine = $domaine;
+
+        return $this;
     }
     
     
