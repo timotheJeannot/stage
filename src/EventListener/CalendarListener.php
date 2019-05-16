@@ -108,7 +108,7 @@ class CalendarListener
                         $borderColor = '#255490';
                         break ;
                     
-                    case 'Métiers de l\'alimention':
+                    case "Métiers de l'alimention":
                         $backgroundColor = '#F9B308';
                         $borderColor = '#F9B308';
                         break ;
@@ -120,9 +120,9 @@ class CalendarListener
                         break ;
                     
 
-                    case "Métiers de l\'aéronautique":
-                        $backgroundColor = '';
-                        $borderColor = '';
+                    case "Métiers de l'aéronautique":
+                        $backgroundColor = '#C6D3D2';
+                        $borderColor = '#C6D3D2';
                         break ;
                     
                         
