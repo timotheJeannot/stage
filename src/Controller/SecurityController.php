@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
             $manager->persist($user);
             $manager->flush();
 
-            return $this->render("site/accueil.html.twig");
+            return $this->redirectToRoute('accueil');
         }
 
         return $this->render("security/form_cm.html.twig",[
@@ -72,7 +72,7 @@ class SecurityController extends AbstractController
         $manager->remove($user);
         $manager->flush();
 
-        return $this->render("site/accueil.html.twig");        
+        return $this->redirectToRoute('accueil');;        
     }
 
     /**
@@ -113,7 +113,7 @@ class SecurityController extends AbstractController
             $manager->persist($user);
             $manager->flush();
 
-            return $this->render("site/accueil.html.twig");
+            return $this->redirectToRoute('accueil');
         }
 
         return $this->render("security/form_cm.html.twig",[

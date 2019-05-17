@@ -103,9 +103,9 @@ class CalendarListener
                         $borderColor = '#FF4D04';
                         break ;
                     
-                     case 'Métiers des études et de la modélisation numérique du bâtiment':
-                        $backgroundColor = '#255490';
-                        $borderColor = '#255490';
+                     case "Métiers des études et de la modélisation numérique du bâtiment":
+                        $backgroundColor = '#535353';
+                        $borderColor = '#535353';
                         break ;
                     
                     case "Métiers de l'alimention":
@@ -115,18 +115,18 @@ class CalendarListener
                     
                         
                     case "Métiers de la beauté et du bien-être":
-                        $backgroundColor = '#FE02D0';
-                        $borderColor = '#FE02D0';
+                        $backgroundColor = '#bf2caf ';
+                        $borderColor = '#bf2caf';
                         break ;
                     
 
                     case "Métiers de l'aéronautique":
-                        $backgroundColor = '#C6D3D2';
-                        $borderColor = '#C6D3D2';
+                        $backgroundColor = 'blue';
+                        $borderColor = 'blue';
                         break ;
                     
                         
-                    case "Métiers de l\'hôtellerie-restauration":
+                    case "Métiers de l'hôtellerie-restauration":
                         $backgroundColor = '#B1DBEC';
                         $borderColor = '#B1DBEC';
                         break ;
@@ -136,9 +136,9 @@ class CalendarListener
                         $borderColor = '#582900';
                         break ;
 
-                    case "Métiers du pilotage d\'installations automatisées":
-                        $backgroundColor = '#244956';
-                        $borderColor = '#244956';
+                    case "Métiers du pilotage d'installations automatisées":
+                        $backgroundColor = '#17661d ';
+                        $borderColor = '#17661d';
                         break ;
                     
                     case "Métiers de la maintenance":
@@ -147,8 +147,8 @@ class CalendarListener
                         break ;
                     
                     case "Métiers de la réalisation de produits mécaniques":
-                        $backgroundColor = '#7F7473';
-                        $borderColor = '#7F7473';
+                        $backgroundColor = '#f7c4e3 ';
+                        $borderColor = '#f7c4e3';
                         break ;
                     
                     case "Métiers du numérique et de la transition énergétique":
@@ -157,8 +157,8 @@ class CalendarListener
                         break ;
                     
                      case "Autre":
-                        $backgroundColor = 'blue';
-                        $borderColor = 'blue';
+                        $backgroundColor = 'red ';
+                        $borderColor = 'red ';
                         break ;   
                 }
 

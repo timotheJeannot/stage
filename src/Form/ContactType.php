@@ -19,6 +19,7 @@ class ContactType extends AbstractType
         $builder
             ->add('sujet' , ChoiceType::class ,[
                 'choices'=> [
+                    'Autre' => 'Autre',
                     'Campus des métiers et des qualifications'=> 'Campus des métiers et des qualifications',
                     'Les plateformes technologiques' => 'Les plateformes technologiques',
                     'Les comités locaux école-entreprise' => 'Les comités locaux école-entreprise',
@@ -26,6 +27,7 @@ class ContactType extends AbstractType
                     'Les conventions'=> 'Les conventions',
                     'Le lycée des métiers' => 'Le lycée des métiers',
                     'Les conseillers entreprise pour l\'école ' => 'Les conseillers entreprise pour l\'école',
+                    
                 ]
                 
             ])

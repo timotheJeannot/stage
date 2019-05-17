@@ -6,6 +6,17 @@
 
 <section class="articles">
 
+	<br>
+	<br>
+	<h3> Trier par </h3>
+	{% form_theme form 'bootstrap_4_layout.html.twig' %} 
+    {{form_start(form)}}
+    {{form_errors(form)}}
+    {{form_row(form.domaine)}}
+    <button type="submit" class="btn btn-success" >Envoyer</button>
+    {#{{form_end(form)}}#}
+	<br>
+	<br>
 	{% for article in articles %}
 
 	<article>
@@ -27,4 +38,4 @@
 	{% endfor %}
 
 
-{% endblock %}
+{% endblock body %}

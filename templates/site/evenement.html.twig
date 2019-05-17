@@ -1,3 +1,4 @@
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Evénements{% endblock %}
@@ -5,6 +6,40 @@
 {% block body %}
 
 <section class="articles">
+
+	<br>
+	<br>
+	<h3> Trier par </h3>
+	{% form_theme form 'bootstrap_4_layout.html.twig' %} 
+    {{form_start(form)}}
+    {#{{form_errors(form)}}} probléme avec le jeton csrf , voir ca au plus vite #}
+
+	{{form_row(form.date,{'id' : 'checkDate'})}}
+	<ul class="periode"  data-prototype="{{ form_widget(form.periode.vars.prototype)|e('html_attr') }}">
+		
+	</ul>
+	{{form_row(form.date2,{'id' : 'checkDate2'})}}
+	<ul class="periode2"  data-prototype="{{ form_widget(form.periode2.vars.prototype)|e('html_attr') }}">
+		
+	</ul>
+
+	{{form_row(form.domaine,{'id' : 'checkDomaine'})}}
+	<ul class="listeFm"  data-prototype="{{ form_widget(form.listeFM.vars.prototype)|e('html_attr') }}">
+		
+	</ul>
+	{#{{form_row(form.listeFM, {'attr': {'hidden' : 'true'}})}}#}
+	{#<ul data-prototype = "{{ form_widget(form.children.listeFM.vars.prototype)|e('html_attr') }}">
+
+	ne fonctionne pas
+
+	on va essayer de faire le form_row(form.listeFm) dans le javascript
+
+	</ul>#}
+    <button type="submit" class="btn btn-success" >Envoyer</button>
+    {#{{form_end(form)}}#}
+
+	<br>
+	<br>
 
 	{% for evenement in evenements %}
 
@@ -26,5 +61,114 @@
 
 	{% endfor %}
 
+	<script>
 
-{% endblock %}
+		jQuery(document).ready(function()
+		{
+			var date = $('#checkDate');
+
+			if(date.is(':checked'))
+			{
+				var collectionHolder = $('ul.periode');
+				var prototype = collectionHolder.data('prototype');
+				prototype = prototype.replace(/__name__/g,0);
+				collectionHolder.append(prototype)
+			}
+			else
+			{
+				var prototype = $('#form_trie_periode_0');
+				prototype.remove();
+			}
+
+			date.on('click',function(){
+
+				if(date.is(':checked'))
+				{					
+					var collectionHolder = $('ul.periode');
+					var prototype = collectionHolder.data('prototype');
+					prototype = prototype.replace(/__name__/g,0);
+					collectionHolder.append(prototype)
+				}
+				else
+				{
+					var prototype = $('#form_trie_periode_0');
+					prototype.remove();
+				}
+
+			});
+
+			var date2 = $('#checkDate2');
+
+			if(date2.is(':checked'))
+			{
+				var collectionHolder = $('ul.periode2');
+				var prototype = collectionHolder.data('prototype');
+				prototype = prototype.replace(/__name__/g,0);
+				collectionHolder.append(prototype)
+			}
+			else
+			{
+				var prototype = $('#form_trie_periode2_0');
+				prototype.remove();
+			}
+
+			date2.on('click',function(){
+
+				if(date2.is(':checked'))
+				{					
+					var collectionHolder = $('ul.periode2');
+					var prototype = collectionHolder.data('prototype');
+					prototype = prototype.replace(/__name__/g,0);
+					collectionHolder.append(prototype)
+				}
+				else
+				{
+					var prototype = $('#form_trie_periode2_0');
+					prototype.remove();
+				}
+
+			});
+
+			var domaine = $('#checkDomaine');
+
+			if(domaine.is(':checked'))
+			{
+				var collectionHolder = $('ul.listeFm');
+				var prototype = collectionHolder.data('prototype');
+				prototype = prototype.replace(/__name__/g,0);
+				collectionHolder.append(prototype)
+			}
+			else
+			{
+				var prototype = $('#form_trie_listeFM_0');
+				prototype.remove();
+			}
+
+			domaine.on('click',function(){
+
+				if(domaine.is(':checked'))
+				{					
+					var collectionHolder = $('ul.listeFm');
+					var prototype = collectionHolder.data('prototype');
+					prototype = prototype.replace(/__name__/g,0);
+					collectionHolder.append(prototype)
+				}
+				else
+				{
+					var prototype = $('#form_trie_listeFM_0');
+					prototype.remove();
+				}
+
+			});
+
+	
+			
+			console.log(domaine.prop('checked'));
+
+
+		})	
+
+	</script>
+
+{% endblock body %}
+

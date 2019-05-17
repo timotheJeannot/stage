@@ -2,35 +2,36 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Doctrine\Common\Persistence\ObjectManager;
-use App\Entity\Article;
-use App\Repository\ArticleRepository;
-use App\Form\FormArticleType;
-use App\Entity\Evenement;
-use App\Repository\EvenementRepository;
-use App\Form\FormEvenementType;
 use App\Entity\Lieu;
-use App\Repository\LieuRepository;
-use App\Form\FormLieuType;
-use App\Entity\IntervalleTemps;
-use App\Repository\IntervalleTempsRepository;
-use App\Form\FormIntervalleTempsType;
-use App\Entity\Organisateur;
-use App\Repository\OrganisateurRepository;
-use App\Form\FormOrganisateurType;
+use App\Entity\Article;
 use App\Entity\Contact;
-use App\Repository\ContactRepository;
-use App\Form\FormContactType;
+use App\Entity\Evenement;
+use App\Form\FormLieuType;
+use App\Form\FormTrieType;
 use App\Entity\ListeContact;
+use App\Entity\Organisateur;
+use App\Form\FormArticleType;
+use App\Form\FormContactType;
+use App\Entity\IntervalleTemps;
+use App\Form\FormEvenementType;
+use App\Form\FormOrganisateurType;
+use App\Repository\LieuRepository;
+use App\Form\FormIntervalleTempsType;
+use App\Repository\ArticleRepository;
+use App\Repository\ContactRepository;
+use App\Repository\EvenementRepository;
 use App\Repository\ListeContactRepository;
+use App\Repository\OrganisateurRepository;
+use App\Repository\IntervalleTempsRepository;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 
@@ -53,24 +54,83 @@ class SiteController extends AbstractController
 	/**
      * @Route("/article", name="article")
      */
-    public function article(ArticleRepository $repository)
+    public function article(ArticleRepository $repository , Request $request )
     {
 		$articles = $repository->findAll();
 
+		$form = $this->createForm(FormTrieType::class);
+
+		
+
         return $this->render('site/article.html.twig', [
-           'articles'=> $articles
+		   'articles'=> $articles,
+		   'form' => $form->createView(),
         ]);
     }
 
 	/**
      * @Route("/evenement", name="evenement")
      */
-    public function evenement(EvenementRepository $repository)
+    public function evenement(EvenementRepository $repository , Request $request )
     {
-		$evenements = $repository->findAll();
+
+		$form = $this->createForm(FormTrieType::class);
+
+		$form->handleRequest($request);
+		echo 'test0<br>';
+		if ($form->isSubmitted())// && $form->isValid()) 
+       {
+			/*$formData = $form->getData();
+			echo 'test1<br>';
+			if($formData['date'] != null)
+			{
+				echo 'test2<br>';
+				dump($formData['periode']);
+				$evenements = $repository->findByIntervalleTemps1($formData['periode'][0]);
+				
+			}
+
+			if($formData['date2'] != null)
+			{
+				echo'test3<br>';
+				$evenements = $repository->findByIntervalleTemps2($formData['periode2'][0]);
+			}*/
+
+			/*if($formData['domaine'])
+			{
+				echo'test42<br>';
+				dump($formData['listeFM']);
+				
+			}*/
+
+			$evenements = $repository->trie($form);
+
+			return $this->render('site/evenement.html.twig', [
+				'evenements'=> $evenements,
+				'form' => $form->createView(),
+				
+			 ]);
+
+			/*if($formData['domaine'])
+			{
+				$evenements = $repository->findBy([
+					'domaine'
+				]);
+			}*/
+
+			/*return $this->render('site/evenement.html.twig', [
+				'evenements'=> $evenements,
+				'form' => $form->createView(),
+				
+			 ]);*/
+
+	   }
+	   $evenements = $repository->findAll();
 
         return $this->render('site/evenement.html.twig', [
-           'evenements'=> $evenements
+		   'evenements'=> $evenements,
+		   'form' => $form->createView(),
+		   
         ]);
     }
 
@@ -1385,7 +1445,7 @@ class SiteController extends AbstractController
 
 		$manager->flush();
 
-	   return $this->render('site/accueil.html.twig');
+	   return $this->redirectToRoute('accueil');
 	}
 
 	/**
@@ -1407,7 +1467,7 @@ class SiteController extends AbstractController
 
 		$manager->flush();
 
-	   return $this->render('site/accueil.html.twig');
+		return $this->redirectToRoute('accueil');
 	}
 
 	/**
