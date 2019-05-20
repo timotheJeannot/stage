@@ -13,7 +13,16 @@
     {% form_theme form 'bootstrap_4_layout.html.twig' %} 
     {{form_start(form)}}
     {{form_errors(form)}}
-    {{form_row(form)}}
+    {{form_row(form.sujet)}}
+    {{form_row(form.prenom)}}
+    {{form_row(form.nom)}}
+    {{form_row(form.email)}}
+    {{form_row(form.contenu)}}
+    {{form_row(form.nb1 ,{'value': nb1})}}
+    {{form_row(form.nb2 ,{'value': nb2})}}
+    <h4> Verification anti robot </h4>
+    <p> A quoi est égale {{nb1}} + {{nb2}} </p>
+    {{form_row(form.verification , {'attr' :{'placeholder' : 'Faire la somme ici'}})}}
     <button type="submit" class="btn btn-success" >Envoyer</button>
     {{form_end(form)}}
 

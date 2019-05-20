@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ContactType extends AbstractType
@@ -19,7 +20,7 @@ class ContactType extends AbstractType
         $builder
             ->add('sujet' , ChoiceType::class ,[
                 'choices'=> [
-                    'Autre' => 'Autre',
+                    'Autres' => 'Autre',
                     'Campus des métiers et des qualifications'=> 'Campus des métiers et des qualifications',
                     'Les plateformes technologiques' => 'Les plateformes technologiques',
                     'Les comités locaux école-entreprise' => 'Les comités locaux école-entreprise',
@@ -46,6 +47,14 @@ class ContactType extends AbstractType
             ->add('contenu',TextareaType::class,[
                 'constraints' => new notBlank(),
             ])
+            ->add('verification',TextType::class,[
+                'constraints' => new notBlank(),
+                'label'=>'Vérification anti-robot',
+                //'placeholder'=> 'faite la somme ici',
+    
+            ])
+            ->add('nb1',HiddenType::class)
+            ->add('nb2',HiddenType::class)
         ;
     }
 

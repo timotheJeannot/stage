@@ -13,10 +13,14 @@ class FormIntervalleTempsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('debut',DateTimeType::class)/*,[
-				'date_widget'=>'single_text'
-			])*/
-            ->add('fin',DateTimeType::class)
+            ->add('debut',DateTimeType::class,[
+                //'data'=> new \DateTime(),
+                // On initialise le DateTime dans l'entity plûtot car sinon quand
+                // on fait des modifications d'événements , ca supprime les anciennes périodes
+            ])
+            ->add('fin',DateTimeType::class,[
+                //'data'=> new \DateTime(),
+            ])
             //->add('evenements')
         ;
     }

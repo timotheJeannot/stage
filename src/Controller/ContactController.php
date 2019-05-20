@@ -33,27 +33,36 @@ class ContactController extends AbstractController
        if ($form->isSubmitted() && $form->isValid()) 
        {
     
-        $contactFormData = $form->getData();
+            $contactFormData = $form->getData();
 
-        $message = (new \Swift_Message($contactFormData['sujet']))
-                ->setFrom($contactFormData['email'])
-                ->setTo('timothe.jeannot@gmail.com')
-                ->setBody(
-                   $contactFormData['contenu'],
-                   'text/html'
-                )
-            ;
-        
-        $mailer->send($message);
+            $somme = $contactFormData['verification'];
 
-        $this->addFlash('success', 'It sent!');
+            if($somme == $contactFormData['nb1'] + $contactFormData['nb2'])
+            {
 
-        return $this->redirectToRoute('accueil');
+                $message = (new \Swift_Message($contactFormData['sujet']))
+                        ->setFrom($contactFormData['email'])
+                        ->setTo('timothe.jeannot@gmail.com')
+                        ->setBody(
+                        $contactFormData['contenu'],
+                        'text/html'
+                        )
+                    ;
+                
+                $mailer->send($message);
+
+                $this->addFlash('success', 'It sent!');
+
+                return $this->redirectToRoute('accueil');
+            }
 
        }
-
+       $nb1 = rand(0,10);
+       $nb2 = rand(0,10);
        return $this->render('site/contact.html.twig', [
         'form'=> $form->createView(),
+        'nb1' => $nb1,
+        'nb2' =>$nb2,
         ]);
 
     }
@@ -74,29 +83,39 @@ class ContactController extends AbstractController
        if ($form->isSubmitted() && $form->isValid()) 
        {
     
-        $contactFormData = $form->getData();
+            $contactFormData = $form->getData();
+            $somme = $contactFormData['verification'];
 
-        $message = (new \Swift_Message($evenement->getNom()))
-                ->setFrom($contactFormData['email'])
-                ->setTo($contact->getMail())
-                ->setBody(
-                   $contactFormData['contenu'],
-                   'text/html'
-                )
-            ;
-        
-        $mailer->send($message);
+            if($somme == $contactFormData['nb1'] + $contactFormData['nb2'])
+            {
+                
+                $message = (new \Swift_Message($evenement->getNom()))
+                        ->setFrom($contactFormData['email'])
+                        ->setTo($contact->getMail())
+                        ->setBody(
+                        $contactFormData['contenu'],
+                        'text/html'
+                        )
+                    ;
+                
+                $mailer->send($message);
 
-        $this->addFlash('success', 'It sent!');
+                $this->addFlash('success', 'It sent!');
 
-        return $this->redirectToRoute('accueil');
-
+                return $this->redirectToRoute('accueil');
+            
+            }
        }
+       // on va générer deux digit pour que l'utilisateur fasse une somme et vérifier que ce ne soit pas un robot
+       $nb1 = rand(0,10);
+       $nb2 = rand(0,10);
 
        return $this->render('site/contactEvenement.html.twig', [
         'form'=> $form->createView(),
         'evenement' => $evenement,
         'contact' => $contact,
+        'nb1' => $nb1,
+        'nb2' =>$nb2,
         ]);
     }
 
@@ -116,29 +135,38 @@ class ContactController extends AbstractController
        if ($form->isSubmitted() && $form->isValid()) 
        {
     
-        $contactFormData = $form->getData();
+            $contactFormData = $form->getData();
 
-        $message = (new \Swift_Message($evenement->getNom()))
-                ->setFrom($contactFormData['email'])
-                ->setTo($contact->getMail())
-                ->setBody(
-                   $contactFormData['contenu'],
-                   'text/html'
-                )
-            ;
-        
-        $mailer->send($message);
+            $somme = $contactFormData['verification'];
 
-        $this->addFlash('success', 'It sent!');
+            if($somme == $contactFormData['nb1'] + $contactFormData['nb2'])
+            {
 
-        return $this->redirectToRoute('accueil');
+                $message = (new \Swift_Message($evenement->getNom()))
+                        ->setFrom($contactFormData['email'])
+                        ->setTo($contact->getMail())
+                        ->setBody(
+                        $contactFormData['contenu'],
+                        'text/html'
+                        )
+                    ;
+                
+                $mailer->send($message);
+
+                $this->addFlash('success', 'It sent!');
+
+                return $this->redirectToRoute('accueil');
+            }
 
        }
-
+       $nb1 = rand(0,10);
+       $nb2 = rand(0,10);
        return $this->render('site/contactOrganisateurEvenement.html.twig', [
         'form'=> $form->createView(),
         'evenement' => $evenement,
         'contact' => $contact,
+        'nb1' => $nb1,
+        'nb2' =>$nb2,
         ]);
     }
 

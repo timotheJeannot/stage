@@ -42,6 +42,8 @@ class IntervalleTemps
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
+        $this->debut = new \DateTime();
+        $this->fin = new \DateTime();
     }
 
     public function getId(): ?int
