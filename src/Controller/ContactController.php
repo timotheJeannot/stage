@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Evenement;
 use App\Entity\Contact;
+use App\Entity\Evenement;
 use App\Form\ContactType;
 use App\Form\ContactEvenementType;
 use App\Repository\ContactRepository;
 use App\Repository\EvenementRepository;
+use App\Repository\OrganisateurRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -70,7 +71,6 @@ class ContactController extends AbstractController
 
        $contact = $repositoryC->find($idContact);
 
-
        if ($form->isSubmitted() && $form->isValid()) 
        {
     
@@ -94,6 +94,48 @@ class ContactController extends AbstractController
        }
 
        return $this->render('site/contactEvenement.html.twig', [
+        'form'=> $form->createView(),
+        'evenement' => $evenement,
+        'contact' => $contact,
+        ]);
+    }
+
+    /**
+     * @Route("/contact/organisateur/{idOrganisateur}/{idEvenement}", name="contactOrganisateurEvenement")
+     */
+    public function contactOrganisateurEvenement(Request $request, \Swift_Mailer $mailer , $idOrganisateur , $idEvenement , EvenementRepository $repositoryE , OrganisateurRepository $repositoryO)
+    {
+       $form = $this->createForm(ContactEvenementType::class);
+
+       $form->handleRequest($request);
+
+       $evenement = $repositoryE->find($idEvenement);
+
+       $contact = $repositoryO->find($idOrganisateur);
+
+       if ($form->isSubmitted() && $form->isValid()) 
+       {
+    
+        $contactFormData = $form->getData();
+
+        $message = (new \Swift_Message($evenement->getNom()))
+                ->setFrom($contactFormData['email'])
+                ->setTo($contact->getMail())
+                ->setBody(
+                   $contactFormData['contenu'],
+                   'text/html'
+                )
+            ;
+        
+        $mailer->send($message);
+
+        $this->addFlash('success', 'It sent!');
+
+        return $this->redirectToRoute('accueil');
+
+       }
+
+       return $this->render('site/contactOrganisateurEvenement.html.twig', [
         'form'=> $form->createView(),
         'evenement' => $evenement,
         'contact' => $contact,

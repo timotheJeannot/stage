@@ -69,8 +69,10 @@
 
                     <p> Nom : {{organisateur.nom}} </p>
                     <p> Site web : {{organisateur.siteWeb}} </p>
-                    <p> mail : {{organisateur.mail}} </p>
+                    {#<p> mail : {{organisateur.mail}} </p>#}
                     <img src="{{organisateur.image}}" alt="">
+                    <a href="{{path('contactOrganisateurEvenement' , {idOrganisateur : organisateur.id , idEvenement : evenement.id })}}" class="btn btn-primary">Contacter</a>
+                    <br><br>
 
                     {% set listeContact = 0 %}
 

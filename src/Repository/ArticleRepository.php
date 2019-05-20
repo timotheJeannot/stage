@@ -3,8 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Article;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Component\Form\Form;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
@@ -58,5 +59,33 @@ class ArticleRepository extends ServiceEntityRepository
                     ->setMaxResults(10)
                     ->getResult();
         
+    }
+
+    public function myFindAll()
+    {
+    
+        return $this->getEntityManager()
+                    ->createQuery(
+                        'Select a from App:Article a ORDER BY a.createdAt DESC'
+                    )
+                    ->getResult();
+        
+    }
+
+    public function trie(Form $form)
+    {
+        $formData = $form->getData();
+        if($formData['date'] )
+        {
+            $periode = $formData['periode'][0];
+            return $this->createQueryBuilder('a')
+                    ->where('a.createdAt >= :debut')
+                    ->setParameter('debut', $periode->getDebut())
+                    ->andWhere('a.createdAt <= :fin')
+                    ->setParameter('fin', $periode->getFin())
+                    ->orderBy('a.createdAt','DESC')
+                    ->getQuery()
+                    ->getResult();
+        }
     }
 }

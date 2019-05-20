@@ -56,12 +56,19 @@ class SiteController extends AbstractController
      */
     public function article(ArticleRepository $repository , Request $request )
     {
-		$articles = $repository->findAll();
-
 		$form = $this->createForm(FormTrieType::class);
 
+		$form->handleRequest($request);
+		if ($form->isSubmitted())// && $form->isValid()) 
+       {
+			$articles = $repository->trie($form);
+			return $this->render('site/article.html.twig', [
+				'articles'=> $articles,
+				'form' => $form->createView(),
+			 ]);
+	   }
 		
-
+	   $articles = $repository->myFindAll();
         return $this->render('site/article.html.twig', [
 		   'articles'=> $articles,
 		   'form' => $form->createView(),
@@ -77,31 +84,8 @@ class SiteController extends AbstractController
 		$form = $this->createForm(FormTrieType::class);
 
 		$form->handleRequest($request);
-		echo 'test0<br>';
 		if ($form->isSubmitted())// && $form->isValid()) 
        {
-			/*$formData = $form->getData();
-			echo 'test1<br>';
-			if($formData['date'] != null)
-			{
-				echo 'test2<br>';
-				dump($formData['periode']);
-				$evenements = $repository->findByIntervalleTemps1($formData['periode'][0]);
-				
-			}
-
-			if($formData['date2'] != null)
-			{
-				echo'test3<br>';
-				$evenements = $repository->findByIntervalleTemps2($formData['periode2'][0]);
-			}*/
-
-			/*if($formData['domaine'])
-			{
-				echo'test42<br>';
-				dump($formData['listeFM']);
-				
-			}*/
 
 			$evenements = $repository->trie($form);
 
@@ -111,21 +95,10 @@ class SiteController extends AbstractController
 				
 			 ]);
 
-			/*if($formData['domaine'])
-			{
-				$evenements = $repository->findBy([
-					'domaine'
-				]);
-			}*/
-
-			/*return $this->render('site/evenement.html.twig', [
-				'evenements'=> $evenements,
-				'form' => $form->createView(),
-				
-			 ]);*/
+			
 
 	   }
-	   $evenements = $repository->findAll();
+	   $evenements = $repository->myFindAll();
 
         return $this->render('site/evenement.html.twig', [
 		   'evenements'=> $evenements,

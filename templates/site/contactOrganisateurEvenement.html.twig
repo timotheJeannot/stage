@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block body %}
+<h1> Formulaire d'envoie de mail à {{contact.nom}} </h1>
+
+<p> Le sujet du mail sera celui de l'événement : {{evenement.nom}} <p>
+
+{#
+    https://codereviewvideos.com/course/symfony-4-beginners-tutorial/video/symfony-4-contact-form
+
+    https://codereviewvideos.com/course/symfony-4-beginners-tutorial/video/send-email-symfony-4
+#}
+    {% form_theme form 'bootstrap_4_layout.html.twig' %} 
+    {{form_start(form)}}
+    {{form_errors(form)}}
+    {{form_row(form)}}
+    <button type="submit" class="btn btn-success" >Envoyer</button>
+    {{form_end(form)}}
+
+{% endblock %}

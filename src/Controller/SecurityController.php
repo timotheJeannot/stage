@@ -97,7 +97,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/profile", name="profile")
      */
-    public function profile(Request $request , ObjectManager $manager , UserPasswordEncoderInterface $passwordEncoder)
+    public function profile(Request $request , ObjectManager $manager , UserPasswordEncoderInterface $passwordEncoder )
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
@@ -116,6 +116,37 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('accueil');
         }
 
+        return $this->render("security/form_cm.html.twig",[
+            'form' => $form->createView(),
+            'editmode' => true
+        ]);
+
+    }
+
+    /**
+     * @Route("/modification/{id}", name="modification_cm")
+     */
+    public function modification(Request $request , ObjectManager $manager , UserPasswordEncoderInterface $passwordEncoder , UtilisateurRepository $repo , $id)
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $user = $repo->findOneBy([
+            'id' => $id
+        ]);
+
+        $form = $this->createForm(FormUtilisateurType::class,$user);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+		{
+            $user->setPassword($passwordEncoder->encodePassword($user,$user->getPassword()));
+            $manager->persist($user);
+            $manager->flush();
+
+            return $this->redirectToRoute('accueil');
+        }
+        
         return $this->render("security/form_cm.html.twig",[
             'form' => $form->createView(),
             'editmode' => true
