@@ -1,6 +1,13 @@
 
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+
+	<link href="../../assets/css/blog-home.css" type="text/css" rel="stylesheet" />
+	<link href="../../assets/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+
+{% endblock stylesheets %}
+
 {% block title %}Evénements{% endblock %}
 
 {% block body %}
@@ -40,27 +47,36 @@
 
 	<br>
 	<br>
+	<div class="row" >
+		{% for evenement in evenements %}
 
-	{% for evenement in evenements %}
+		
+			<div class="col-lg-5">
+				
+					<h2 class="text-primary"> {{evenement.nom}} </h2>
+					<h3>Famille de métier : {{evenement.domaine}}</h3>
+				{#<div class="metadata"> Publié le {{evenement.PublishedAt| date ('d/m/Y')}} à {{evenement.PublishedAt | date('H:i')}}
+				</div>#}
+				
+					<img src="{{evenement.image}}" class="img-fluid"   alt="">
 
-	<article>
+					<p class =>{{evenement.description}} </p>
 
-		<h2> {{evenement.nom}} </h2>
-		{#<div class="metadata"> Publié le {{evenement.PublishedAt| date ('d/m/Y')}} à {{evenement.PublishedAt | date('H:i')}}
-		</div>#}
-		<div class="Content">
-			<img src="{{evenement.image}}" alt="">
+					<a href="{{path('show_evenement' , {id : evenement.id})}}" class="btn btn-primary"> Lire la suite </a>
+				
+			</div>	
+			{#<div class="col-lg-1 row-lg-1" style="background:#bfd70e;
+  border-radius:50%;
+  border:2px solid #679403; ">
+			</div>#}
+			<div class="col-lg-7">
+			</div>
 
-			<p>{{evenement.description}} </p>
 
-			<a href="{{path('show_evenement' , {id : evenement.id})}}" class="btn btn-primary"> Lire la suite </a>
-		</div>
 
-	</article>
+		{% endfor %}
+	</div>	
 </section>
-
-	{% endfor %}
-
 	<script>
 
 		jQuery(document).ready(function()
