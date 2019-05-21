@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\IntervalleTemps;
 use App\Form\FormIntervalleTempsType;
+use App\Form\IntervalleTempsTrieType;
 use App\Form\FormEvenementDomaineType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -33,7 +35,7 @@ class FormTrieType extends AbstractType
             ])
             ->add('periode',CollectionType::class, 
 			[
-            'entry_type' => FormIntervalleTempsType::class,
+            'entry_type' => IntervalleTempsTrieType::class,
 			'entry_options' => ['label' => false],
             'allow_add' => true,
             'allow_delete'  => true,
@@ -44,8 +46,10 @@ class FormTrieType extends AbstractType
             ])
             ->add('periode2',CollectionType::class, 
 			[
-            'entry_type' => FormIntervalleTempsType::class,
-			'entry_options' => ['label' => false],
+            'entry_type' => IntervalleTempsTrieType::class,
+            'entry_options' => ['label' => false],
+            //'data_class' =>  IntervalleTemps::class,
+            //'auto_initialize' => true,
             'allow_add' => true,
             'allow_delete'  => true,
             ])

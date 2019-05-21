@@ -42,8 +42,8 @@ class IntervalleTemps
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
-        $this->debut = new \DateTime();
-        $this->fin = new \DateTime();
+        $this->debut = new \DateTime('today',new \DateTimeZone('Europe/Paris'));
+        $this->fin = new \DateTime('today',new \DateTimeZone('Europe/Paris'));
     }
 
     public function getId(): ?int

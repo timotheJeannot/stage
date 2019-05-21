@@ -72,6 +72,19 @@ class ArticleRepository extends ServiceEntityRepository
         
     }
 
+    public function userMyFindAll($id)
+    {
+    
+        return $this->createQueryBuilder('a')
+                    ->join('a.utilisateur','u','WITH')
+                    ->where('u.id = :idUser')
+                    ->setParameter('idUser',$id)
+                    ->orderBy('a.createdAt','DESC')
+                    ->getQuery()
+                    ->getResult();
+        
+    }
+
     public function trie(Form $form)
     {
         $formData = $form->getData();
@@ -87,5 +100,29 @@ class ArticleRepository extends ServiceEntityRepository
                     ->getQuery()
                     ->getResult();
         }
+
+        return myFindAll();
+    }
+
+    public function trieUser(Form $form,$id)
+    {
+        $formData = $form->getData();
+        if($formData['date'] )
+        {
+            $periode = $formData['periode'][0];
+            return $this->createQueryBuilder('a')
+                    ->join('a.utilisateur','u','WITH')
+                    ->where('a.createdAt >= :debut')
+                    ->setParameter('debut', $periode->getDebut())
+                    ->andWhere('a.createdAt <= :fin')
+                    ->setParameter('fin', $periode->getFin())
+                    ->andWhere('u.id = :idUser')
+                    ->setParameter('idUser',$id)
+                    ->orderBy('a.createdAt','DESC')
+                    ->getQuery()
+                    ->getResult();
+        }
+
+        return userMyFindAll($id);
     }
 }

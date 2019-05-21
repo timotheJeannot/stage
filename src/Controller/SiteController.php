@@ -1446,34 +1446,76 @@ class SiteController extends AbstractController
 	/**
 	 *  @Route("/mes_publications_articles",name="mes_publications_articles")
 	 */
-	 public function mes_publications_articles(ArticleRepository $repository)
+	 public function mes_publications_articles(ArticleRepository $repository , Request $request)
 	 {
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-		$articles = $repository->findBy([
-			"utilisateur"=>$this->getUser(),
-		]);
+		$form = $this->createForm(FormTrieType::class);
+		dump($form);
 
-		return $this->render('site/article.html.twig', [
-			'articles'=> $articles
-		 ]);
+		/*$formIntervalleTemp = $this->createForm(FormIntervalleTempsType::class);
+		$form*/
+
+		$form->handleRequest($request);
+		if ($form->isSubmitted())// && $form->isValid()) 
+       {
+			$articles = $repository->trieUser($form,$this->getUser()->getId());
+			return $this->render('site/article.html.twig', [
+				'articles'=> $articles,
+				'form' => $form->createView(),
+			 ]);
+	   }
+		
+	   $articles = $repository->userMyFindAll($this->getUser()->getId());
+        return $this->render('site/article.html.twig', [
+		   'articles'=> $articles,
+		   'form' => $form->createView(),
+        ]);
 
 	 }
 
 	 /**
 	 *  @Route("/mes_publications_evenements",name="mes_publications_evenements")
 	 */
-	public function mes_publications_evenements(EvenementRepository $repository)
+	public function mes_publications_evenements(EvenementRepository $repository , Request $request)
 	{
 	   $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-	   $evenements = $repository->findBy([
+	   /*$evenements = $repository->findBy([
 		   "utilisateur"=>$this->getUser(),
 	   ]);
 
 	   return $this->render('site/evenement.html.twig', [
 		   'evenements'=> $evenements
-		]);
+		]);*/
+
+		//dump($this->getUser());
+		//dump($this->getUser()->getId());
+
+		$form = $this->createForm(FormTrieType::class);
+
+		$form->handleRequest($request);
+		if ($form->isSubmitted())// && $form->isValid()) 
+       {
+
+			$evenements = $repository->trieUser($form,$this->getUser()->getId());
+
+			return $this->render('site/evenement.html.twig', [
+				'evenements'=> $evenements,
+				'form' => $form->createView(),
+				
+			 ]);
+
+			
+
+	   }
+	   $evenements = $repository->userMyFindAll($this->getUser()->getId());
+
+        return $this->render('site/evenement.html.twig', [
+		   'evenements'=> $evenements,
+		   'form' => $form->createView(),
+		   
+        ]);
 
 	}
 
