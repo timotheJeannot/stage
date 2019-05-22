@@ -153,7 +153,7 @@ class CalendarListener
                     
                     case "Métiers du numérique et de la transition énergétique":
                         $backgroundColor = '#0CF950';
-                        $borderColor = '0CF950';
+                        $borderColor = '#0CF950';
                         break ;
                     
                      case "Autre":
