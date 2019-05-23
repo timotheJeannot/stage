@@ -3,12 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Evenement;
+use App\Form\FormTrieType;
 use App\Form\EvenementType;
 use App\Repository\EvenementRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 //https://github.com/tattali/CalendarBundle/blob/HEAD/src/Resources/doc/doctrine-crud.md#full-listener
 

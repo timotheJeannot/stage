@@ -7,7 +7,65 @@
 	<article>
 
 		<h2 class="text-primary"> {{evenement.nom}} </h2>
-		<h3 class="text-primary"> {{evenement.domaine}} </h3>
+		{% if evenement.domaine == 'Autre' %}
+			<h3 class="text-primary">Famille de métier : <font color= "red">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers du numérique et de la transition énergétique' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#0CF950">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers de la réalisation de produits mécaniques' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#f7c4e3">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers de la maintenance' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#000000">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == "Métiers du pilotage d'installations automatisées" %}
+			<h3 class="text-primary">Famille de métier : <font color= "#17661d">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers du bois' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#582900">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == "Métiers de l'hôtellerie-restauration" %}
+			<h3 class="text-primary">Famille de métier : <font color= "#B1DBEC">{{evenement.domaine}}</font></h3>
+		{% endif %}
+	
+		{% if evenement.domaine == "Métiers de l'aéronautique" %}
+			<h3 class="text-primary">Famille de métier : <font color= "blue">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers de la beauté et du bien-être' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#bf2caf">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == "Métiers de l'alimention" %}
+			<h3 class="text-primary">Famille de métier : <font color= "#F9B308">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers des études et de la modélisation numérique du bâtiment' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#535353">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers des industries graphiques et de la communication' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#FF4D04">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers de la gestion administrative, du transport et de la logistique' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#9929E7">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers de la relation client' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#4BECE7">{{evenement.domaine}}</font></h3>
+		{% endif %}
+
+		{% if evenement.domaine == 'Métiers de la construction durable , du bâtiment et des travaux publics' %}
+			<h3 class="text-primary">Famille de métier : <font color= "#B6B6B6">{{evenement.domaine}}</font></h3>
+		{% endif %}
 		<div class="metadata"> Publié le {{evenement.PublishedAt| date ('d/m/y')}} à {{evenement.PublishedAt | date('H:i')}}
 		</div>
 		<div class="Content">
