@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Lieu;
 use App\Entity\Article;
 use App\Entity\Contact;
+use App\Entity\Inscrit;
 use App\Entity\Evenement;
 use App\Form\FormLieuType;
 use App\Form\FormTrieType;
@@ -12,6 +13,7 @@ use App\Entity\ListeContact;
 use App\Entity\Organisateur;
 use App\Form\FormArticleType;
 use App\Form\FormContactType;
+use App\Form\FormInscritType;
 use App\Entity\IntervalleTemps;
 use App\Form\FormEvenementType;
 use App\Form\FormOrganisateurType;
@@ -19,6 +21,7 @@ use App\Repository\LieuRepository;
 use App\Form\FormIntervalleTempsType;
 use App\Repository\ArticleRepository;
 use App\Repository\ContactRepository;
+use App\Repository\InscritRepository;
 use App\Repository\EvenementRepository;
 use App\Repository\ListeContactRepository;
 use App\Repository\OrganisateurRepository;
@@ -1517,6 +1520,56 @@ class SiteController extends AbstractController
 		   
         ]);
 
+	}
+
+	/**
+	 *  @Route("/inscription/{id}",name="inscription")
+	 */
+	public function inscription(EvenementRepository $repository , Request $request , $id , InscritRepository $repositoryI,ObjectManager $manager)
+	{
+		$inscrit = new Inscrit();
+
+		$form = $this->createForm(FormInscritType::class,$inscrit);
+
+		$form->handleRequest($request);
+
+		$evenement = $repository->find($id);
+		$isInscrit = false;
+
+		if ($form->isSubmitted() && $form->isValid()) 
+       {
+		   // On va juste faire en sorte de ne pas créer de doublons d'inscrit et vérifier que
+		   //l'inscrit ne s'est pas déja inscrit à l'événement
+		   	$inscrit2 = $repositoryI->findOneBy([
+			"nom"=>$inscrit->getNom(),
+			"prenom"=>$inscrit->getPrenom(),
+			"mail"=>$inscrit->getMail(),
+			//"categorie"=>$inscrit->getCategorie()
+			]);
+			if($inscrit2 != null)
+			{
+				$inscrit = $inscrit2;
+			}
+
+			// on vérifie que l'évenement associé à $id ne contient l'id de $inscrit
+			$evenement2 = $repository->InscritFind($inscrit->getId(),$id);
+			if($evenement2 == null)
+			{
+				$evenement->addInscrit($inscrit);
+				$manager->persist($inscrit);
+				$manager->persist($evenement);
+				$manager->flush();
+				return $this->redirectToRoute('accueil');
+			}
+			// déja inscrit , il faut renvoyer un message d'erreur
+			$isInscrit = true;
+
+	   }
+		return $this->render('site/form_inscription.html.twig', [
+			'form' => $form->createView(),
+			'evenement' => $evenement,	
+			'isInscrit' =>$isInscrit,	
+		 ]);
 	}
 
 

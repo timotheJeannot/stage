@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulaire d'inscription{% endblock %}
+
+{% block body %}
+
+    {% if isInscrit %}
+
+        <h1 style="color:red"> Vous êtes déja inscrit à cette événement </h1>
+
+    {% endif %}
+
+    <h1 class="text-primary"> Inscription à l'événement {{evenement.nom}} </h1>
+
+    {% form_theme form 'bootstrap_4_layout.html.twig' %} 
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{form_row(form.nom)}}
+    {{form_row(form.prenom)}}
+    {{form_row(form.mail)}}
+    {{form_row(form.categorie)}}
+    <button type="submit" class="btn btn-success" >S'inscrire</button>
+    {{form_end(form)}}
+
+{% endblock body %}

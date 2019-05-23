@@ -517,4 +517,19 @@ class EvenementRepository extends ServiceEntityRepository
         // Rien n'a été cocher on retourne un userMyFindAll()
         return $this->userMyFindAll($id);
     }
+
+    public function InscritFind($idInscrit,$idEvenement)
+    {
+    
+        
+                return $this->createQueryBuilder('e')
+                ->join('e.inscrits','i','WITH')
+                ->where('i.id = :idInscrit')
+                ->setParameter('idInscrit',$idInscrit)
+                ->andWhere('e.id = :idEvenement')
+                ->setParameter('idEvenement',$idEvenement)
+                ->getQuery()
+                ->getResult();
+        
+    }
 }

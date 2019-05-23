@@ -40,6 +40,8 @@
 
         {% for evenement in article.evenements %}
 
+            <hr>
+
             <h4 class="text-primary">{{evenement.nom}} </h4>
             {% if evenement.domaine == 'Autre' %}
 				<h5 class="text-primary">Famille de métier : <font color= "red">{{evenement.domaine}}</font></h5>
@@ -105,6 +107,8 @@
              <img src="{{evenement.image}}" alt="">   
 
             <p>{{evenement.description}}</p>
+
+            <a href="{{path('inscription' , {id : evenement.id})}}" class="btn btn-primary">S'inscrire</a>
 
             <div class="Content">
                 <h4 class="text-primary"> Dates </h4>
