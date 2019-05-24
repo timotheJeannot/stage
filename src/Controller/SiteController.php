@@ -1129,6 +1129,23 @@ class SiteController extends AbstractController
 					
 				}
 
+				foreach($evenement->getQuestions() as $key )
+				{
+					$errors = $validator->validate($key);
+					if (count($errors) > 0) {
+
+						return $this->render('/site/form_evenement.html.twig'	,[
+							'formEvenement'=> $form2->createView() ,
+							'editmode' => $editmode, 
+						   'errors' => $errors ,
+						   'erreurDejaPris' =>$erreurDejaPris,
+						   'erreurPeriode' => $erreurPeriode ,
+							]);
+					}
+					$key->setEvenement($evenement);
+					$manager->persist($key);
+				}
+
 				
 				foreach($evenement->getOrganisateurs() as $key )
 				{
@@ -1325,7 +1342,6 @@ class SiteController extends AbstractController
 				$manager->persist($user);
 				$manager->flush();
 				return $this->redirectToRoute('evenement');
-				//return $this->redirectToRoute('blog_show',['id' => $article->getId()]);*/
 			}
 		}
 		return $this->render('/site/form_evenement.html.twig'	,[

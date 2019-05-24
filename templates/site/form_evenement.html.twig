@@ -125,6 +125,16 @@
 		{% endfor %}
 	</ul>
 
+    <ul class="questions" data-prototype="{{ form_widget(formEvenement.questions.vars.prototype)|e('html_attr') }}">
+
+        {% for question in formEvenement.questions %}
+
+            {{form_row(question.contenu)}}
+
+        {% endfor %}
+
+    </ul>
+
 
     {# https://stackoverflow.com/questions/43801741/how-to-create-3-levels-form-with-data-prototypes-symfony-2-8 #}
     {#<h4 class="no-margin-top has-divider text-highlight">Compétences</h4>
@@ -192,6 +202,9 @@
         /*var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
         var $newLinkLi3 = $('<li></li>').append($addContactButton);*/
 
+        var $collectionHolderQuestion;
+        var $addQuestionButton = $('<button type="button" class="btn btn-success add_question_link">Ajouter une question</button>');
+        var $newLinkQuestion = $('<li></li>').append($addQuestionButton);
 
 
         jQuery(document).ready(function() {
@@ -203,12 +216,16 @@
             $collectionHolder3 = $(' ul.contacts');
             //console.log($(' ul.contacts:eq(0)'));
             //console.log($collectionHolder3);
+            $collectionHolderQuestion = $('ul.questions');
+            console.log('test de la mort');
+            console.log($collectionHolderQuestion);
             
 
 
             // add the "add a periode" anchor and li to the periode ul
             $collectionHolder.append($newLinkLi);
             $collectionHolder2.append($newLinkLi2);
+            $collectionHolderQuestion.append($newLinkQuestion);
            // $collectionHolder3.append($newLinkLi3);
             //$collectionHolder4.append($newLinkLi4);
 
@@ -216,6 +233,7 @@
             // index when inserting a new item (e.g. 2)
             $collectionHolder.data('index', $collectionHolder.find(':input').length);
             $collectionHolder2.data('index', $collectionHolder2.find(':input').length);
+            $collectionHolderQuestion.data('index', $collectionHolderQuestion.find(':input').length);
            
 
             var tab1 =[];
@@ -302,6 +320,11 @@
             $addPeriodeButton.on('click', function(e) {
                 // add a new periode form (see next code block)
                 addForm($collectionHolder, $newLinkLi);
+            });
+
+            $addQuestionButton.on('click', function(e) {
+                // add a new periode form (see next code block)
+                addForm($collectionHolderQuestion, $newLinkQuestion);
             });
 
             $addOrganisateurButton.on('click', function(e) {

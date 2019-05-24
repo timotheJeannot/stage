@@ -144,6 +144,16 @@
 				{% endfor %}
 			</ul>
 
+			{#<ul class="questions" data-prototype="{{ form_widget(evenement.questions.vars.prototype)|e('html_attr') }}">
+
+				{% for question in evenement.questions %}
+
+					{{form_row(question.contenu)}}
+
+				{% endfor %}
+
+			</ul>#}
+
 			{% if test !=0 %}
 
 				{{form_row(evenement.lieu)}}

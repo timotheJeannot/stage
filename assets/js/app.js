@@ -7,13 +7,15 @@
 
 // any CSS you require will output into a single css file (app.css in this case)
 require('../css/app.css');
-//require('assets/css/app.');
+//require('../css/blog-home.css');
+//require('../css/bootstrap.min.css');
+
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to require it.
- const $ = require('jquery');
+ //const $ = require('jquery');
  // this "modifies" the jquery module: adding behavior to it
 // the bootstrap module doesn't export/return anything
-require('bootstrap');
+//require('bootstrap');
 
 // or you can include specific pieces
 // require('bootstrap/js/dist/tooltip');

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Evenement;
+use App\Form\FormQuestionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -55,6 +56,12 @@ class FormEvenementType extends AbstractType
             
             ])
             ->add('lieu',FormLieuType::class)
+            ->add('questions', CollectionType::class, 
+			[
+            'entry_type' => FormQuestionType::class,
+			'entry_options' => ['label' => false],
+			'allow_add' => true,
+			])
 			 // ->add('PublishedAt')
         ;
     }
