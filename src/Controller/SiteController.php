@@ -6,6 +6,7 @@ use App\Entity\Lieu;
 use App\Entity\Article;
 use App\Entity\Contact;
 use App\Entity\Inscrit;
+use App\Entity\Question;
 use App\Entity\Evenement;
 use App\Form\FormLieuType;
 use App\Form\FormTrieType;
@@ -930,6 +931,47 @@ class SiteController extends AbstractController
 			$evenement->addOrganisateur($organisateur);
 
 			$evenement->addPeriode($periode1);
+
+			// on va rentrer les questions qui sont posées à chaque événements pour le formulaire satisfaction
+			// voir le mail pour le type de réponse (choix ou champ libre) + papier
+
+			$q1 = New Question();
+			$q1->setContenu("Comment définiriez-vous cette action ? ");
+			$evenement->addQuestion($q1);
+			
+			$q2 =  New Question();
+			$q2->setContenu("Quels en ont été les temps forts ?");
+			$evenement->addQuestion($q2);
+
+			$q3 =  New Question();
+			$q3->setContenu("Y a-t-il eu des points faibles ? Lesquels ?");
+			$evenement->addQuestion($q3);
+
+			$q4 = New Question(); 
+			$q4->setContenu("Quelles sont vos suggestions ? ");
+			$evenement->addQuestion($q4);
+
+			$q5 = New Question();
+			$q5->setContenu("Remarques éventuelles");
+			$evenement->addQuestion($q5);
+
+			$q6 = New Question();
+			$q6->setContenu("Souhaiteriez-vous être associé-e à un dispositif comparable l’année suivante ?");
+			$evenement->addQuestion($q6);
+
+			$q7 = New Question();
+			$q7->setContenu("Quel est votre sexe ?");
+			$evenement->addQuestion($q7);
+
+			$q8 = New Question();
+			$q8->setContenu("À quel tranche d'âge appartenez-vous");
+			$evenement->addQuestion($q8);
+
+			$q9 = New Question();
+			$q9->setContenu("Departement de scolarité ou d'étude");
+			$evenement->addQuestion($q9);
+
+			
 
 			$editmode = false;
 
