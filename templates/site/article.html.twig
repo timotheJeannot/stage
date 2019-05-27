@@ -5,20 +5,21 @@
 {% block body %}
 
 <section class="articles">
-
+	{#
 	<br>
 	<br>
 	<h3> Trier par </h3>
 	{% form_theme form 'bootstrap_4_layout.html.twig' %} 
     {{form_start(form)}}
-    {#{{form_errors(form)}}#}
+
     {{form_row(form.date,{'id' : 'checkDate'})}}
 	<ul class="periode"  data-prototype="{{ form_widget(form.periode.vars.prototype)|e('html_attr') }}">
 		
 	</ul>
-    <button type="submit" class="btn btn-success" >Trier</button>
+    <button type="submit" class="btn btn-success" >Trier</button>#}
+	
     {#{{form_end(form)}}#}
-	<br>
+	{#<br>
 	<br>
 	{% for article in articles %}
 	<hr>
@@ -36,9 +37,68 @@
 		</div>
 
 	</article>
-</section>
 
-	{% endfor %}
+
+	{% endfor %}#}
+	<br>
+	<br>
+	<div class="row">
+
+            <!-- Blog Entries Column -->
+            <div class="col-md-8">
+
+                {% for article in articles %}
+
+                    
+                    <article>
+
+                        <div class="card mb-4">
+							{% if article.image is null %}
+								<img class="card-img-top" src="http://placehold.it/750x350" alt="">
+							{% else %}
+                            	<img class="card-img-top" src="{{article.image}}" alt="">
+							{% endif %}
+                            <div class="card-body">
+                                <h2 class="card-title">{{article.titre}}</h2>
+                                <p class="card-text">{{article.contenu}}</p>
+                                 <a href="{{path('show_article' , {id : article.id})}}" class="btn btn-primary"> Lire la suite </a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Ecrit le {{article.createdAt| date ('d/m/y')}} à {{article.createdAt | date('H:i')}}
+                            </div>
+                        </div>
+
+                    </article>
+                {% endfor %}
+
+            </div>
+
+            <!-- Sidebar Widgets Column -->
+      <div class="col-md-4">
+
+        <!-- Search Widget -->
+        <div class="card my-4">
+          <h5 class="card-header text-primary">Trier par</h5>
+          <div class="card-body">
+            <div class="input-group">
+				{% form_theme form 'bootstrap_4_layout.html.twig' %} 
+				{{form_start(form)}}
+				{#{{form_errors(form)}}#}
+				{{form_row(form.date,{'id' : 'checkDate'})}}
+				<ul class="periode"  data-prototype="{{ form_widget(form.periode.vars.prototype)|e('html_attr') }}">
+					
+				</ul>
+				<button type="submit" class="btn btn-success" >Trier</button>            
+            </div>
+          </div>
+        </div>
+
+        
+
+      </div>
+
+    </div>    
+</section>
 
 	<script>
 

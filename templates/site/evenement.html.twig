@@ -3,9 +3,9 @@
 
 {% block stylesheets %}
 
-	<link rel="stylesheet" href="../../public/css/blog-home.css" />
-	<link rel="stylesheet" href="../../public/css/bootstrap.min.css"/>
-	{#<link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}"  />#}
+	{#<link rel="stylesheet" href="../../public/css/blog-home.css" />
+	<link rel="stylesheet" href="../../public/css/bootstrap.min.css"/>#}
+	
 
 {% endblock stylesheets %}
 
@@ -17,126 +17,217 @@
 
 	<br>
 	<br>
-	<h3 class="text-primary"> Trier par </h3>
-	{% form_theme form 'bootstrap_4_layout.html.twig' %} 
-    {{form_start(form)}}
-    {#{{form_errors(form)}}} probléme avec le jeton csrf , voir ca au plus vite #}
+	<div class="row">
 
-	{{form_row(form.date,{'id' : 'checkDate'})}}
-	<ul class="periode"  data-prototype="{{ form_widget(form.periode.vars.prototype)|e('html_attr') }}">
-		
-	</ul>
-	{{form_row(form.date2,{'id' : 'checkDate2'})}}
-	<ul class="periode2"  data-prototype="{{ form_widget(form.periode2.vars.prototype)|e('html_attr') }}">
-		
-	</ul>
+        <!-- Blog Entries Column -->
+    	<div class="col-md-8">
+			{% for evenement in evenements %}
+				
+				<article>
 
-	{{form_row(form.domaine,{'id' : 'checkDomaine'})}}
-	<ul class="listeFm"  data-prototype="{{ form_widget(form.listeFM.vars.prototype)|e('html_attr') }}">
-		
-	</ul>
-	{#{{form_row(form.listeFM, {'attr': {'hidden' : 'true'}})}}#}
-	{#<ul data-prototype = "{{ form_widget(form.children.listeFM.vars.prototype)|e('html_attr') }}">
+                    <div class="card mb-4">
+						<div class="card-header ">
+							{% if evenement.domaine == 'Autre' %}
+								<h4 class="text-primary">Famille de métier : <font color= "red">{{evenement.domaine}}</font></h4>
+							{% endif %}
 
-	ne fonctionne pas
+							{% if evenement.domaine == 'Métiers du numérique et de la transition énergétique' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#0CF950">{{evenement.domaine}}</font></h4>
+							{% endif %}
 
-	on va essayer de faire le form_row(form.listeFm) dans le javascript
+							{% if evenement.domaine == 'Métiers de la réalisation de produits mécaniques' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#f7c4e3">{{evenement.domaine}}</font></h4>
+							{% endif %}
 
-	</ul>#}
-    <button type="submit" class="btn btn-success" >Trier</button>
-    {#{{form_end(form)}}#}
+							{% if evenement.domaine == 'Métiers de la maintenance' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#000000">{{evenement.domaine}}</font></h4>
+							{% endif %}
 
-	<br>
-	<br>
-	{#<div class="row" >#}
-		{% for evenement in evenements %}
-			<div class = " card mb-4">
-		
-				<div class="col-lg-5">
-					
-						<h2 class="text-primary"> {{evenement.nom}} </h2>
-						
-						{% if evenement.domaine == 'Autre' %}
-							<h4 class="text-primary">Famille de métier : <font color= "red">{{evenement.domaine}}</font></h4>
-						{% endif %}
+							{% if evenement.domaine == "Métiers du pilotage d'installations automatisées" %}
+								<h4 class="text-primary">Famille de métier : <font color= "#17661d">{{evenement.domaine}}</font></h4>
+							{% endif %}
 
-						{% if evenement.domaine == 'Métiers du numérique et de la transition énergétique' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#0CF950">{{evenement.domaine}}</font></h4>
-						{% endif %}
+							{% if evenement.domaine == 'Métiers du bois' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#582900">{{evenement.domaine}}</font></h4>
+							{% endif %}
 
-						{% if evenement.domaine == 'Métiers de la réalisation de produits mécaniques' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#f7c4e3">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == 'Métiers de la maintenance' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#000000">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == "Métiers du pilotage d'installations automatisées" %}
-							<h4 class="text-primary">Famille de métier : <font color= "#17661d">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == 'Métiers du bois' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#582900">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == "Métiers de l'hôtellerie-restauration" %}
-							<h4 class="text-primary">Famille de métier : <font color= "#B1DBEC">{{evenement.domaine}}</font></h4>
-						{% endif %}
-		
-						{% if evenement.domaine == "Métiers de l'aéronautique" %}
-							<h4 class="text-primary">Famille de métier : <font color= "blue">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == 'Métiers de la beauté et du bien-être' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#bf2caf">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == "Métiers de l'alimention" %}
-							<h4 class="text-primary">Famille de métier : <font color= "#F9B308">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == 'Métiers des études et de la modélisation numérique du bâtiment' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#535353">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == 'Métiers des industries graphiques et de la communication' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#FF4D04">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == 'Métiers de la gestion administrative, du transport et de la logistique' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#9929E7">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == 'Métiers de la relation client' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#4BECE7">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						{% if evenement.domaine == 'Métiers de la construction durable , du bâtiment et des travaux publics' %}
-							<h4 class="text-primary">Famille de métier : <font color= "#B6B6B6">{{evenement.domaine}}</font></h4>
-						{% endif %}
-
-						
-
-
-					{#<div class="metadata"> Publié le {{evenement.PublishedAt| date ('d/m/Y')}} à {{evenement.PublishedAt | date('H:i')}}
-					</div>#}
-					
-						<img src="{{evenement.image}}" class="img-fluid"   alt="">
-
-						<p class =>{{evenement.description}} </p>
-
-						<a href="{{path('show_evenement' , {id : evenement.id})}}" class="btn btn-primary"> Lire la suite </a>
-					
-				</div>	
-			</div>	
+							{% if evenement.domaine == "Métiers de l'hôtellerie-restauration" %}
+								<h4 class="text-primary">Famille de métier : <font color= "#B1DBEC">{{evenement.domaine}}</font></h4>
+							{% endif %}
 			
-			<div class="col-lg-7">
-			</div>
+							{% if evenement.domaine == "Métiers de l'aéronautique" %}
+								<h4 class="text-primary">Famille de métier : <font color= "blue">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la beauté et du bien-être' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#bf2caf">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == "Métiers de l'alimention" %}
+								<h4 class="text-primary">Famille de métier : <font color= "#F9B308">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers des études et de la modélisation numérique du bâtiment' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#535353">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers des industries graphiques et de la communication' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#FF4D04">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la gestion administrative, du transport et de la logistique' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#9929E7">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la relation client' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#4BECE7">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la construction durable , du bâtiment et des travaux publics' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#B6B6B6">{{evenement.domaine}}</font></h4>
+							{% endif %}
+						</div>
+						{% if evenement.image is null %}
+							<img class="card-img-top" src="http://placehold.it/750x350" alt="">
+						{% else %}
+                        <img class="card-img-top" src="{{evenement.image}}" alt="">
+						{% endif %}
+                        <div class="card-body">
+                            <h2 class="card-title">{{evenement.nom}}</h2>
+                            <p class="card-text">{{evenement.description}}</p>
+                            <a href="{{path('show_evenement' , {id : evenement.id})}}" class="btn btn-primary"> Lire la suite </a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Ecrit le {{evenement.PublishedAt| date ('d/m/y')}} à {{evenement.PublishedAt | date('H:i')}}
+                        </div>
+                    </div>
+
+                </article>
+
+				
+							{#
+							
+							{% if evenement.domaine == 'Autre' %}
+								<h4 class="text-primary">Famille de métier : <font color= "red">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers du numérique et de la transition énergétique' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#0CF950">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la réalisation de produits mécaniques' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#f7c4e3">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la maintenance' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#000000">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == "Métiers du pilotage d'installations automatisées" %}
+								<h4 class="text-primary">Famille de métier : <font color= "#17661d">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers du bois' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#582900">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == "Métiers de l'hôtellerie-restauration" %}
+								<h4 class="text-primary">Famille de métier : <font color= "#B1DBEC">{{evenement.domaine}}</font></h4>
+							{% endif %}
+			
+							{% if evenement.domaine == "Métiers de l'aéronautique" %}
+								<h4 class="text-primary">Famille de métier : <font color= "blue">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la beauté et du bien-être' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#bf2caf">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == "Métiers de l'alimention" %}
+								<h4 class="text-primary">Famille de métier : <font color= "#F9B308">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers des études et de la modélisation numérique du bâtiment' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#535353">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers des industries graphiques et de la communication' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#FF4D04">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la gestion administrative, du transport et de la logistique' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#9929E7">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la relation client' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#4BECE7">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la construction durable , du bâtiment et des travaux publics' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#B6B6B6">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							
+
+
+		
+						
+							<img src="{{evenement.image}}" class="img-fluid"   alt="">
+
+							<p class =>{{evenement.description}} </p>
+
+							<a href="{{path('show_evenement' , {id : evenement.id})}}" class="btn btn-primary"> Lire la suite </a>#}
+						
+					
+				
 
 
 
-		{% endfor %}
+			{% endfor %}			
+		</div>
+
+		<!-- Sidebar Widgets Column -->
+      <div class="col-md-4">
+
+        <!-- Search Widget -->
+        <div class="card my-4">
+          <h5 class="card-header text-primary">Trier par</h5>
+          <div class="card-body">
+            <div class="input-group">
+
+				{% form_theme form 'bootstrap_4_layout.html.twig' %} 
+				{{form_start(form)}}
+				{#{{form_errors(form)}}} probléme avec le jeton csrf , voir ca au plus vite #}
+
+				{{form_row(form.date,{'id' : 'checkDate'})}}
+				<ul class="periode"  data-prototype="{{ form_widget(form.periode.vars.prototype)|e('html_attr') }}">
+					
+				</ul>
+				{{form_row(form.date2,{'id' : 'checkDate2'})}}
+				<ul class="periode2"  data-prototype="{{ form_widget(form.periode2.vars.prototype)|e('html_attr') }}">
+					
+				</ul>
+
+				{{form_row(form.domaine,{'id' : 'checkDomaine'})}}
+				<ul class="listeFm"  data-prototype="{{ form_widget(form.listeFM.vars.prototype)|e('html_attr') }}">
+					
+				</ul>
+				{#{{form_row(form.listeFM, {'attr': {'hidden' : 'true'}})}}#}
+				{#<ul data-prototype = "{{ form_widget(form.children.listeFM.vars.prototype)|e('html_attr') }}">
+
+				ne fonctionne pas
+
+				on va essayer de faire le form_row(form.listeFm) dans le javascript
+
+				</ul>#}
+				<button type="submit" class="btn btn-success" >Trier</button>
+				           
+            </div>
+          </div>
+        </div>
+
+      </div>
+
 	</div>	
 </section>
 	<script>

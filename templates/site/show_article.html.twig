@@ -5,7 +5,7 @@
 {% block body %}
 
 	<article>
-
+        {#
 		<h2 class="text-primary"> {{article.titre}} </h2>
 		<div class="metadata"> Publié le {{article.CreatedAt| date ('d/m/y')}} à {{article.createdAt | date('H:i')}}
 		</div>
@@ -132,7 +132,6 @@
 
                     <p> Nom : {{organisateur.nom}} </p>
                     <p> Site web : {{organisateur.siteWeb}} </p>
-                    {#<p> mail : {{organisateur.mail}} </p>#}
                     <img src="{{organisateur.image}}" alt="">
                     <a href="{{path('contactOrganisateurEvenement' , {idOrganisateur : organisateur.id , idEvenement : evenement.id })}}" class="btn btn-primary">Contacter</a>
                     
@@ -156,7 +155,6 @@
 
                         <p> Nom : {{contact.nom}} </p>
                         <p> Prenom : {{contact.prenom}} </p>
-                        {#<p> Mail : {{contact.mail}} </p>#}
                         <p> teléphone : {{contact.telephone}}</p>
                         <a href="{{path('contactEvenement' , {idContact : contact.id , idEvenement : evenement.id})}}" class="btn btn-primary">Contacter</a>
 
@@ -172,8 +170,244 @@
         <br>
 		<a href="{{path('accueil')}}" class="btn btn-primary">accueil</a>
 
+        #}
+
+        <div class="row">
+
+      <!-- Post Content Column -->
+      <div class="col-lg-8">
+
+        <!-- Title -->
+        <h1 class="mt-4 text-primary">{{article.titre}}</h1>
+
+       
+
+        <hr>
+
+        <!-- Date/Time -->
+        <p>Publié le {{article.createdAt| date ('d/m/y')}} à {{article.createdAt | date('H:i')}}</p>
+
+        <hr>
+
+        <!-- Preview Image -->
+		{% if article.image is null %}
+			<img class="img-fluid rounded" src="http://placehold.it/750x350" alt="">
+		{% else %}
+        	<img class="img-fluid rounded" src="{{article.image}}" alt="">
+		{% endif %}
+
+        <hr>
+
+        <p> {{article.contenu}}</p>
+            {#
+			<h5 class="text-primary"> Dates de l'événement </h5>
+
+			<ul>
+				{% for periode in evenement.periode %}
+				<li>{{periode.debut | date('d/m/y H:i')}} - {{periode.fin | date('d/m/y H:i')}} </li>
+				{% endfor %}
+			</ul>
+
+		<hr>
+
+			<h5 class="text-primary"> Localisation </h5>
+			<p> Ville : {{evenement.lieu.ville}} </p>
+			<p> Adresse : {{evenement.lieu.adresse}} </p>
+			<p> Code postale : {{evenement.lieu.codePostal}} </p>
+			<p> Nom : {{evenement.lieu.nom}} </p>
+
+		<hr>
+
+
+        <!-- Post Content -->
+        <p>{{evenement.description}}</p>
+
+        <hr>
+        
+			<h5 class="text-primary"> Organisateurs </h5>
+
+			{% for organisateur in evenement.organisateurs %}
+
+				<div class="card mb-4">
+					
+
+						{% if organisateur.image is null %}
+							<img class="card-img-top" src="http://placehold.it/750x350" alt="">
+						{% else %}
+                            <img class="card-img-top" src="{{organisateur.image}}" alt="">
+						{% endif %}
+						<div class="card-header ">
+							<div class ="card-body">
+								
+								<h3 class="text-primary card-title"> {{organisateur.nom}} </h3>
+								{% if organisateur.siteWeb is null %}
+							
+								{% else %}
+									<a href = "{{organisateur.siteWeb}}" class="btn btn-primary"> Site web </a>
+								{% endif %}
+								<a href="{{path('contactOrganisateurEvenement' , {idOrganisateur : organisateur.id , idEvenement : evenement.id })}}" class="btn btn-primary">Contacter</a>
+								
+								<br><br>
+
+								{% set listeContact = 0 %}
+
+								{% for i in organisateur.listeContact %}
+
+									{% if i.evenement == evenement %}
+
+										{% set listeContact = i %}
+
+									{% endif %}
+
+								{% endfor %}
+									
+								
+								<h5 class="text-primary"> Contacts </h5>
+								{% for contact in listeContact.contact %}
+										<hr>	
+										<p> {{contact.prenom}} </p>
+										<p>{{contact.nom}} </p>
+										<p>{{contact.telephone}}</p>
+										<a href="{{path('contactEvenement' , {idContact : contact.id , idEvenement : evenement.id})}}" class="btn btn-primary">Contacter</a>
+
+
+								{% endfor %}
+							</div>
+						</div>
+					</div>	
+			{% endfor %}
+
+			<br>
+			<br>#}
+
+            <hr>
+            <h4 class="text-primary"> &Eacute;vénements </h4>
+            {% for evenement in article.evenements %}
+                <article>
+
+                    <div class="card mb-4">
+						<div class="card-header ">
+							{% if evenement.domaine == 'Autre' %}
+								<h4 class="text-primary">Famille de métier : <font color= "red">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers du numérique et de la transition énergétique' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#0CF950">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la réalisation de produits mécaniques' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#f7c4e3">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la maintenance' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#000000">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == "Métiers du pilotage d'installations automatisées" %}
+								<h4 class="text-primary">Famille de métier : <font color= "#17661d">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers du bois' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#582900">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == "Métiers de l'hôtellerie-restauration" %}
+								<h4 class="text-primary">Famille de métier : <font color= "#B1DBEC">{{evenement.domaine}}</font></h4>
+							{% endif %}
+			
+							{% if evenement.domaine == "Métiers de l'aéronautique" %}
+								<h4 class="text-primary">Famille de métier : <font color= "blue">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la beauté et du bien-être' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#bf2caf">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == "Métiers de l'alimention" %}
+								<h4 class="text-primary">Famille de métier : <font color= "#F9B308">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers des études et de la modélisation numérique du bâtiment' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#535353">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers des industries graphiques et de la communication' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#FF4D04">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la gestion administrative, du transport et de la logistique' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#9929E7">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la relation client' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#4BECE7">{{evenement.domaine}}</font></h4>
+							{% endif %}
+
+							{% if evenement.domaine == 'Métiers de la construction durable , du bâtiment et des travaux publics' %}
+								<h4 class="text-primary">Famille de métier : <font color= "#B6B6B6">{{evenement.domaine}}</font></h4>
+							{% endif %}
+						</div>
+						{% if evenement.image is null %}
+							<img class="card-img-top" src="http://placehold.it/750x350" alt="">
+						{% else %}
+                        <img class="card-img-top" src="{{evenement.image}}" alt="">
+						{% endif %}
+                        <div class="card-body">
+                            <h2 class="card-title">{{evenement.nom}}</h2>
+                            <p class="card-text">{{evenement.description}}</p>
+                            <a href="{{path('show_evenement' , {id : evenement.id})}}" class="btn btn-primary"> Lire la suite </a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Ecrit le {{evenement.PublishedAt| date ('d/m/y')}} à {{evenement.PublishedAt | date('H:i')}}
+                        </div>
+                    </div>
+            {% endfor %}
+		    <a href="{{path('accueil')}}" class="btn btn-primary">accueil</a>
+
+      </div>
+
+      <!-- Sidebar Widgets Column -->
+      <div class="col-md-4">
+
+
+
+		{% if is_granted('ROLE_ADMIN') %}
+			<div class="card my-4">
+				<h5 class="card-header">Modification/suppression</h5>
+				<div class="card-body">
+
+					<a href="{{path('modifArticle' , {id : article.id})}}" class="btn btn-primary">Modifier l'article</a>
+					</br></br>
+					<a href="{{path('suppression_show_article' , {id : article.id})}}" id="testSuppression" class="btn btn-primary">Supprimer l'article</a>
+
+				</div>
+			</div>
+		{% else %}
+			{% if is_granted('ROLE_USER') %}
+                {% if app.user.getId() == article.utilisateur.getId() %}
+
+					<div class="card my-4">
+						<h5 class="card-header">Modification/suppression</h5>
+						<div class="card-body">
+							<a href="{{path('modifArticle' , {id : article.id})}}" class="btn btn-primary">Modifier l'article</a>
+							</br></br>
+							<a href="{{path('suppression_show_article' , {id : article.id})}}" id="testSuppression" class="btn btn-primary">Supprimer l'article</a>
+						</div>
+					</div>
+
+				{% endif %}
+            {% endif %}
+		{% endif %}		
+
+		
+
+      </div>
+
+    </div>
+    <!-- /.row -->
 
 	</article>
+
 
     <script>
 

@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
 
-	<link rel="stylesheet" href="{{asset('build/app.css')}}"  />
+	{#<link rel="stylesheet" href="{{asset('build/app.css')}}" />#}
 
 {% endblock stylesheets %}
 
@@ -10,32 +10,106 @@
 
 {% block body %}
 
-    <h1> Bienvenue sur le site !</h1>
+    
 
-    <p> Il faudra faire attention niveau graphique à cette page étant donné que ce sera la première page que les
-        visiteurs voient </p>
+    <h1 class="text-primary my-4"> Actualité </h1>
 
-    <p>Voici les 10 derniers articles publié sur ce site </p>
     
     <section class="articles">
 
-        {% for article in articles %}
-            <hr>
-            <article>
+        <div class="row">
 
-                <h2> {{article.titre}} </h2>
-                <div class="metadata"> Ecrit le {{article.createdAt| date ('d/m/y')}} à {{article.createdAt | date('H:i')}}
-                </div>
-                <div class="Content">
-                    <img src="{{article.image}}" alt="">
+            <!-- Blog Entries Column -->
+            <div class="col-md-8">
 
-                    <p>{{article.contenu}} </p> 
+                {% for article in articles %}
 
-                    <a href="{{path('show_article' , {id : article.id})}}" class="btn btn-primary"> Lire la suite </a>
-                </div>
+                    
+                    <article>
 
-            </article>
-        {% endfor %}
+                        <div class="card mb-4">
+                            {% if article.image is null %}
+								<img class="card-img-top" src="http://placehold.it/750x350" alt="">
+							{% else %}
+                            	<img class="card-img-top" src="{{article.image}}" alt="">
+							{% endif %}
+                            <div class="card-body">
+                                <h2 class="card-title">{{article.titre}}</h2>
+                                <p class="card-text">{{article.contenu}}</p>
+                                 <a href="{{path('show_article' , {id : article.id})}}" class="btn btn-primary"> Lire la suite </a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Ecrit le {{article.createdAt| date ('d/m/y')}} à {{article.createdAt | date('H:i')}}
+                            </div>
+                        </div>
+
+                    </article>
+                {% endfor %}
+
+            </div>
+
+            <!-- Sidebar Widgets Column -->
+      <div class="col-md-4">
+
+        <!-- Search Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">Search</h5>
+          <div class="card-body">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search for...">
+              <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button">Go!</button>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categories Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">Informations sur le site</h5>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-6">
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a href="#">Web Design</a>
+                  </li>
+                  <li>
+                    <a href="#">HTML</a>
+                  </li>
+                  <li>
+                    <a href="#">Freebies</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-lg-6">
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <a href="#">JavaScript</a>
+                  </li>
+                  <li>
+                    <a href="#">CSS</a>
+                  </li>
+                  <li>
+                    <a href="#">Tutorials</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side Widget -->
+        <div class="card my-4">
+          <h5 class="card-header">Liens utiles</h5>
+          <div class="card-body">
+            You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
+          </div>
+        </div>
+
+      </div>
+
+        </div>    
 
     </section>
     
