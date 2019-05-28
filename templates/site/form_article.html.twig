@@ -79,7 +79,15 @@
 				{{form_row(evenement.domaine)}}
 
 			{% endif %}
-			
+			<ul class="questions" data-prototype="{{ form_widget(evenement.questions.vars.prototype)|e('html_attr') }}">
+
+				{% for question in evenement.questions %}
+
+					{{form_row(question.contenu)}}
+
+				{% endfor %}
+
+			</ul>
 			<ul class="periodes" data-prototype="{{form_widget(evenement.periode.vars.prototype)|e('html_attr')}}">
 				{% for periode in evenement.periode %}
 
@@ -161,6 +169,7 @@
 			{% endif %}	
 
 			{% set test = 1 %}
+
 
 		{% endfor %}
 		
@@ -372,6 +381,60 @@
 				tabLinkPeriodes.push($newLinkLi2);
 			}
 
+			/////////////////////////////////////////////////////////
+			// on va faire pour les questions maintenant
+
+			var $collectionHolderQuestion = $('ul.questions');
+
+			var tabUlQuestion = [];
+			var tabButtonQuestion = [];
+			var tabIndexEvenementQuestion = [];
+			var tabLinkQuestion = [];
+
+			// on commence à 1 et pas à 0 pour la même raison que les organisateurs
+			for(var i =start ; i< $collectionHolderQuestion.length ; i++)
+			{
+				var $collectionHolderQuestioni = $('ul.questions:eq('+i+')');
+
+				var $addQuestionButton = $('<button type="button" class="btn btn-success add_question_link">Ajouter une Question</button>');
+                var $newLinkLiQuestion = $('<li></li>').append($addQuestionButton);
+
+				$collectionHolderQuestioni.append($newLinkLiQuestion);
+
+				//var calcIndex = $collectionHolderPeriodei.find('input').length ;
+				//calcIndex = calcIndex/5 +1;
+
+				var calcIndex = $collectionHolderQuestioni.children('fieldset').length ;
+				calcIndex = calcIndex +1;
+
+				console.log(calcIndex);
+
+				$collectionHolderQuestioni.data('index',calcIndex);
+
+				// on récupère la <div> juste après le ul.periode qui contient l'indice dans l'id
+				// le ul.periode est juste après le ul.questions
+				var $following = $collectionHolderQuestioni.next().next();
+
+				console.log("j'en ai trop marre des ces bidouillages que je fais parce que je code mal ");
+				console.log($following);
+
+
+				// on récupère le input dans le div
+				var $input = $following.find('input');
+
+				// Il n'y a que un nombre dans l'attribut id qui est l'indice qu'on cherche
+				var $array = /\d+/g.exec($input.attr('id'));
+
+				var $indexEvenement = $array[0];
+				tabUlQuestion.push($collectionHolderQuestioni);
+				tabButtonQuestion.push($addQuestionButton);
+				tabIndexEvenementQuestion.push($indexEvenement);
+				tabLinkQuestion.push($newLinkLiQuestion);
+			}
+			
+
+			/////////////////////////////////////////////////////////
+
 			// On va s'occuper des clicks sur les boutons ajout organisateur
 
 			tabButtonOrganisateurs.forEach( function (evenement) {
@@ -449,6 +512,20 @@
 					var index = tabButtonPeriodes.indexOf(evenement);
 
 					addSubFormEvent(tabUlPeriodes[index],tabLinkPeriodes[index],tabIndexEvenementPeriodes[index]);
+					
+				});
+
+			});
+
+			// on va s'occuper des clicks sur les boutons ajout questions
+			console.log("test 1");
+			tabButtonQuestion.forEach(function(evenement) {
+				
+				evenement.on('click',function(e){
+					console.log("test 2");
+					var index = tabButtonQuestion.indexOf(evenement);
+					console.log(index);
+					addSubFormEvent(tabUlQuestion[index],tabLinkQuestion[index],tabIndexEvenementQuestion[index]);
 					
 				});
 
