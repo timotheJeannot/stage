@@ -592,6 +592,24 @@ class SiteController extends AbstractController
 							$key->addPeriode($periode2);
 						}
 					}
+					foreach($key->getQuestions() as $key2 )
+					{
+						//on va valider 
+						$erreurValidation = $validator->validate($key2);
+						if (count($erreurValidation) > 0) {
+
+							return $this->render('/site/form_article.html.twig'	,[
+								'formArticle'=> $form2->createView() ,
+								'editmode' => $editmode,
+								'lieuDejaPrisForm' => $lieuDejaPrisForm,
+								'lieuDejaPrisBd' => $lieuDejaPrisBd,
+								'erreurValidation' => $erreurValidation,
+								'erreurPeriode'	=>$erreurPeriode,
+								]);
+						}
+						$key2->setEvenement($key);
+						$manager->persist($key2);
+					}
 					foreach($key->getOrganisateurs() as $key3)
 					{
 						foreach($key3->getContacts() as $key4)
@@ -936,7 +954,7 @@ class SiteController extends AbstractController
 			// voir le mail pour le type de réponse (choix ou champ libre) + papier
 
 			$q1 = New Question();
-			$q1->setContenu("Comment définiriez-vous cette action ? ");
+			$q1->setContenu("Comment définiriez-vous cette action ?");
 			$evenement->addQuestion($q1);
 			
 			$q2 =  New Question();
@@ -964,11 +982,11 @@ class SiteController extends AbstractController
 			$evenement->addQuestion($q7);
 
 			$q8 = New Question();
-			$q8->setContenu("À quel tranche d'âge appartenez-vous");
+			$q8->setContenu("À quel tranche d'âge appartenez-vous ?");
 			$evenement->addQuestion($q8);
 
 			$q9 = New Question();
-			$q9->setContenu("Departement de scolarité ou d'étude");
+			$q9->setContenu("Quel est votre département de scolarité ou d'étude ?");
 			$evenement->addQuestion($q9);
 
 			
@@ -1630,5 +1648,11 @@ class SiteController extends AbstractController
 		 ]);
 	}
 
-
+	/**
+	 *  @Route("/satisfaction/{idEve}/",name="satisfaction")
+	 */
+	public function satisfaction(EvenementRepository $repository , Request $request , $idEv , InscritRepository $repositoryI,ObjectManager $manager)
+	{
+		return $this->render('site/satisfaction.html.twig');
+	}
 }

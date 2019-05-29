@@ -541,6 +541,7 @@
 
 				var $collectionHolder2 = $('ul.periodes:eq(0)').clone();
 				var $collectionHolder3 = $('ul.organisateurs:eq(0)').clone();
+				var $collectionHolder4 = $('ul.questions:eq(0)').clone();
                 // on supprime les formulaires periodes et le bouton
                 //$collectionHolder2.find('li').remove();
 
@@ -559,21 +560,40 @@
 
 				var $addOrganisateurButton = $('<button type="button" class="btn btn-success add_organisateur_link">Ajouter un organisateur</button>');
                 var $newLinkLi3 = $('<li></li>').append($addOrganisateurButton);
+
+				var $addQuestionButton = $('<button type="button" class="btn btn-success add_question_link">Ajouter une question</button>');
+                var $newLinkLi4 = $('<li></li>').append($addQuestionButton);
                 
                 $collectionHolder2.append($newLinkLi2);
 				$collectionHolder3.append($newLinkLi3);
+				$collectionHolder4.append($newLinkLi4);
                 // on recupère le le lien ajout organisateur
                 var $lienEvent = $('ul.evenements > li:nth-last-child(1)');
 
                 // on rajoute les liens d'ajout avant le lien ajout organisateur
+				$lienEvent.before($collectionHolder4);
                 $lienEvent.before($collectionHolder2);
 				$lienEvent.before($collectionHolder3);
                 $collectionHolder2.append($('<br><br><br>'));
 				$collectionHolder3.append($('<br><br><br>'));
+				$collectionHolder4.append($('<br><br><br>'));
                 $collectionHolder2.data('index', $collectionHolder2.find(':input').length);
-				$collectionHolder3.data('index', $collectionHolder2.find(':input').length);
-                
+				$collectionHolder3.data('index', $collectionHolder3.find(':input').length); // cette ligne a été modifié $collectionHolder3.find(':input') été avant $collectionHolder2.find(':input') 
+                $collectionHolder4.data('index', $collectionHolder4.find(':input').length);
+
                 var $indexEvent = $collectionHolder.data('index')-1;
+
+				// on rajoute les questions prédifini du formulaire de satisfaction
+
+				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Comment définiriez-vous cette action ?");
+				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Quels en ont été les temps forts ?");
+				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Y a-t-il eu des points faibles ? Lesquels ?");
+				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Quelles sont vos suggestions ? ");
+				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Remarques éventuelles");
+				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Souhaiteriez-vous être associé-e à un dispositif comparable l’année suivante ?");
+				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Quel est votre sexe ?");
+				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"À quel tranche d'âge appartenez-vous ?");
+				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Quel est votre département de scolarité ou d'étude ?");
                 
                 $addPeriodeButton.on('click',function(e){
 
@@ -610,6 +630,12 @@
 
                 		})
 
+
+                })
+
+				$addQuestionButton.on('click',function(e){
+
+                        addSubFormEvent($collectionHolder4,$newLinkLi4,$indexEvent);
 
                 })
             });
@@ -718,6 +744,61 @@
 
             // Display the form in the page in an li, before the "Add a tag" link li
             var $newFormLi = $('<li></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+        }
+
+		// cette fonction est la même addSubFormEvent , sauf qu'elle est appellé 
+		//pour créer les questions prédifini et recoit donc un string en plus
+		//et va créer un attribut value contenant le string dans le prototype
+		//ne pas appeller cette fonction pour autre chose que les questions
+		function addEventStartQuestion($collectionHolder, $newLinkLi,$indexEvent,$question) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+            //console.log($collectionHolder.data('index'));
+            console.log(prototype);
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            var newForm = prototype;
+            // You need this only if you didn't set 'label' => false in your tags field in TaskType
+            // Replace '__name__label__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            // newForm = newForm.replace(/__name__label__/g, index);
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            newForm = newForm.replace(/__name__/g, index);
+			console.log('//////////////////////////\n');
+			console.log(newForm);
+            
+            //on va lier avec les regex au bon prototype organisateur
+            newForm=newForm.replace(/evenements_\d*/g,"evenements_"+$indexEvent);
+            newForm=newForm.replace(/evenements\]\[\d*/g,"evenements]["+$indexEvent);
+            console.log('?????????????????????????????????????\n');
+            console.log(newForm);
+
+			//on insérer la question
+			//newForm.attr('value',$question);
+			//newForm.setAttribute('value',$question);
+
+			console.log($(newForm+' :input'));
+			console.log($('#form_article_evenements_'+$indexEvent+'_questions_'+index));
+			$(newForm+' :input').attr('value',$question);
+			var sel = $(newForm);		
+			console.log(sel);
+			console.log(sel[0]['firstChild']['children'][1]);	
+			//sel.attr('value',$question);
+			$(sel[0]['firstChild']['children'][1]).attr('value',$question);
+			
+			console.log('================================');
+			console.log(sel);
+			console.log(newForm);
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append(sel);
             $newLinkLi.before($newFormLi);
         }
 

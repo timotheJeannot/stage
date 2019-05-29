@@ -47,4 +47,17 @@ class InscritRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByIdEvenement($id)
+    {
+    
+        
+                return $this->createQueryBuilder('i')
+                ->join('i.evenements','e','WITH')
+                ->where('e.id = :idEvenement')
+                ->setParameter('idEvenement',$id)
+                ->getQuery()
+                ->getResult();
+        
+    }
 }

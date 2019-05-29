@@ -49,9 +49,15 @@ class Inscrit
      */
     private $evenements;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Satisfaction", mappedBy="inscrit")
+     */
+    private $satisfactions;
+
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
+        $this->satisfactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -130,6 +136,37 @@ class Inscrit
         if ($this->evenements->contains($evenement)) {
             $this->evenements->removeElement($evenement);
             $evenement->removeInscrit($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Satisfaction[]
+     */
+    public function getSatisfactions(): Collection
+    {
+        return $this->satisfactions;
+    }
+
+    public function addSatisfaction(Satisfaction $satisfaction): self
+    {
+        if (!$this->satisfactions->contains($satisfaction)) {
+            $this->satisfactions[] = $satisfaction;
+            $satisfaction->setInscrit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSatisfaction(Satisfaction $satisfaction): self
+    {
+        if ($this->satisfactions->contains($satisfaction)) {
+            $this->satisfactions->removeElement($satisfaction);
+            // set the owning side to null (unless already changed)
+            if ($satisfaction->getInscrit() === $this) {
+                $satisfaction->setInscrit(null);
+            }
         }
 
         return $this;
