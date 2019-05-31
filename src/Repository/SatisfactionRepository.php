@@ -47,4 +47,19 @@ class SatisfactionRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    // cette fonction va vérifier si l'inscrit à déja répondu au questionnaire de satisfaction
+    public function findEvenementInscrit($idInscrit,$idEvenement)
+    {
+        return $this->createQueryBuilder('s')
+                ->join('s.inscrit','i','WITH')
+                ->join('s.evenement','e','WITH')
+                ->where('i.id = :idInscrit')
+                ->setParameter('idInscrit',$idInscrit)
+                ->andWhere('e.id = :idEvenement')
+                ->setParameter('idEvenement',$idEvenement)
+                ->getQuery()
+                ->getResult();
+        
+    }
 }

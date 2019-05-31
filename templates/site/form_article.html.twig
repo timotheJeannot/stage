@@ -82,8 +82,11 @@
 			<ul class="questions" data-prototype="{{ form_widget(evenement.questions.vars.prototype)|e('html_attr') }}">
 
 				{% for question in evenement.questions %}
+					{% if test != 0 %}
 
-					{{form_row(question.contenu)}}
+						{{form_row(question.contenu)}}
+
+					{% endif %}	
 					<ul class="reponses" data-prototype="{{ form_widget(question.reponses.vars.prototype)|e('html_attr') }}">
 						{% for reponse in question.reponses %}
 
@@ -91,6 +94,7 @@
 
 						{% endfor %}
 					</ul>
+
 
 				{% endfor %}
 
@@ -398,6 +402,11 @@
 			var tabIndexEvenementQuestion = [];
 			var tabLinkQuestion = [];
 
+			var tabQuestionsUlReponses = [[]];
+			var tabQuestionsButtonReponses = [[]];
+			var tabQuestionsIndexQuestionReponses = [[]];
+			var tabQuestionsLinkReponses = [[]];
+
 			// on commence à 1 et pas à 0 pour la même raison que les organisateurs
 			for(var i =start ; i< $collectionHolderQuestion.length ; i++)
 			{
@@ -408,10 +417,106 @@
 
 				$collectionHolderQuestioni.append($newLinkLiQuestion);
 
+				//---------------------------
+
+				// on va s'occuper des questions
+
+				console.log("test1");
+				var tabUlReponses = [];
+				var tabButtonReponses = [];
+				var tabIndexQuestionReponses = [];
+				var tabLinkReponses = [];
+
+				var $collectionHolderQuestioniReponses = $collectionHolderQuestioni.find('ul.reponses')
+
+				for(var j=0 ; j<$collectionHolderQuestioniReponses.length ; j++)
+				{
+					var $collectionHolderQuestioniReponsesj = $('ul.questions:eq('+i+') ul.reponses:eq('+j+')');
+
+					var $addReponseButton = $('<button type="button" class="btn btn-success add_reponses_link">Ajouter une réponse</button>');
+					var $newLinkLiReponse = $('<li></li>').append($addReponseButton);
+
+					$collectionHolderQuestioniReponsesj.append($newLinkLiReponse);
+
+					// on commence à compter à 1 et pas à 0 d'où le +1 (différent de la page de création d'un événément)
+					$collectionHolderQuestioniReponsesj.data('index', ($collectionHolderQuestioniReponsesj.find(':input').length-1)+1);
+
+					 // on récupère la <div> juste avant le ul.contact qui contient l'indice dans l'id
+					var $preceding = $collectionHolderQuestioniReponsesj.prev();
+
+					// on récupère le input dans le div
+
+					var $input = $preceding.find('input');
+					console.log('test modif article');
+					console.log($input);
+
+					// il y a deux nombres dans l'id de l'input et l'indice qui nous faut est le second
+					//var $array = /\d+/g.exec($input.attr('id'));
+					var $array = $input.attr('id').match(/\d+/g);
+					console.log("test40");
+					console.log($array);
+					console.log($input);
+					console.log($array);
+					var $indexQuestion = $array[1];
+					console.log("test41");
+					tabUlReponses.push($collectionHolderQuestioniReponsesj);
+					tabButtonReponses.push($addReponseButton);
+					tabIndexQuestionReponses.push($indexQuestion);
+					tabLinkReponses.push($newLinkLiReponse);
+					
+				}
+
+				console.log("test2");
+
+				tabQuestionsUlReponses.push(tabUlReponses);
+				tabQuestionsButtonReponses.push(tabButtonReponses);
+				tabQuestionsIndexQuestionReponses.push(tabIndexQuestionReponses);
+				tabQuestionsLinkReponses.push(tabLinkReponses);
+
+				// on reprend le traitement des questions
+
+				// on enlève les input qui sont lié aux réponses
+				var calcIndex = $collectionHolderQuestioni.find('input').length - $collectionHolderQuestioniReponses.find('input').length;
+				
+				// Il semblerait que cela n'est pas pris en compte les boutons dans calcIndex , il reste à 
+				// donc à diviser par le nombre de champs d'un formulaire question (4)
+				// il faut addition 1 car l'indice commence à partir de 1 et non de 0
+				calcIndex = calcIndex  +1;
+				console.log("calcIndex : ");
+				console.log(calcIndex);
+				//console.log($collectionHolderQuestioni.find('input').length);
+				//console.log($collectionHolderOrganisateuriContact.find('input').length);
+
+				$collectionHolderQuestioni.data('index',calcIndex);
+
+				// on récupère la <div> juste après le ul.organisateur qui contient l'indice dans l'id
+				var $following = $collectionHolderQuestioni.next().next().next();
+
+				console.log($following);
+
+
+				// on récupère le input dans le div
+				var $input = $following.find('input');
+				console.log($input);
+
+				// Il n'y a que un nombre dans l'attribut id qui est l'indice qu'on cherche
+				var $array = /\d+/g.exec($input.attr('id'));
+
+				var $indexEvenement = $array[0];
+				console.log('indexEvenement = '+$indexEvenement);
+				tabUlQuestion.push($collectionHolderQuestioni);
+				tabButtonQuestion.push($addQuestionButton);
+				tabIndexEvenementQuestion.push($indexEvenement);
+				tabLinkQuestion.push($newLinkLiQuestion);
+
+				console.log("test4");
+
+				//---------------------------
+
 				//var calcIndex = $collectionHolderPeriodei.find('input').length ;
 				//calcIndex = calcIndex/5 +1;
 
-				var calcIndex = $collectionHolderQuestioni.children('fieldset').length ;
+				/*var calcIndex = $collectionHolderQuestioni.children('fieldset').length ;
 				calcIndex = calcIndex +1;
 
 				console.log(calcIndex);
@@ -436,7 +541,7 @@
 				tabUlQuestion.push($collectionHolderQuestioni);
 				tabButtonQuestion.push($addQuestionButton);
 				tabIndexEvenementQuestion.push($indexEvenement);
-				tabLinkQuestion.push($newLinkLiQuestion);
+				tabLinkQuestion.push($newLinkLiQuestion);*/
 			}
 			
 
@@ -510,6 +615,7 @@
 
 			});
 
+
 			// on va s'occuper des clicks sur les boutons ajout periode
 
 			tabButtonPeriodes.forEach(function(evenement) {
@@ -528,12 +634,80 @@
 			console.log("test 1");
 			tabButtonQuestion.forEach(function(evenement) {
 				
-				evenement.on('click',function(e){
+				/*evenement.on('click',function(e){
 					console.log("test 2");
 					var index = tabButtonQuestion.indexOf(evenement);
 					console.log(index);
 					addSubFormEvent(tabUlQuestion[index],tabLinkQuestion[index],tabIndexEvenementQuestion[index]);
 					
+				});*/
+
+				//--------------------------------------------------------------
+
+				evenement.on('click',function(e) {
+
+					var index = tabButtonQuestion.indexOf(evenement);
+
+					/*console.log("tttttteeeeeeeessssssssssssssssttttttttttt  !!!");
+					console.log(tabIndexEvenementOrganisateurs[index]);
+					console.log(tabUlOrganisateurs[index]);
+					console.log(tabUlOrganisateurs[index].data('index'));*/
+
+					addSubFormEvent(tabUlQuestion[index],tabLinkQuestion[index],tabIndexEvenementQuestion[index]);
+
+					var $collectionHolder4 = $('ul.reponses:eq(0)').clone();
+
+					var $addReponseButton = $('<button type="button" class="btn btn-success add_reponses_link">Ajouter une réponse</button>');
+					var $newLinkLi4 = $('<li></li>').append($addReponseButton);
+
+					$collectionHolder4.append($newLinkLi4);
+
+					// on recupère le lien ajout organisateur
+					//var $lienOrga = $('li:nth-last-child(1)',$collectionHolder3);
+					var $lienQuestion = tabUlQuestion[index].find('li:last');
+					//console.log('---------------------------------- \n');
+					//console.log($lienOrga);
+					$lienQuestion.before($collectionHolder4);
+
+					$collectionHolder4.append($('<br><br><br>'));
+					$collectionHolder4.data('index', $collectionHolder4.find(':input').length);
+
+					var $indexQuestion = tabUlQuestion[index].data('index')-1;
+
+					$addReponseButton.on('click',function(e){
+
+						addSubFormEventSubFormQuestion($collectionHolder4,$newLinkLi4,$indexQuestion,tabIndexEvenementQuestion[index]);
+						
+
+					})
+
+				})
+
+				//----------------------------------------------------------------
+
+			});
+
+			//On va s'occuper des clicks sur les boutons ajout réponse
+
+			tabQuestionsButtonReponses.forEach( function (evenement){ 
+
+				var i = tabQuestionsButtonReponses.indexOf(evenement);
+
+				evenement.forEach( function (evenement2) {
+
+					var j = evenement.indexOf(evenement2);
+
+					evenement2.on('click',function(e){
+
+						//console.log(tabOrganisateursUlContacts[i][j])// ,tabOrganisateursLinkContacts[i][j] , tabOrganisateursIndexOrganisateurContacts[i][j] , tabIndexEvenementOrganisateurs[i]);
+						console.log('que passa ?');
+						console.log(tabIndexEvenementQuestion[i]);
+						console.log(tabIndexEvenementQuestion)
+						console.log(i);
+						addSubFormEventSubFormQuestion(tabQuestionsUlReponses[i][j] ,tabQuestionsLinkReponses[i][j] , tabQuestionsIndexQuestionReponses[i][j] , tabIndexEvenementQuestion[i]  );
+
+					});
+
 				});
 
 			});
@@ -548,7 +722,7 @@
 
 				var $collectionHolder2 = $('ul.periodes:eq(0)').clone();
 				var $collectionHolder3 = $('ul.organisateurs:eq(0)').clone();
-				var $collectionHolder4 = $('ul.questions:eq(0)').clone();
+				var $collectionHolderQuestion = $('ul.questions:eq(0)').clone();
                 // on supprime les formulaires periodes et le bouton
                 //$collectionHolder2.find('li').remove();
 
@@ -569,38 +743,47 @@
                 var $newLinkLi3 = $('<li></li>').append($addOrganisateurButton);
 
 				var $addQuestionButton = $('<button type="button" class="btn btn-success add_question_link">Ajouter une question</button>');
-                var $newLinkLi4 = $('<li></li>').append($addQuestionButton);
+                var $newLinkLiQuestion = $('<li></li>').append($addQuestionButton);
                 
                 $collectionHolder2.append($newLinkLi2);
 				$collectionHolder3.append($newLinkLi3);
-				$collectionHolder4.append($newLinkLi4);
+				$collectionHolderQuestion.append($newLinkLiQuestion);
                 // on recupère le le lien ajout organisateur
                 var $lienEvent = $('ul.evenements > li:nth-last-child(1)');
 
                 // on rajoute les liens d'ajout avant le lien ajout organisateur
-				$lienEvent.before($collectionHolder4);
+				$lienEvent.before($collectionHolderQuestion);
                 $lienEvent.before($collectionHolder2);
 				$lienEvent.before($collectionHolder3);
                 $collectionHolder2.append($('<br><br><br>'));
 				$collectionHolder3.append($('<br><br><br>'));
-				$collectionHolder4.append($('<br><br><br>'));
+				$collectionHolderQuestion.append($('<br><br><br>'));
                 $collectionHolder2.data('index', $collectionHolder2.find(':input').length);
 				$collectionHolder3.data('index', $collectionHolder3.find(':input').length); // cette ligne a été modifié $collectionHolder3.find(':input') été avant $collectionHolder2.find(':input') 
-                $collectionHolder4.data('index', $collectionHolder4.find(':input').length);
+                $collectionHolderQuestion.data('index', $collectionHolderQuestion.find(':input').length);
 
                 var $indexEvent = $collectionHolder.data('index')-1;
 
 				// on rajoute les questions prédifini du formulaire de satisfaction
 
-				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Comment définiriez-vous cette action ?");
-				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Quels en ont été les temps forts ?");
-				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Y a-t-il eu des points faibles ? Lesquels ?");
-				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Quelles sont vos suggestions ? ");
-				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Remarques éventuelles");
-				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Souhaiteriez-vous être associé-e à un dispositif comparable l’année suivante ?");
-				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Quel est votre sexe ?");
-				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"À quel tranche d'âge appartenez-vous ?");
-				addEventStartQuestion($collectionHolder4,$newLinkLi4,$indexEvent,"Quel est votre département de scolarité ou d'étude ?");
+				addEventStartQuestion($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent,"Comment définiriez-vous cette action ?");
+				addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
+				addEventStartQuestion($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent,"Quels en ont été les temps forts ?");
+				addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
+				addEventStartQuestion($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent,"Y a-t-il eu des points faibles ? Lesquels ?");
+				addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
+				addEventStartQuestion($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent,"Quelles sont vos suggestions ? ");
+				addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
+				addEventStartQuestion($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent,"Remarques éventuelles");
+				addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
+				addEventStartQuestion($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent,"Souhaiteriez-vous être associé-e à un dispositif comparable l’année suivante ?");
+				addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
+				addEventStartQuestion($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent,"Quel est votre sexe ?");
+				addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
+				addEventStartQuestion($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent,"À quel tranche d'âge appartenez-vous ?");
+				addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
+				addEventStartQuestion($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent,"Quel est votre département de scolarité ou d'étude ?");
+				addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
                 
                 $addPeriodeButton.on('click',function(e){
 
@@ -642,9 +825,42 @@
 
 				$addQuestionButton.on('click',function(e){
 
-                        addSubFormEvent($collectionHolder4,$newLinkLi4,$indexEvent);
+						console.log('test 36000');
+                        addSubFormEvent($collectionHolderQuestion,$newLinkLiQuestion,$indexEvent);
+						console.log('test 36001');
 
-                })
+						//---------------------------------------
+
+						var $collectionHolder4 = $('ul.reponses:eq(0)').clone();
+						console.log($collectionHolder4);
+						console.log($collectionHolderQuestion);
+
+						var $addReponseButton = $('<button type="button" class="btn btn-success add_reponses_link">Ajouter une réponse</button>');
+                		var $newLinkLi4 = $('<li></li>').append($addReponseButton);
+
+						$collectionHolder4.append($newLinkLi4);
+
+						// on recupère le lien ajout organisateur
+                		//var $lienOrga = $('li:nth-last-child(1)',$collectionHolder3);
+						var $lienQuestion = $collectionHolderQuestion.find('li:last');
+						//console.log('---------------------------------- \n');
+						//console.log($lienOrga);
+						$lienQuestion.before($collectionHolder4);
+
+						$collectionHolder4.append($('<br><br><br>'));
+                		$collectionHolder4.data('index', $collectionHolder4.find(':input').length);
+
+						var $indexQuestion = $collectionHolderQuestion.data('index')-1;
+
+						$addReponseButton.on('click',function(e){
+
+                        addSubFormEventSubFormQuestion($collectionHolder4,$newLinkLi4,$indexQuestion,$indexEvent);
+
+						
+
+                		})
+						//---------------------------------------
+				});	
             });
 		
 
@@ -754,6 +970,45 @@
             $newLinkLi.before($newFormLi);
         }
 
+		function addSubFormEventSubFormQuestion($collectionHolder, $newLinkLi,$indexOrga,$indexEvent) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+            //console.log($collectionHolder.data('index'));
+            console.log(prototype);
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            var newForm = prototype;
+            // You need this only if you didn't set 'label' => false in your tags field in TaskType
+            // Replace '__name__label__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            // newForm = newForm.replace(/__name__label__/g, index);
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            newForm = newForm.replace(/__name__/g, index);
+			console.log('//////////////////////////\n');
+			console.log(newForm);
+
+			newForm=newForm.replace(/evenements_\d*/g,"evenements_"+$indexEvent);
+            newForm=newForm.replace(/evenements\]\[\d*/g,"evenements]["+$indexEvent);
+
+            
+            //on va lier avec les regex au bon prototype organisateur
+            newForm=newForm.replace(/questions_\d*/g,"questions_"+$indexOrga);
+            newForm=newForm.replace(/questions\]\[\d*/g,"questions]["+$indexOrga);
+            console.log('?????????????????????????????????????\n');
+            console.log(newForm);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+        }
+
 		// cette fonction est la même addSubFormEvent , sauf qu'elle est appellé 
 		//pour créer les questions prédifini et recoit donc un string en plus
 		//et va créer un attribut value contenant le string dans le prototype
@@ -808,6 +1063,36 @@
             var $newFormLi = $('<li></li>').append(sel);
             $newLinkLi.before($newFormLi);
         }
+
+		function addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
+		{
+			var $collectionHolder4 = $('ul.reponses:eq(0)').clone();
+			console.log($collectionHolder4);
+			console.log($collectionHolderQuestion);
+
+			var $addReponseButton = $('<button type="button" class="btn btn-success add_reponses_link">Ajouter une réponse</button>');
+        	var $newLinkLi4 = $('<li></li>').append($addReponseButton);
+
+			$collectionHolder4.append($newLinkLi4);
+
+			// on recupère le lien ajout organisateur
+            //var $lienOrga = $('li:nth-last-child(1)',$collectionHolder3);
+			var $lienQuestion = $collectionHolderQuestion.find('li:last');
+			//console.log('---------------------------------- \n');
+			//console.log($lienOrga);
+			$lienQuestion.before($collectionHolder4);
+
+			$collectionHolder4.append($('<br><br><br>'));
+            $collectionHolder4.data('index', $collectionHolder4.find(':input').length);
+
+			var $indexQuestion = $collectionHolderQuestion.data('index')-1;
+
+			$addReponseButton.on('click',function(e){
+
+            	addSubFormEventSubFormQuestion($collectionHolder4,$newLinkLi4,$indexQuestion,$indexEvent);
+
+            })
+		}
 
 	</script>
 

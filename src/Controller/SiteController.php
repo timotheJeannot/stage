@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Lieu;
+use App\Entity\Part;
 use App\Entity\Article;
 use App\Entity\Contact;
 use App\Entity\Inscrit;
@@ -12,29 +13,36 @@ use App\Form\FormLieuType;
 use App\Form\FormTrieType;
 use App\Entity\ListeContact;
 use App\Entity\Organisateur;
+use App\Entity\Satisfaction;
 use App\Form\FormArticleType;
 use App\Form\FormContactType;
 use App\Form\FormInscritType;
 use App\Entity\IntervalleTemps;
 use App\Form\FormEvenementType;
 use App\Form\FormOrganisateurType;
+use App\Form\FormSatisfactionType;
 use App\Repository\LieuRepository;
 use App\Form\FormIntervalleTempsType;
 use App\Repository\ArticleRepository;
 use App\Repository\ContactRepository;
 use App\Repository\InscritRepository;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use App\Repository\EvenementRepository;
 use App\Repository\ListeContactRepository;
 use App\Repository\OrganisateurRepository;
+use App\Repository\SatisfactionRepository;
 use App\Repository\IntervalleTempsRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
@@ -181,12 +189,16 @@ class SiteController extends AbstractController
 		{
 			$article = new Article();
 
-			// cette evénement est là pour pouvoir rentrer dans la boucle for dans le twig
+			// cette evénement est là pour pouvoir rentrer dans les boucles for dans le twig
 			// pareil pour l'organisteur		
 			$event = new Evenement();
 
 			$orga = new Organisateur();
 			$event->addOrganisateur($orga);
+
+			$question = new Question();
+			$event->addQuestion($question);
+
 			$article->addEvenement($event);
 			$editmode = false;
 		}
@@ -606,6 +618,22 @@ class SiteController extends AbstractController
 								'erreurValidation' => $erreurValidation,
 								'erreurPeriode'	=>$erreurPeriode,
 								]);
+						}
+						foreach($key2->getReponses() as $key3)
+						{
+							$errors = $validator->validate($key3);
+							if (count($errors) > 0) {
+
+								return $this->render('/site/form_evenement.html.twig'	,[
+								'formEvenement'=> $form2->createView() ,
+								'editmode' => $editmode, 
+								'errors' => $errors ,
+								'erreurDejaPris' =>$erreurDejaPris,
+								'erreurPeriode' => $erreurPeriode ,
+								]);
+							}
+							$key3->setQuestion($key2);
+							$manager->persist($key3);
 						}
 						$key2->setEvenement($key);
 						$manager->persist($key2);
@@ -1205,7 +1233,7 @@ class SiteController extends AbstractController
 					}
 					foreach($key->getReponses() as $key2)
 					{
-						$errors = $validator->validate($key);
+						$errors = $validator->validate($key2);
 						if (count($errors) > 0) {
 
 							return $this->render('/site/form_evenement.html.twig'	,[
@@ -1667,10 +1695,108 @@ class SiteController extends AbstractController
 	}
 
 	/**
-	 *  @Route("/satisfaction/{idEve}/",name="satisfaction")
+	 *  @Route("/satisfaction/{idEve}/{idInscrit}",name="satisfaction")
 	 */
-	public function satisfaction(EvenementRepository $repository , Request $request , $idEv , InscritRepository $repositoryI,ObjectManager $manager)
+	public function satisfaction(EvenementRepository $repoE, InscritRepository $repoI , SatisfactionRepository $repoSati, Request $request , $idEve , $idInscrit , InscritRepository $repositoryI,ObjectManager $manager)
 	{
-		return $this->render('site/satisfaction.html.twig');
+		$inscrit = $repoI->find($idInscrit);
+		$event = $repoE->find($idEve);
+		/*$form = $this->createFormBuilder();
+		$i =0;
+		$form->add('TextType', CollectionType::class, [
+			'entry_type' => TextType::class,
+			'entry_options' => ['label' => false],
+		]);
+		$form->add('ChoiceType', CollectionType::class, [
+			'entry_type' => ChoiceType::class,
+			'entry_options' => ['label' => false],
+		]);
+		foreach($event->getQuestions() as $key)
+		{
+			
+			// on va regarder si il y a des réponses aux questions
+			// si il y en a alors il faut faire un ChoiciType et sinon un simple TexteType
+
+			if($key->getReponses() != null)
+			{
+				// on va générer le tableau de réponse
+				$array = [];
+				$count = 0;
+				foreach($key->getReponses() as $key2)
+				{
+					$array[] = $key2->getContenu()	;
+					$count = $count +1;
+				}
+				
+				
+				$form->add("$i", ChoiceType::class, [
+					'choices'  => $array,
+					'label' => $key->getContenu(),
+				]);
+				
+			}
+			else
+			{
+				
+				$form->add("$i",TextType::class,[
+					'label' => $key->getContenu(),
+				]);
+				
+			}
+		}
+		$form=$form->getForm();*/
+
+		// on vérifie que l'utilisateur n'a pas déja répondu , si c'est le cas , on récupère les anciennes réponses
+		// et on va modifier l'object qu'il a déja crée
+		$satisfaction = $repoSati->findEvenementInscrit($inscrit->getId(),$event->getId());
+
+		if($satisfaction == null)
+		{
+			$satisfaction = new Satisfaction();
+
+			foreach($event->getQuestions() as $key)
+			{
+				// ici il va fallor regarder si il y a des réponses à une question et utiliser
+				// un ChoiceType pour le formulaire
+
+				$part = new Part();
+				$part->setQuestion($key->getContenu());
+				$satisfaction->addPart($part);
+				
+			}
+		}
+		else
+		{
+			$satisfaction = $satisfaction[0];
+		}
+
+		
+		
+		$form = $this->createForm(FormSatisfactionType::class,$satisfaction);
+
+		$form->handleRequest($request);
+
+		if ($form->isSubmitted() && $form->isValid()) 
+       	{
+			//pas besoin d'appeller le validator car il n'y aucune validation à faire sur le formulaire
+
+			foreach($satisfaction->getParts() as $key)
+			{
+				$manager->persist($key);
+			}
+			$satisfaction->setInscrit($inscrit);
+			$satisfaction->setEvenement($event);
+			$manager->persist($satisfaction);
+			$manager->flush();
+			
+			return $this->redirectToRoute('accueil');
+		}
+
+
+		return $this->render('site/form_satisfaction.html.twig', [
+            'form' => $form->createView(),
+        ]);
 	}
+
+	
 }

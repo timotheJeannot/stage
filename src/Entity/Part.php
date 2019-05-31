@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PartRepository")
@@ -18,13 +19,14 @@ class Part
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull(message="Veuillez renseigner le contenu de la question")
      */
     private $question;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $reponse;
+    private $reponse; // la réponse peut être null ne pas mettre d'assert sur ce champ
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Satisfaction", inversedBy="parts")

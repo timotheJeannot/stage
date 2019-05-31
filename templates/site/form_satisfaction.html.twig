@@ -4,6 +4,25 @@
 
 {% block body %}
 
-    <h1> Salut les copains ;) </h1>
+    <h1 class="text-primary"> Enquête de satisfaction</h1>
+
+    {% form_theme form 'bootstrap_4_layout.html.twig' %} 
+
+	{{form_start(form, { attr: { novalidate: 'novalidate' } })}}
+
+    <ul class="parts">{# data-prototype="{{form_widget(form.parts.vars.prototype)|e('html_attr')}}">#}
+        {% for part in form.parts %}
+            
+            <h4 class="text-primary">{{part.vars['value'].question}}</h4>
+            {{form_row(part)}}
+
+        {% endfor %}
+    </ul>
+    <button type="submit" class="btn btn-success">Envoyer</button>
+    {{form_end(form)}}
+    
+
+    <br>
+    <br>
 
 {% endblock %}

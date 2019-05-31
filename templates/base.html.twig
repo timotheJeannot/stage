@@ -175,8 +175,15 @@
 		
 		
 		<div class="container">
-        {% block body %}{% endblock %}
+      {% block body %}{% endblock %}
 		</div>
+		{# https://mdbootstrap.com/docs/jquery/navigation/footer/ #}
+		{#<footer class = "page-footer font-small bg-primary pt-4">#}
+		<footer class = "py-4 bg-primary">
+			<div class="container">
+     		<p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
+    	</div>
+		</footer>
 		<script>
 			$(document).ready(function(){
 			  $('.dropdown-submenu a.test').on("click", function(e){
