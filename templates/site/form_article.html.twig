@@ -84,6 +84,13 @@
 				{% for question in evenement.questions %}
 
 					{{form_row(question.contenu)}}
+					<ul class="reponses" data-prototype="{{ form_widget(question.reponses.vars.prototype)|e('html_attr') }}">
+						{% for reponse in question.reponses %}
+
+							{{form_row(reponse.contenu)}}
+
+						{% endfor %}
+					</ul>
 
 				{% endfor %}
 

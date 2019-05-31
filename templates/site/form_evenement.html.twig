@@ -130,6 +130,13 @@
         {% for question in formEvenement.questions %}
 
             {{form_row(question.contenu)}}
+             <ul class="reponses" data-prototype="{{ form_widget(question.reponses.vars.prototype)|e('html_attr') }}">
+                {% for reponse in question.reponses %}
+
+                    {{form_row(reponse.contenu)}}
+
+                {% endfor %}
+             </ul>
 
         {% endfor %}
 
@@ -219,6 +226,8 @@
             $collectionHolderQuestion = $('ul.questions');
             console.log('test de la mort');
             console.log($collectionHolderQuestion);
+
+            $collectionHolderReponse = $('ul.reponses');
             
 
 
@@ -317,15 +326,89 @@
                 });
             });
 
+            //-----------------------------------------------
+
+            var tabReponse1 =[];
+            var tabReponse2 =[];
+            var tabReponse3 =[];
+            var tabReponse4 =[];
+
+
+            for( var i=0 ; i<$collectionHolderReponse.length ; i++)
+            {
+                $collectionHolderReponsei = $('ul.reponses:eq('+i+')');
+                console.log($collectionHolderReponsei);
+
+                var $addReponseButton = $('<button type="button" class="btn btn-success add_reponse_link">Ajouter une réponse</button>');
+                var $newLinkLiReponse = $('<li></li>').append($addReponseButton);
+
+                $collectionHolderReponsei.append($newLinkLiReponse);
+                //$collectionHolderContacti.data('index', $collectionHolderContacti.find(':input').length);
+                // le -1 c'est pour le bouton ajout contact, et le 4 c'est le nombre de input dans 
+                // un formulaire de contact
+                $collectionHolderReponsei.data('index', ($collectionHolderReponsei.find(':input').length-1));
+                //$collectionHolderContacti.data('index',i);
+                //console.log($collectionHolderReponsei);
+                //console.log("wtf ? : "+$collectionHolderContacti.data('index'));
+
+                // on récupère l'indice de l'organisateur pour lier les fomulaires qui vont êter crée au bon organisateur 
+
+                //les indices passent de 0 à 5 pour les organisateurs
+                // et de 0 à 11 pour les périodes ( c'est pourquoi on passe par le tableau getKeys()
+                // dans le controlleur )
+
+                //on peut essayer de récupèrer l'indice par un sélecteur et une regex
+                // ou essayer de le calculer mais il faut redéfinir les $collectionHolder.data('index')
+                // parce que la il compte les input mais ce n'est pas exactement ca qu'il faut faire.
+
+                //on va donc le faire par une recherche
+
+                //l'optimisation du code n'est pas forcément important étant donné que
+                // seuls les chargés de missions utilisiront les formulaires d'insertion/modification
+
+                // on récupère la <div> juste avant le ul.contact qui contient l'indice dans l'id
+                var $preceding = $collectionHolderReponsei.prev();
+
+                // on récupère le input dans le div
+
+                var $input = $preceding.find('input');
+
+                // il n'y a que un nombre dans l'id de l'input et c'est l'indice
+                var $array = /\d+/g.exec($input.attr('id'));
+
+                console.log($preceding);
+                console.log($array);
+                console.log('pls : '+$array[0]);
+
+                var $indexQuestion = $array[0];
+                tabReponse1.push($collectionHolderReponsei);
+                tabReponse2.push($addReponseButton);
+                tabReponse3.push($indexQuestion);
+                tabReponse4.push($newLinkLiReponse);
+
+
+            }
+
+            tabReponse2.forEach(function(element){
+                
+                var index = tabReponse2.indexOf(element);
+                
+                element.on('click',function(e) {
+                    console.log("<<<<<<<<<<<<<<<<<<<<");
+                    console.log(tab1[index]);
+                    console.log(">>>>>>>>>>>>>>>>>>>>");
+
+                    addReponse2(tabReponse1[index], tabReponse4[index],tabReponse3[index]);
+                });
+            });
+
+            //-----------------------------------------------
+
             $addPeriodeButton.on('click', function(e) {
                 // add a new periode form (see next code block)
                 addForm($collectionHolder, $newLinkLi);
             });
 
-            $addQuestionButton.on('click', function(e) {
-                // add a new periode form (see next code block)
-                addForm($collectionHolderQuestion, $newLinkQuestion);
-            });
 
             $addOrganisateurButton.on('click', function(e) {
                 // add a new organisateur form (see next code block)
@@ -382,6 +465,39 @@
 
                 })
                 
+            });
+
+            $addQuestionButton.on('click', function(e) {
+                
+                addForm($collectionHolderQuestion, $newLinkQuestion);
+
+                
+                var $collectionHolder4 = $('ul.reponses:eq(0)').clone();
+                
+                
+                $collectionHolder4.empty();
+            
+
+                var $addReponseButton2 = $('<button type="button" class="btn btn-success add_reponse_link">Ajouter une réponse</button>');
+                var $newLinkLi4 = $('<li></li>').append($addReponseButton2);
+                
+                $collectionHolder4.append($newLinkLi4);
+                // on recupère le le lien ajout organisateur
+                var $lienQuestion = $('ul.questions > li:nth-last-child(1)');
+
+                // on rajoute le lien ajout contact avant le lien ajout organisateur
+                $lienQuestion.before($collectionHolder4);
+                $collectionHolder4.append($('<br><br><br>'));
+                // on veut commencer de compter à partir de 0 donc il faut pas prendre le bouton ajout contact
+                $collectionHolder4.data('index', $collectionHolder4.find(':input').length-1);
+                
+                var $indexQuestion = $collectionHolderQuestion.data('index')-1;
+                
+                $addReponseButton2.on('click',function(e){
+
+                        addReponse2($collectionHolder4,$newLinkLi4,$indexQuestion)
+
+                })
             });
 
             /*$addContactButton.on('click', function(e) {
@@ -453,6 +569,44 @@
             //on va lier avec les regex au bon prototype organisateur
             newForm=newForm.replace(/organisateurs_\d+/g,"organisateurs_"+$indexOrga);
             newForm=newForm.replace(/organisateurs\]\[\d+/g,"organisateurs]["+$indexOrga);
+            console.log('?????????????????????????????????????\n');
+            console.log(newForm);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+        }
+
+        function addReponse2($collectionHolder, $newLinkLi,$indexOrga) {
+
+            console.log($collectionHolder);
+
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+            //console.log($collectionHolder.data('index'));
+            console.log(prototype);
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            var newForm = prototype;
+            // You need this only if you didn't set 'label' => false in your tags field in TaskType
+            // Replace '__name__label__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            // newForm = newForm.replace(/__name__label__/g, index);
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            newForm = newForm.replace(/__name__/g, index);
+            
+            console.log('-----------------------');
+            console.log($indexOrga);
+            //on va lier avec les regex au bon prototype organisateur
+            newForm=newForm.replace(/questions_\d+/g,"questions_"+$indexOrga);
+            newForm=newForm.replace(/questions\]\[\d+/g,"questions]["+$indexOrga);
             console.log('?????????????????????????????????????\n');
             console.log(newForm);
 

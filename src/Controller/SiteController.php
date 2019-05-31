@@ -883,6 +883,7 @@ class SiteController extends AbstractController
 					$manager->persist($key->getLieu());
 
 					$user->addEvenement($key);
+					$key->setSurvey(false);
 
 					$key->setPublishedAt($article->getCreatedAt());
 					$manager->persist($key);	
@@ -1202,6 +1203,22 @@ class SiteController extends AbstractController
 						   'erreurPeriode' => $erreurPeriode ,
 							]);
 					}
+					foreach($key->getReponses() as $key2)
+					{
+						$errors = $validator->validate($key);
+						if (count($errors) > 0) {
+
+							return $this->render('/site/form_evenement.html.twig'	,[
+							'formEvenement'=> $form2->createView() ,
+							'editmode' => $editmode, 
+							'errors' => $errors ,
+							'erreurDejaPris' =>$erreurDejaPris,
+							'erreurPeriode' => $erreurPeriode ,
+							]);
+						}
+						$key2->setQuestion($key);
+						$manager->persist($key2);
+					}
 					$key->setEvenement($evenement);
 					$manager->persist($key);
 				}
@@ -1398,6 +1415,7 @@ class SiteController extends AbstractController
 
 				}
 				$user->addEvenement($evenement);
+				$evenement->setSurvey(false);
 				$manager->persist($evenement);
 				$manager->persist($user);
 				$manager->flush();

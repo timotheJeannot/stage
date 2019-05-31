@@ -2,33 +2,25 @@
 
 namespace App\Form;
 
-use App\Entity\Question;
-use App\Form\FormReponseType;
+use App\Entity\Reponse;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
-class FormQuestionType extends AbstractType
+class FormReponseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('contenu')
-            ->add('reponses', CollectionType::class, 
-			[
-            'entry_type' => FormReponseType::class,
-			'entry_options' => ['label' => false],
-			'allow_add' => true,
-			])
-            //->add('evenement')
+           // ->add('question')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Question::class,
+            'data_class' => Reponse::class,
         ]);
     }
 }
