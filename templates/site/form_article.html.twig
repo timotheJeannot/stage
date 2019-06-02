@@ -563,6 +563,8 @@
 					addSubFormEvent(tabUlOrganisateurs[index],tabLinkOrganisateurs[index],tabIndexEvenementOrganisateurs[index]);
 
 					var $collectionHolder4 = $('ul.contacts:eq(0)').clone();
+					// on vide ce qu'il pouvait y avoir dedans
+					//$collectionHolder4.empty();
 
 					var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
 					var $newLinkLi4 = $('<li></li>').append($addContactButton);
@@ -763,6 +765,39 @@
                 $collectionHolderQuestion.data('index', $collectionHolderQuestion.find(':input').length);
 
                 var $indexEvent = $collectionHolder.data('index')-1;
+
+				// on rajoute une période à remplir au minimum
+				addSubFormEvent($collectionHolder2,$newLinkLi2,$indexEvent);
+
+				// on rajoute un organisateur à remplir au 
+				
+				addSubFormEvent($collectionHolder3,$newLinkLi3,$indexEvent);
+
+				var $collectionHolder42 = $('ul.contacts:eq(0)').clone();
+
+				var $addContactButton2 = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
+            	var $newLinkLi42 = $('<li></li>').append($addContactButton2);
+
+				$collectionHolder42.append($newLinkLi42);
+
+				// on recupère le lien ajout organisateur
+                //var $lienOrga = $('li:nth-last-child(1)',$collectionHolder3);
+				var $lienOrga2 = $collectionHolder3.find('li:last');
+				console.log('---------------------------------- \n');
+				console.log($lienOrga2);
+				$lienOrga2.before($collectionHolder42);
+
+				$collectionHolder42.append($('<br><br><br>'));
+                $collectionHolder42.data('index', $collectionHolder42.find(':input').length);
+
+				var $indexOrga2 = $collectionHolder3.data('index')-1;
+
+				$addContactButton2.on('click',function(e){
+
+                	addSubFormEventSubFormOrga($collectionHolder42,$newLinkLi42,$indexOrga2,$indexEvent);
+
+                })
+
 
 				// on rajoute les questions prédifini du formulaire de satisfaction
 

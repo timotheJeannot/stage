@@ -1701,50 +1701,6 @@ class SiteController extends AbstractController
 	{
 		$inscrit = $repoI->find($idInscrit);
 		$event = $repoE->find($idEve);
-		/*$form = $this->createFormBuilder();
-		$i =0;
-		$form->add('TextType', CollectionType::class, [
-			'entry_type' => TextType::class,
-			'entry_options' => ['label' => false],
-		]);
-		$form->add('ChoiceType', CollectionType::class, [
-			'entry_type' => ChoiceType::class,
-			'entry_options' => ['label' => false],
-		]);
-		foreach($event->getQuestions() as $key)
-		{
-			
-			// on va regarder si il y a des réponses aux questions
-			// si il y en a alors il faut faire un ChoiciType et sinon un simple TexteType
-
-			if($key->getReponses() != null)
-			{
-				// on va générer le tableau de réponse
-				$array = [];
-				$count = 0;
-				foreach($key->getReponses() as $key2)
-				{
-					$array[] = $key2->getContenu()	;
-					$count = $count +1;
-				}
-				
-				
-				$form->add("$i", ChoiceType::class, [
-					'choices'  => $array,
-					'label' => $key->getContenu(),
-				]);
-				
-			}
-			else
-			{
-				
-				$form->add("$i",TextType::class,[
-					'label' => $key->getContenu(),
-				]);
-				
-			}
-		}
-		$form=$form->getForm();*/
 
 		// on vérifie que l'utilisateur n'a pas déja répondu , si c'est le cas , on récupère les anciennes réponses
 		// et on va modifier l'object qu'il a déja crée
@@ -1770,7 +1726,8 @@ class SiteController extends AbstractController
 			$satisfaction = $satisfaction[0];
 		}
 
-		
+		$satisfaction->setInscrit($inscrit);
+		$satisfaction->setEvenement($event);
 		
 		$form = $this->createForm(FormSatisfactionType::class,$satisfaction);
 
@@ -1784,8 +1741,7 @@ class SiteController extends AbstractController
 			{
 				$manager->persist($key);
 			}
-			$satisfaction->setInscrit($inscrit);
-			$satisfaction->setEvenement($event);
+			
 			$manager->persist($satisfaction);
 			$manager->flush();
 			
