@@ -564,7 +564,7 @@
 
 					var $collectionHolder4 = $('ul.contacts:eq(0)').clone();
 					// on vide ce qu'il pouvait y avoir dedans
-					//$collectionHolder4.empty();
+					$collectionHolder4.empty();
 
 					var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
 					var $newLinkLi4 = $('<li></li>').append($addContactButton);
@@ -601,6 +601,7 @@
 			tabOrganisateursButtonContacts.forEach( function (evenement){ 
 
 				var i = tabOrganisateursButtonContacts.indexOf(evenement);
+				i = i-1;
 
 				evenement.forEach( function (evenement2) {
 
@@ -658,6 +659,8 @@
 					addSubFormEvent(tabUlQuestion[index],tabLinkQuestion[index],tabIndexEvenementQuestion[index]);
 
 					var $collectionHolder4 = $('ul.reponses:eq(0)').clone();
+					// on vide ce qu'il pouvait y avoir dedans
+					$collectionHolder4.empty();
 
 					var $addReponseButton = $('<button type="button" class="btn btn-success add_reponses_link">Ajouter une réponse</button>');
 					var $newLinkLi4 = $('<li></li>').append($addReponseButton);
@@ -694,6 +697,8 @@
 			tabQuestionsButtonReponses.forEach( function (evenement){ 
 
 				var i = tabQuestionsButtonReponses.indexOf(evenement);
+				// je ne sais pas pk , mais il faut soustraire 1 à i
+				i = i-1;
 
 				evenement.forEach( function (evenement2) {
 
@@ -728,14 +733,12 @@
                 // on supprime les formulaires periodes et le bouton
                 //$collectionHolder2.find('li').remove();
 
-				//  ***********************   
-				//cela ne sert à rien de vider car il n'y a rien à l'intérieur 
-
 				// on va vider ce qu'il y a à l'intérieur des ul
-				//$collectionHolder2.empty();
-				//$collectionHolder3.empty();
-
-				//  ***********************   
+				$collectionHolder2.empty();
+				$collectionHolder3.empty();
+				$collectionHolderQuestion.empty();
+ 
+ 
             
 
                 var $addPeriodeButton = $('<button type="button" class="btn btn-success add_periode_link">Ajouter une période</button>');
@@ -774,6 +777,8 @@
 				addSubFormEvent($collectionHolder3,$newLinkLi3,$indexEvent);
 
 				var $collectionHolder42 = $('ul.contacts:eq(0)').clone();
+				// on va vider ce qu'il pouvait y avoir dedans
+				$collectionHolder42.empty();
 
 				var $addContactButton2 = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
             	var $newLinkLi42 = $('<li></li>').append($addContactButton2);
@@ -831,6 +836,8 @@
                         addSubFormEvent($collectionHolder3,$newLinkLi3,$indexEvent);
 
 						var $collectionHolder4 = $('ul.contacts:eq(0)').clone();
+						// on va vider ce qu'il pouvait y avoir dedans
+						$collectionHolder4.empty();
 
 						var $addContactButton = $('<button type="button" class="btn btn-success add_contacts_link">Ajouter un contact</button>');
                 		var $newLinkLi4 = $('<li></li>').append($addContactButton);
@@ -867,6 +874,8 @@
 						//---------------------------------------
 
 						var $collectionHolder4 = $('ul.reponses:eq(0)').clone();
+						// on va vider ce qu'il pouvait y avoir dedans
+						$collectionHolder4.empty();
 						console.log($collectionHolder4);
 						console.log($collectionHolderQuestion);
 
@@ -1102,6 +1111,8 @@
 		function addEventStartQuestionAddReponse($collectionHolderQuestion,$indexEvent)
 		{
 			var $collectionHolder4 = $('ul.reponses:eq(0)').clone();
+			// on va vider ce qu'il pouvait y avoir dedans
+			$collectionHolder4.empty();
 			console.log($collectionHolder4);
 			console.log($collectionHolderQuestion);
 
