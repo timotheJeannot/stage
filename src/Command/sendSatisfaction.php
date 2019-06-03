@@ -78,7 +78,7 @@ de satisfaction n\'a pas été envoyé            ')
                             ' <body>' .
                             'Merci d\'avoir participer à '.$key->getNom().'.
                             pour répondre à l\'enquête de satisfaction veuillez cliquer sur le lien :<br><br> ' .
-                            '<a href="127.0.0.1:8000">Lien vers l\'enquête</a><br><br>ceci est un mail envoyé automatiquement'.
+                            '<a href="127.0.0.1">Lien vers l\'enquête</a><br><br>ceci est un mail envoyé automatiquement'.
                             ' </body>' .
                             '</html>',
                             'text/html'

@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class FormEvenementType extends AbstractType
@@ -21,7 +22,7 @@ class FormEvenementType extends AbstractType
             //->add('estDans')
             ->add('domaine',ChoiceType::class ,[
                 'choices'=> [
-                    'Autre'=>'Autre',
+                    'Événement transversal'=>'Événement transversal',
                     'Métiers de la construction durable , du bâtiment et des travaux publics' => 'Métiers de la construction durable , du bâtiment et des travaux publics',
                     'Métiers de la relation client' => 'Métiers de la relation client',
                     'Métiers de la gestion administrative, du transport et de la logistique' => 'Métiers de la gestion administrative, du transport et de la logistique',
@@ -61,7 +62,8 @@ class FormEvenementType extends AbstractType
             'entry_type' => FormQuestionType::class,
 			'entry_options' => ['label' => false],
 			'allow_add' => true,
-			])
+            ])
+            ->add('brouillon',CheckboxType::class)
 			 // ->add('PublishedAt')
         ;
     }

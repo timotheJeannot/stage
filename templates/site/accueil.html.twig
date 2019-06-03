@@ -23,16 +23,16 @@
             <div class="col-md-8">
 
                 {% for article in articles %}
-
+                  {% if article.brouillon == false %}
                     
                     <article>
 
                         <div class="card mb-4">
                             {% if article.image is null %}
-								<img class="card-img-top" src="http://placehold.it/750x350" alt="">
-							{% else %}
+								              <img class="card-img-top" src="http://placehold.it/750x350" alt="">
+							              {% else %}
                             	<img class="card-img-top" src="{{article.image}}" alt="">
-							{% endif %}
+							              {% endif %}
                             <div class="card-body">
                                 <h2 class="card-title">{{article.titre}}</h2>
                                 <p class="card-text">{{article.contenu}}</p>
@@ -44,6 +44,7 @@
                         </div>
 
                     </article>
+                  {% endif %}  
                 {% endfor %}
 
             </div>
@@ -52,7 +53,7 @@
       <div class="col-md-4">
 
         <!-- Search Widget -->
-        <div class="card my-4">
+        {#<div class="card my-4">
           <h5 class="card-header">Search</h5>
           <div class="card-body">
             <div class="input-group">
@@ -62,10 +63,10 @@
               </span>
             </div>
           </div>
-        </div>
+        </div>#}
 
         <!-- Categories Widget -->
-        <div class="card my-4">
+        {#<div class="card my-4">
           <h5 class="card-header">Informations sur le site</h5>
           <div class="card-body">
             <div class="row">
@@ -97,15 +98,51 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>#}
 
-        <!-- Side Widget -->
-        <div class="card my-4">
-          <h5 class="card-header">Liens utiles</h5>
-          <div class="card-body">
-            You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
+        {#{% if form is null %}
+          <div class="card my-4">
+            <h5 class="card-header">Informations sur le site</h5>
+            <div class="card-body">
+              {{info.contenu}}
+            </div>
           </div>
-        </div>
+
+            <!-- Side Widget -->
+          <div class="card my-4">
+            <h5 class="card-header">Liens utiles</h5>
+            <div class="card-body">
+              You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
+            </div>
+          </div>
+        {% else %}
+            {% form_theme form 'bootstrap_4_layout.html.twig' %} 
+            {{form_start(form)}}
+            <div class="card my-4">
+            <h5 class="card-header">Informations sur le site</h5>
+            <div class="card-body">
+             
+              {{form_row(form.infoSite.contenu)}}  
+            </div>
+          </div>
+
+            <!-- Side Widget -->
+          <div class="card my-4">
+            <h5 class="card-header">Liens utiles</h5>
+            <div class="card-body">
+              <ul class="partenaires" data-prototype="{{ form_widget(form.partenaires.partenaire.vars.prototype)|e('html_attr') }}">
+                  {% for partenaire in form.partenaires.partenaire %}
+                  
+                    {{form_row(partenaire)}}
+
+                  {% endfor %}
+              </ul>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success" >Modifier</button>  
+        {% endif %}#}
+
+           
 
       </div>
 

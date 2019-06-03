@@ -156,7 +156,7 @@ class CalendarListener
                         $borderColor = '#0CF950';
                         break ;
                     
-                     case "Autre":
+                     case "Événement transversal":
                         $backgroundColor = 'red ';
                         $borderColor = 'red ';
                         break ;   

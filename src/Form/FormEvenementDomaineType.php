@@ -14,7 +14,7 @@ class FormEvenementDomaineType extends AbstractType
         $builder
             ->add('1',CheckboxType::class, [
                 'required' => false,
-                'label' => 'Autre',
+                'label' => 'Événement transversal',
                 //'label_attr' => ['color' => 'red'],
                 
             ])

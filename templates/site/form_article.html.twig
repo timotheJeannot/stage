@@ -47,7 +47,7 @@
 	{{form_start(formArticle, { attr: { novalidate: 'novalidate' } })}}
 
 	
-	
+	{{form_row(formArticle.brouillon)}}
 	{{form_row(formArticle.titre , {'attr' : {'placeholder': "Titre de l'article"} ,  'label': "Titre"})}}
 	{{form_row(formArticle.image, {'attr' : {'placeholder': "Url de l'image"},  'label': "Image"})}}
 	{{form_row(formArticle.contenu, {'attr' : {'placeholder': "Contenu de l'article"},  'label': "Contenu"})}}

@@ -50,6 +50,11 @@ class Article
      */
     private $utilisateur;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $brouillon;
+
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
@@ -144,6 +149,18 @@ class Article
     public function setUtilisateur(?Utilisateur $utilisateur): self
     {
         $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    public function getBrouillon(): ?bool
+    {
+        return $this->brouillon;
+    }
+
+    public function setBrouillon(bool $brouillon): self
+    {
+        $this->brouillon = $brouillon;
 
         return $this;
     }

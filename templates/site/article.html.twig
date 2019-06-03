@@ -48,27 +48,30 @@
             <div class="col-md-8">
 
                 {% for article in articles %}
+					{% if (article.brouillon == false or is_mes_publications) %}
+					{# on pourrait sortir le if du is_mes_publications en dehors du for mais on en est plus à ca près #}
 
                     
-                    <article>
+						<article>
 
-                        <div class="card mb-4">
-							{% if article.image is null %}
-								<img class="card-img-top" src="http://placehold.it/750x350" alt="">
-							{% else %}
-                            	<img class="card-img-top" src="{{article.image}}" alt="">
-							{% endif %}
-                            <div class="card-body">
-                                <h2 class="card-title">{{article.titre}}</h2>
-                                <p class="card-text">{{article.contenu}}</p>
-                                 <a href="{{path('show_article' , {id : article.id})}}" class="btn btn-primary"> Lire la suite </a>
-                            </div>
-                            <div class="card-footer text-muted">
-                                Ecrit le {{article.createdAt| date ('d/m/y')}} à {{article.createdAt | date('H:i')}}
-                            </div>
-                        </div>
+							<div class="card mb-4">
+								{% if article.image is null %}
+									<img class="card-img-top" src="http://placehold.it/750x350" alt="">
+								{% else %}
+									<img class="card-img-top" src="{{article.image}}" alt="">
+								{% endif %}
+								<div class="card-body">
+									<h2 class="card-title">{{article.titre}}</h2>
+									<p class="card-text">{{article.contenu}}</p>
+									<a href="{{path('show_article' , {id : article.id})}}" class="btn btn-primary"> Lire la suite </a>
+								</div>
+								<div class="card-footer text-muted">
+									Ecrit le {{article.createdAt| date ('d/m/y')}} à {{article.createdAt | date('H:i')}}
+								</div>
+							</div>
 
-                    </article>
+						</article>
+					{% endif %}
                 {% endfor %}
 
             </div>

@@ -4,31 +4,39 @@ namespace App\Controller;
 
 use App\Entity\Lieu;
 use App\Entity\Part;
+use App\Entity\Accueil;
 use App\Entity\Article;
 use App\Entity\Contact;
 use App\Entity\Inscrit;
+use App\Entity\InfoSite;
 use App\Entity\Question;
 use App\Entity\Evenement;
+use App\Entity\Partenaire;
 use App\Form\FormLieuType;
 use App\Form\FormTrieType;
+use App\Entity\Partenaires;
 use App\Entity\ListeContact;
 use App\Entity\Organisateur;
 use App\Entity\Satisfaction;
 use App\Form\FormArticleType;
 use App\Form\FormContactType;
 use App\Form\FormInscritType;
+use App\Form\FormInfoSiteType;
 use App\Entity\IntervalleTemps;
 use App\Form\FormEvenementType;
 use App\Form\FormOrganisateurType;
 use App\Form\FormSatisfactionType;
 use App\Repository\LieuRepository;
 use App\Form\FormIntervalleTempsType;
+use App\Repository\AccueilRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\ContactRepository;
 use App\Repository\InscritRepository;
 use Symfony\Component\Form\FormEvent;
+use App\Repository\InfoSiteRepository;
 use Symfony\Component\Form\FormEvents;
 use App\Repository\EvenementRepository;
+use App\Repository\PartenairesRepository;
 use App\Repository\ListeContactRepository;
 use App\Repository\OrganisateurRepository;
 use App\Repository\SatisfactionRepository;
@@ -53,13 +61,111 @@ class SiteController extends AbstractController
      *@Route("/accueil", name="accueil")
 	 *@Route("/", name="accueil2")
      */
-    public function accueil(ArticleRepository $repository)
+    public function accueil(ArticleRepository $repository , ObjectManager $manager , InfoSiteRepository $repoInfo , Request $request ,PartenairesRepository $repoPartenaires , AccueilRepository $repoAccueil)
     {
 		$articles = $repository->findOrderByDate();
 
-        return $this->render('site/accueil.html.twig', [
+		// on va regarder si il existe déja un objet InfoSite (cette classe est un singleton)
+		$info=$repoInfo->findAll();
+		//dump($info);
+		/*if($info == null)
+		{
+			// on a pas encore renseigné les infos pour le site 
+			// on va donc créer un nouvel objet InfoSite
+
+			$info = new InfoSite();
+			// on va renseigner un contenu qui explique que c'est modifiable apr l'admin
+			$info->setContenu('Ceci est un contenu modifiable par l\'administrateur. Y mettre une description du site');
+		}
+		else
+		{
+			
+			$info = $info[0];
+		}
+		// on va regarder si il existe déja un objet partenaires (cette classe est un singleton)
+		$partenaires = $repoPartenaires->findAll();
+		if($partenaires == null)
+		{
+			$partenaires = new Partenaires();
+			$partenaire = new Partenaire();
+			$partenaire->SetNom('rectorat');
+			$partenaire->setSiteWeb('https://ac-besancon.fr/');
+			$partenaires->addPartenaire($partenaire);
+		}
+		else
+		{
+			$partenaires = $partenaires[0];
+		}
+
+		// on va regarder si il existe déja un objet accueil (cette classe est un singleton)
+		$accueil = $repoAccueil->findAll();
+		if($accueil == null)
+		{
+			$accueil = new Accueil();
+		}
+		else
+		{
+			$accueil = $accueil[0];
+		}
+		$accueil->setPartenaires($partenaires);
+		$accueil->setInfoSite($info);
+
+		$user = $this->getUser();
+
+		if ($user == null)
+		{
+			return $this->render('site/accueil.html.twig', [
+				'controller_name' => 'SiteController',
+				'articles' => $articles,
+				'form' => null,
+				'info' => $info,
+			]);
+		}
+
+		// on va regarder si l'utilisateur a le role admin
+		if (in_array('ROLE_ADMIN',$user->getRoles()))
+		{
+
+			// on va générer le formulaire 
+			$form = $this->createForm(FormAccueilType::class,$accueil);
+
+			$form->handleRequest($request);
+
+			
+
+			if ($form->isSubmitted())// && $form->isValid()) 
+			{
+				$manager->persist($info);
+				foreach($partenaires->getPartenaires() as $key)
+				{
+					$manager->persist($key);
+				}
+				$manager->persist($partenaires);
+				$manager->persist($accueil);
+				$manager->flush();
+
+			}
+			return $this->render('site/accueil.html.twig', [
+				'controller_name' => 'SiteController',
+				'articles' => $articles,
+				'form' => $form->createView(),
+				'info' => $info,
+			]);
+		}	*/
+
+		// l'utilisateur est un chargé de mission , il a pas accès aux formulaire
+        /*return $this->render('site/accueil.html.twig', [
 			'controller_name' => 'SiteController',
-			'articles' => $articles
+			'articles' => $articles,
+			'form' => null,
+			'info' => $info,
+		]);*/
+		
+		return $this->render('site/accueil.html.twig', [
+			'controller_name' => 'SiteController',
+			'articles' => $articles,
+			'form' => null,
+			'info' => null,
         ]);
     }
 
@@ -77,6 +183,8 @@ class SiteController extends AbstractController
 			return $this->render('site/article.html.twig', [
 				'articles'=> $articles,
 				'form' => $form->createView(),
+				'is_mes_publications' => false,
+				
 			 ]);
 	   }
 		
@@ -84,6 +192,7 @@ class SiteController extends AbstractController
         return $this->render('site/article.html.twig', [
 		   'articles'=> $articles,
 		   'form' => $form->createView(),
+		   'is_mes_publications' => false,
         ]);
     }
 
@@ -104,6 +213,7 @@ class SiteController extends AbstractController
 			return $this->render('site/evenement.html.twig', [
 				'evenements'=> $evenements,
 				'form' => $form->createView(),
+				'is_mes_publications' => false,
 				
 			 ]);
 
@@ -115,6 +225,7 @@ class SiteController extends AbstractController
         return $this->render('site/evenement.html.twig', [
 		   'evenements'=> $evenements,
 		   'form' => $form->createView(),
+		   'is_mes_publications' => false,
 		   
         ]);
     }
@@ -1588,6 +1699,7 @@ class SiteController extends AbstractController
 			return $this->render('site/article.html.twig', [
 				'articles'=> $articles,
 				'form' => $form->createView(),
+				'is_mes_publications' => true,
 			 ]);
 	   }
 		
@@ -1595,6 +1707,7 @@ class SiteController extends AbstractController
         return $this->render('site/article.html.twig', [
 		   'articles'=> $articles,
 		   'form' => $form->createView(),
+		   'is_mes_publications' => true,
         ]);
 
 	 }
@@ -1628,6 +1741,7 @@ class SiteController extends AbstractController
 			return $this->render('site/evenement.html.twig', [
 				'evenements'=> $evenements,
 				'form' => $form->createView(),
+				'is_mes_publications' => true,
 				
 			 ]);
 
@@ -1639,6 +1753,7 @@ class SiteController extends AbstractController
         return $this->render('site/evenement.html.twig', [
 		   'evenements'=> $evenements,
 		   'form' => $form->createView(),
+		   'is_mes_publications' => true,
 		   
         ]);
 
