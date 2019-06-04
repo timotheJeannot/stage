@@ -18,6 +18,7 @@ use App\Entity\Partenaires;
 use App\Entity\ListeContact;
 use App\Entity\Organisateur;
 use App\Entity\Satisfaction;
+use App\Form\FormAccueilType;
 use App\Form\FormArticleType;
 use App\Form\FormContactType;
 use App\Form\FormInscritType;
@@ -68,7 +69,7 @@ class SiteController extends AbstractController
 		// on va regarder si il existe déja un objet InfoSite (cette classe est un singleton)
 		$info=$repoInfo->findAll();
 		//dump($info);
-		/*if($info == null)
+		if($info == null)
 		{
 			// on a pas encore renseigné les infos pour le site 
 			// on va donc créer un nouvel objet InfoSite
@@ -107,8 +108,10 @@ class SiteController extends AbstractController
 		{
 			$accueil = $accueil[0];
 		}
+		
 		$accueil->setPartenaires($partenaires);
 		$accueil->setInfoSite($info);
+		
 
 		$user = $this->getUser();
 
@@ -119,9 +122,19 @@ class SiteController extends AbstractController
 				'articles' => $articles,
 				'form' => null,
 				'info' => $info,
+				'partenaires'=>$partenaires,
 			]);
 		}
-
+		
+		$manager->persist($info);
+		foreach($partenaires->getPartenaires() as $key)
+		{
+			$manager->persist($key);
+		}
+		$manager->persist($partenaires);
+		$manager->persist($accueil);
+		$manager->flush();
+		
 		// on va regarder si l'utilisateur a le role admin
 		if (in_array('ROLE_ADMIN',$user->getRoles()))
 		{
@@ -132,12 +145,13 @@ class SiteController extends AbstractController
 			$form->handleRequest($request);
 
 			
-
+			
 			if ($form->isSubmitted())// && $form->isValid()) 
 			{
 				$manager->persist($info);
 				foreach($partenaires->getPartenaires() as $key)
 				{
+					$key->setPartenaires($partenaires);
 					$manager->persist($key);
 				}
 				$manager->persist($partenaires);
@@ -145,28 +159,26 @@ class SiteController extends AbstractController
 				$manager->flush();
 
 			}
+			
 			return $this->render('site/accueil.html.twig', [
 				'controller_name' => 'SiteController',
 				'articles' => $articles,
 				'form' => $form->createView(),
 				'info' => $info,
+				'partenaires'=>$partenaires,
 			]);
-		}	*/
+		}	
 
 		// l'utilisateur est un chargé de mission , il a pas accès aux formulaire
-        /*return $this->render('site/accueil.html.twig', [
+        return $this->render('site/accueil.html.twig', [
 			'controller_name' => 'SiteController',
 			'articles' => $articles,
 			'form' => null,
 			'info' => $info,
-		]);*/
+			'partenaires'=>$partenaires,
+		]);
 		
-		return $this->render('site/accueil.html.twig', [
-			'controller_name' => 'SiteController',
-			'articles' => $articles,
-			'form' => null,
-			'info' => null,
-        ]);
+		
     }
 
 	/**

@@ -63,4 +63,9 @@ class Partenaires
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return 'partenaires';
+    }
 }

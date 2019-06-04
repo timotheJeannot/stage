@@ -100,7 +100,7 @@
           </div>
         </div>#}
 
-        {#{% if form is null %}
+        {% if form is null %}
           <div class="card my-4">
             <h5 class="card-header">Informations sur le site</h5>
             <div class="card-body">
@@ -112,7 +112,41 @@
           <div class="card my-4">
             <h5 class="card-header">Liens utiles</h5>
             <div class="card-body">
-              You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
+
+              <div class="row">
+              
+                  <div class="col-lg-6">
+                    <ul class="list-unstyled mb-0">
+                      {% set compteur = 0 %}
+                      {% for partenaire in partenaires.partenaires %}
+                        {% if compteur is divisible by(2) %}
+                          <li>
+                            <a href="{{partenaire.siteWeb}}">{{partenaire.nom}}</a>
+                          </li>
+                        {% endif %}
+                        {% set compteur = compteur + 1 %}
+                      {% endfor %}  
+                      
+                    </ul>
+                  </div>
+                  
+                  <div class="col-lg-6">
+                    <ul class="list-unstyled mb-0">
+                      
+                      {% set compteur = 0 %}
+                      {% for partenaire in partenaires.partenaires %}
+                        {% if compteur is divisible by(2) == false %}
+                          <li>
+                            <a href="{{partenaire.siteWeb}}">{{partenaire.nom}}</a>
+                          </li>
+                        {% endif %}
+                        {% set compteur = compteur + 1 %}
+                      {% endfor %} 
+                    </ul>
+                  </div>
+                  
+                
+              </div>
             </div>
           </div>
         {% else %}
@@ -130,8 +164,8 @@
           <div class="card my-4">
             <h5 class="card-header">Liens utiles</h5>
             <div class="card-body">
-              <ul class="partenaires" data-prototype="{{ form_widget(form.partenaires.partenaire.vars.prototype)|e('html_attr') }}">
-                  {% for partenaire in form.partenaires.partenaire %}
+              <ul class="partenaires" data-prototype="{{ form_widget(form.partenaires.partenaires.vars.prototype)|e('html_attr') }}">
+                  {% for partenaire in form.partenaires.partenaires %}
                   
                     {{form_row(partenaire)}}
 
@@ -139,8 +173,8 @@
               </ul>
             </div>
           </div>
-          <button type="submit" class="btn btn-success" >Modifier</button>  
-        {% endif %}#}
+          <button type="submit" class="btn btn-success" >Modifier</button>
+        {% endif %}
 
            
 
@@ -149,6 +183,55 @@
         </div>    
 
     </section>
-    
 
-{% endblock %}
+  <script>
+    var $collectionHolder;
+
+    // setup an "add a tag" link
+    var $addTagButton = $('<button type="button" class="btn btn-success add_tag_link">Ajouter un partenaire</button>');
+    var $newLinkLi = $('<li></li>').append($addTagButton);
+
+    jQuery(document).ready(function() {
+        // Get the ul that holds the collection of tags
+        $collectionHolder = $('ul.partenaires');
+
+        // add the "add a tag" anchor and li to the tags ul
+        $collectionHolder.append($newLinkLi);
+
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+        $addTagButton.on('click', function(e) {
+            // add a new tag form (see next code block)
+            addTagForm($collectionHolder, $newLinkLi);
+        });
+    });
+
+    function addTagForm($collectionHolder, $newLinkLi) {
+      // Get the data-prototype explained earlier
+      var prototype = $collectionHolder.data('prototype');
+
+      // get the new index
+      var index = $collectionHolder.data('index');
+
+      var newForm = prototype;
+      // You need this only if you didn't set 'label' => false in your tags field in TaskType
+      // Replace '__name__label__' in the prototype's HTML to
+      // instead be a number based on how many items we have
+      // newForm = newForm.replace(/__name__label__/g, index);
+
+      // Replace '__name__' in the prototype's HTML to
+      // instead be a number based on how many items we have
+      newForm = newForm.replace(/__name__/g, index);
+
+      // increase the index with one for the next item
+      $collectionHolder.data('index', index + 1);
+
+      // Display the form in the page in an li, before the "Add a tag" link li
+      var $newFormLi = $('<li></li>').append(newForm);
+      $newLinkLi.before($newFormLi);
+    }
+  </script>    
+
+{% endblock body %}
