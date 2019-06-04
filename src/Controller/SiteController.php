@@ -1778,6 +1778,33 @@ class SiteController extends AbstractController
 	{
 		$inscrit = new Inscrit();
 
+		// on va générer un cryptographically secure random integer pour l'inscrit
+		// on fait ca pour protéger la page d'enquête de satisfaction
+		// et ne pas mettre l'id de l'inscrit dans l'url mais plutôt ce random number
+		//voir ces liens
+		//https://symfony.com/doc/current/components/security/secure_tools.html
+		//https://paragonie.com/blog/2015/09/comprehensive-guide-url-parameter-encryption-in-php
+
+		//$random = random_int(-2147483647, 2147483646);
+		$random = random_int(-2147483647, 2147483646);
+		// on va vérifier que ce nombre n'est pas déja utilsié pour un inscrit
+		$testInscrit = $repositoryI->findByRandomNumber($random);
+		dump($testInscrit);
+		while($testInscrit != null)
+		{
+			$random = random_int(-2147483647, 2147483646);
+			// on va vérifier que ce nombre n'est pas déja utilsié pour un inscrit
+			$testInscrit = $repositoryI->findByRandomNumber($random);
+
+			// il pourrait y avoir une boucle infini si le nombre d'inscrit dans la base de donnée = 2147483647 + 2147483646
+			// donc faire gaffe si on commence à modifer les min et max de random_int
+			// et si on s'inspire de ce code , prendre cela en considération 
+		}
+
+		// $random est unique dans la table inscrit
+		// on peut l'affecter au futur(peut être) inscrit
+		$inscrit->SetRandomNumber($random);
+
 		$form = $this->createForm(FormInscritType::class,$inscrit);
 
 		$form->handleRequest($request);
@@ -1822,12 +1849,35 @@ class SiteController extends AbstractController
 	}
 
 	/**
-	 *  @Route("/satisfaction/{idEve}/{idInscrit}",name="satisfaction")
+	 *  @Route("/satisfaction/{idEve}/{idInscrit}/{random}",name="satisfaction")
 	 */
-	public function satisfaction(EvenementRepository $repoE, InscritRepository $repoI , SatisfactionRepository $repoSati, Request $request , $idEve , $idInscrit , InscritRepository $repositoryI,ObjectManager $manager)
+	public function satisfaction(EvenementRepository $repoE, InscritRepository $repoI , SatisfactionRepository $repoSati, Request $request , $idEve , $idInscrit , InscritRepository $repositoryI,ObjectManager $manager , $random)
 	{
 		$inscrit = $repoI->find($idInscrit);
 		$event = $repoE->find($idEve);
+		if($inscrit == null || $event == null)
+		{
+			// on ne trouve pas l'événement ou l'inscrit , soit il y a eu des suppression en bdd , soit 
+			// on s'amuse à rentrer des nombres au pif dans l'url
+			// on va rediriger vers l'accueil
+			return $this->redirectToRoute('accueil');
+		}
+		// on va vérifier que l'inscrit est bien inscrit à l'événement
+
+		$test = $repoI->IisInscritAtE($idInscrit,$idEve);
+		if($test == null)
+		{
+			return $this->redirectToRoute('accueil');
+		}
+
+		// on va récuperer l'inscrit relié au random
+		$test = $repoI->findByRandomNumber($random);
+		if($test == null)
+		{
+			// on n'a pas renseigné le bon nombre , on redirige vers l'accueil
+			return $this->redirectToRoute('accueil');
+		}
+
 
 		// on vérifie que l'utilisateur n'a pas déja répondu , si c'est le cas , on récupère les anciennes réponses
 		// et on va modifier l'object qu'il a déja crée

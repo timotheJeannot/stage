@@ -60,4 +60,25 @@ class InscritRepository extends ServiceEntityRepository
                 ->getResult();
         
     }
+
+    public function findByRandomNumber ($random)
+    {
+            return $this->createQueryBuilder('i')
+            ->where('i.randomNumber = :random')
+            ->setParameter('random',$random)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function IisInscritAtE($idInscrit,$idEve)
+    {
+        return $this->createQueryBuilder('i')
+                ->join('i.evenements','e','WITH')
+                ->where('e.id = :idEvenement')
+                ->setParameter('idEvenement',$idEve)
+                ->andWhere('i.id = :idInscrit')
+                ->setParameter('idInscrit',$idInscrit)
+                ->getQuery()
+                ->getResult();
+    }
 }

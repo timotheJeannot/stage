@@ -54,6 +54,11 @@ class Inscrit
      */
     private $satisfactions;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $randomNumber;
+
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
@@ -168,6 +173,18 @@ class Inscrit
                 $satisfaction->setInscrit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRandomNumber(): ?int
+    {
+        return $this->randomNumber;
+    }
+
+    public function setRandomNumber(int $randomNumber): self
+    {
+        $this->randomNumber = $randomNumber;
 
         return $this;
     }
