@@ -61,6 +61,10 @@
 									<img class="card-img-top" src="{{article.image}}" alt="">
 								{% endif %}
 								<div class="card-body">
+									{% if article.brouillon %}
+										<h4 style="color : red"> Cette article est un brouillon </h4>
+										<hr>
+									{% endif %}
 									<h2 class="card-title">{{article.titre}}</h2>
 									<p class="card-text">{{article.contenu}}</p>
 									<a href="{{path('show_article' , {id : article.id})}}" class="btn btn-primary"> Lire la suite </a>

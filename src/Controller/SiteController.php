@@ -1775,7 +1775,7 @@ class SiteController extends AbstractController
 	/**
 	 *  @Route("/inscription/{id}",name="inscription")
 	 */
-	public function inscription(EvenementRepository $repository , Request $request , $id , InscritRepository $repositoryI,ObjectManager $manager)
+	public function inscription(EvenementRepository $repository , Request $request , $id , InscritRepository $repositoryI,ObjectManager $manager , \Swift_Mailer $mailer)
 	{
 		$inscrit = new Inscrit();
 
@@ -1835,6 +1835,49 @@ class SiteController extends AbstractController
 				$manager->persist($inscrit);
 				$manager->persist($evenement);
 				$manager->flush();
+
+				// on va envoyer un mail de confoirmation d'inscription à l'inscrit
+
+				$message = (new \Swift_Message('Confirmation d\'inscription'))
+                        ->setFrom('timothe.jeannot@gmail.com')
+                        ->setTo($inscrit->getMail())
+                        ->setBody(
+						'Bonjour '.$inscrit->getPrenom().' '.$inscrit->getNom().'
+						<br><br>
+						Vous êtes bien inscrit à l\'événement <strong>'.$evenement->getNom().'</strong>.
+						<br><br>
+Nous vous enverrons un mail d\'enquête de satisfaction une fois l\'événement terminé. <br><br>
+Pour vous desinscrire , veuillez passer par le formulaire de contact du site.
+<br><br>
+Ce mail est envoyé automatiquement.',
+                        'text/html'
+                        )
+                    ;
+                
+				$mailer->send($message);
+				
+				$this->addFlash('success', 'It sent!');
+
+				// on va envoyer un mail de confoirmation d'inscription à l'auteur de l'événement (le chargé de mission)
+
+				$message = (new \Swift_Message('Nouvel Inscrit pour '.$evenement->getNom()))
+                        ->setFrom('timothe.jeannot@gmail.com')
+                        ->setTo($evenement->getUtilisateur()->getEMail())
+                        ->setBody(
+						'Bonjour '.$evenement->getUtilisateur()->getPrenom().' '.$evenement->getUtilisateur()->getNom().'
+						<br><br>
+						'.$inscrit->getPrenom().' '.$inscrit->getNom().' s\'est inscrit à <strong>'.$evenement->getNom().'</strong>.
+						<br><br>
+Les informations le concernant est disponible sur la page de l\'événement. <br><br>
+Ce mail est envoyé automatiquement.',
+                        'text/html'
+                        )
+                    ;
+                
+				$mailer->send($message);
+				
+				$this->addFlash('success', 'It sent!');
+
 				return $this->redirectToRoute('accueil');
 			}
 			// déja inscrit , il faut renvoyer un message d'erreur
@@ -1929,6 +1972,21 @@ class SiteController extends AbstractController
 		return $this->render('site/form_satisfaction.html.twig', [
             'form' => $form->createView(),
         ]);
+	}
+
+	/**
+	 *  @Route("/satisfaction/{idEve}/{idInscrit}/",name="suppression_inscrit")
+	 */
+	public function suppression_inscrit(EvenementRepository $repoE, InscritRepository $repoI , $idEve , $idInscrit , InscritRepository $repositoryI,ObjectManager $manager )
+	{
+		$evenement = $repoE->find($idEve);
+		$inscrit = $repositoryI->find($idInscrit);
+
+		$evenement->removeInscrit($inscrit);
+		$manager->persist($evenement);
+		$manager->flush();
+
+		return $this->redirectToRoute('accueil');
 	}
 
 	
