@@ -1586,10 +1586,12 @@ class SiteController extends AbstractController
 	 /**
      * @Route("/show_evenement/{id}", name="show_evenement")
      */
-	 public function showEvenement(EvenementRepository $repository,$id)
+	 public function showEvenement(EvenementRepository $repository,$id , InscritRepository $repoI)
 	 {
 		$evenement = $repository->find($id);
-		return $this->render('site/show_evenement.html.twig',[ 'evenement'=> $evenement ]);
+		$inscrits = $repoI->findByIdEvenement($id);
+
+		return $this->render('site/show_evenement.html.twig',[ 'evenement'=> $evenement , 'inscrits' =>$inscrits ]);
 	 }
 
 	 /**
@@ -1699,7 +1701,6 @@ class SiteController extends AbstractController
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
 		$form = $this->createForm(FormTrieType::class);
-		dump($form);
 
 		/*$formIntervalleTemp = $this->createForm(FormIntervalleTempsType::class);
 		$form*/
@@ -1789,7 +1790,6 @@ class SiteController extends AbstractController
 		$random = random_int(-2147483647, 2147483646);
 		// on va vérifier que ce nombre n'est pas déja utilsié pour un inscrit
 		$testInscrit = $repositoryI->findByRandomNumber($random);
-		dump($testInscrit);
 		while($testInscrit != null)
 		{
 			$random = random_int(-2147483647, 2147483646);

@@ -171,20 +171,65 @@
 
 			<br>
 			<br>
+			{% if is_granted('ROLE_USER') %}
+				<h4 class="text-primary"> Inscrits </h4>
+				{% for inscrit in inscrits %}
+					<div class="card mb-4">
+						<div class="card-header ">
+							
+							<div class ="card-body">
+
+								<h3 class="text-primary card-title"> {{inscrit.prenom}} {{inscrit.nom}} </h3>
+								<hr>
+								<h4 class="text-primary"> Mail : {{inscrit.mail}} </h4>
+								<h4 class="text-primary"> Categorie : {{inscrit.categorie}} </h4>
+								<hr>
+								<h4 class="text-primary"> Réponses </h5>
+								{# on va chercher la satisfaction correspondant à l'événement #}
+								{% for satisfaction in inscrit.satisfactions %}
+									{% if satisfaction.evenement.getId == evenement.getId %}
+										
+											{% for part in satisfaction.parts %}
+
+												<h5 class="text-primary"> {{part.question}} </h5>
+												<p> {{part.reponse}} </p>
+
+											{% endfor %}
+
+									{% endif %}
+								{% endfor %}
+								
+
+							</div>
+
+						</div>	
+					</div>
+				{% endfor %}
+			{% endif %}
+
 			<a href="{{path('accueil')}}" class="btn btn-primary">accueil</a>
 
       </div>
 
       <!-- Sidebar Widgets Column -->
       <div class="col-md-4">
-
-        <!-- Side Widget -->
-        <div class="card my-4">
-          <h5 class="card-header">Inscription à l'événement</h5>
-          <div class="card-body">
-            <a href="{{path('inscription' , {id : evenement.id})}}" class="btn btn-primary">S'inscrire</a>
-          </div>
-        </div>
+				{% if evenement.isFinish == false %}
+					<!-- Side Widget -->
+					<div class="card my-4">
+						<h5 class="card-header">Inscription à l'événement</h5>
+						<div class="card-body">
+							<a href="{{path('inscription' , {id : evenement.id})}}" class="btn btn-primary">S'inscrire</a>
+						</div>
+					</div>
+				{% else %}
+					<div class="card my-4">
+						<h5 class="card-header">Inscription à l'événement</h5>
+						<div class="card-body">
+							<p>L'inscription est fermé , si vous souhaiter émettre un retour sur l'événement , vous pouvez utiliser
+							 <a href ="{{path('contact')}} ">le formulaire de contact </a> </p>
+						</div>
+					</div>
+				{% endif %}
 
 
 		{% if is_granted('ROLE_ADMIN') %}

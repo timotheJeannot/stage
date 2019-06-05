@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Repository\InscritRepository;
 use App\Repository\EvenementRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,12 +23,15 @@ class sendSatisfaction extends Command
 
     private $params;
 
-    public function __construct(EvenementRepository $repoEve , InscritRepository $repoInscrit, \Swift_Mailer $mailer, ParameterBagInterface $params)
+    private $manager;
+
+    public function __construct(EvenementRepository $repoEve , InscritRepository $repoInscrit, \Swift_Mailer $mailer, ParameterBagInterface $params , ObjectManager $manager)
     {
         $this->repoEve = $repoEve;
         $this->repoInscrit = $repoInscrit;
         $this->mailer = $mailer;
         $this->params = $params;
+        $this->manager = $manager;
 
         parent::__construct();
     }
@@ -93,6 +97,10 @@ ceci est un mail envoyé automatiquement'*/
                 
                     $this->mailer->send($message);
                 }
+                // on modfie survey pour pas que les mails soient renvoyés à la prochaine éxécution de la commande
+                $key->setSurvey(true);
+                $this->manager->persist($key);
+                $this->manager->flush();
                 $output->writeln('///////////');
             }
         }
