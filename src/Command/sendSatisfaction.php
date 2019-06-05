@@ -52,7 +52,6 @@ de satisfaction n\'a pas été envoyé            ')
 
     protected function execute(InputInterface $input, OutputInterface $output)//, EvenementRepository $repoEve , InscritRepository $repoInscrit)
     {
-        $output->writeln('amazing !');
         $evenements = $this->repoEve->findAll();
         foreach($evenements as $key)
         {
