@@ -71,7 +71,7 @@ de satisfaction n\'a pas été envoyé            ')
                     // on va envoyer un mail
 
                     $message = (new \Swift_Message('enquête de satisfaction sur l\'événement : '.$key->getNom()))
-                        ->setFrom('timothe.jeannot@gmail.com')
+                        ->setFrom($key->getUtilisateur()->getEMail())
                         ->setTo($key2->getMail())
                         ->setBody(
                             /*$this->params->get('templating')->render(

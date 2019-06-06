@@ -565,6 +565,23 @@
             var $newFormLi = $('<li></li>').append(newForm);
             $newLinkLi.before($newFormLi);
 
+            //https://stackoverflow.com/questions/7678499/jquery-checking-if-next-element-exists
+            // on va regarder si il y a un ul contact après le li ( on fait alros un addForm d'un organisateur)
+
+            /*console.log('test de génie 1 ');
+            console.log($newFormLi);
+            console.log($newFormLi.next());
+            console.log($newLinkLi);
+            console.log($newFormLi.next().is('ul.contacts'));
+            if($newFormLi.next().is('ul.contacts'))
+            {
+                console.log('test de génie 2 ');
+                $newFormLi.append($newFormLi.next());
+            }
+            le code ne fonctionne pas car le ul est généré après qu'on soit sortie de la fonction
+            
+            */
+
             //https://symfony.com/doc/current/form/form_collections.html#form-collections-remove
             addTagFormDeleteLink($newFormLi)
         }

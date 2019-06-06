@@ -46,6 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -1163,6 +1164,19 @@ class SiteController extends AbstractController
 		else
 		{
 			$lieu = $evenement->getLieu();
+
+			//On est ici en train de modifier un événement
+			// quand on supprime un organisateur depuis le formulaire ,
+			// la liste de contact ne se supprime pas , on va donc s'en occuper
+			// je m'inspire de ce lien : https://symfony.com/doc/current/form/form_collections.html#form-collections-remove
+
+			$originalOrganisateurs = new ArrayCollection();
+			foreach($evenement->getOrganisateurs() as $key)
+			{
+				$originalOrganisateurs->add($key);
+			}
+
+			dump($originalOrganisateurs);
 		}
 
 		$errors = null;
@@ -1179,6 +1193,27 @@ class SiteController extends AbstractController
 			if($evenement->getId() == null)
 			{
 				$evenement->setPublishedAt(new \DateTime( "now" , new \DateTimeZone("Europe/Paris")));
+			}
+
+			//on va supprimer les listes de contats qui ne se supprime pas automatiquement quand on modifie un événement
+			if($editmode)
+			{
+				foreach($originalOrganisateurs as $key)
+				{
+					if(false === $evenement->getOrganisateurs()->contains($key))
+					{
+						
+						foreach($key->getListeContact() as $key2)
+						{
+							if($evenement->getListesContact()->contains($key2))
+							{
+								//$key->removeListeContact($key2);
+								//$manager->persist($key);
+								$manager->remove($key2);
+							}
+						}
+					}
+				}
 			}
 			
 			// on va modifier un peu la saisie de l'utilisateur
