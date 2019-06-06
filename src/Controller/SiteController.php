@@ -1066,7 +1066,7 @@ class SiteController extends AbstractController
 			$user->addArticle($article);
 			$manager->persist($article);
 			$manager->persist($user);
-			
+			dump($article);
 			$manager->flush();
 		
 			//return $this->redirectToRoute('blog_show',['id' => $article->getId()]);
