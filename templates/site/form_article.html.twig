@@ -904,7 +904,30 @@
 
                 		})
 						//---------------------------------------
-				});	
+				});
+
+				console.log('làààààààààààààààààà');
+				console.log($collectionHolder);
+				console.log($newLinkLi);
+				$collectionHolder.find('> ul:eq(0) , > ul:eq(1) , > ul:eq(2) ').wrapAll($('<div class = "new"> </div>'));
+				console.log($collectionHolder.find('> li:nth-last-child(1)').prev().prev());
+				console.log($collectionHolder.find('> li:nth-last-child(1)').prev());
+				$collectionHolder.find('> li:nth-last-child(1)').prev().prepend($collectionHolder.find('> li:nth-last-child(1)').prev().prev());
+				console.log($collectionHolder.find('> div:last-child'));
+				console.log($collectionHolder.find('> li:last-child').prev());
+				console.log('sérieu ?');
+				addTagFormDeleteLink($collectionHolder.find('> li:last-child').prev());
+            });
+
+			console.log('iciiiiiiiiiiiiii');
+			console.log($collectionHolder);
+			$collectionHolder.find('ul.questions').each(function(){
+				$collectionHolder.find('> div.form-group:eq(0) , > div.form-group:eq(1) , > div.form-group:eq(2) , > div.form-group:eq(3) , > ul:eq(0) , > ul:eq(1) , > ul:eq(2) , > fieldset:eq(0) ').wrapAll($('<div class = "new"> </div>'));
+			});
+
+			$collectionHolder.find('div.new').each(function() {
+                console.log($(this));
+                addTagFormDeleteLink($(this));
             });
 		
 
@@ -1139,6 +1162,23 @@
 
             })
 		}
+
+		function addTagFormDeleteLink ($newFormLi)
+        {
+            var $removeFormButton = $('<button type="button" class="btn btn-danger">Suppression</button>');
+            $newFormLi.append($removeFormButton);
+            $newFormLi.append($('<br> <br>'));
+
+            $removeFormButton.on('click', function(e) {
+                // remove the li for the tag form
+                console.log($newFormLi);
+                $newFormLi.remove();
+                console.log($newFormLi);
+
+                console.log($newFormLi);
+
+            });
+        }
 
 	</script>
 

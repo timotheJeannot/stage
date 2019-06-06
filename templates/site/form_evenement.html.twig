@@ -326,6 +326,9 @@
                     console.log(">>>>>>>>>>>>>>>>>>>>");
 
                     addContact2(tab1[index], tab4[index],tab3[index]);
+                    console.log('est ce qu\'on vas y arriver à temps ?');
+                    console.log(tab1[index]);
+                    addTagFormDeleteLink(tab1[index].find('li:nth-last-child(2)'));
                 });
             });
 
@@ -402,6 +405,8 @@
                     console.log(">>>>>>>>>>>>>>>>>>>>");
 
                     addReponse2(tabReponse1[index], tabReponse4[index],tabReponse3[index]);
+                    console.log(tabReponse1[index]);
+                    addTagFormDeleteLink(tabReponse1[index].find('li:nth-last-child(2)'));
                 });
             });
 
@@ -410,6 +415,13 @@
             $addPeriodeButton.on('click', function(e) {
                 // add a new periode form (see next code block)
                 addForm($collectionHolder, $newLinkLi);
+                console.log($collectionHolder);
+                console.log($newLinkLi);
+                // on va chercher l'avant dernier li qui contient notre formulaire pour
+                // rajouter le bouton de suppression
+                console.log($collectionHolder.find('li:nth-last-child(2)'));
+                addTagFormDeleteLink($collectionHolder.find('li:nth-last-child(2)'));
+                
             });
 
 
@@ -436,6 +448,7 @@
 
                 // on rajoute le lien ajout contact avant le lien ajout organisateur
                 $lienOrga.before($collectionHolder4);
+                
                 $collectionHolder4.append($('<br><br><br>'));
                 // on veut commencer de compter à partir de 0 donc il faut pas prendre le bouton ajout contact
                 $collectionHolder4.data('index', $collectionHolder4.find(':input').length-1);
@@ -445,9 +458,22 @@
                 $addContactButton2.on('click',function(e){
 
                         addContact2($collectionHolder4,$newLinkLi4,$indexOrga)
+                        console.log($newLinkLi4);
+                        console.log($newLinkLi4.prev());
+                        addTagFormDeleteLink($newLinkLi4.prev());
 
                 })
-                
+                console.log('-----------------')
+                console.log($collectionHolder2);
+                // on va rajouter le bouton de suppression
+
+                console.log($collectionHolder2.find('> li:nth-last-child(1)').prev());
+                console.log($collectionHolder2.find('> li:nth-last-child(1)').prev().prev());
+                $collectionHolder2.find('> li:nth-last-child(1)').prev().prev().append($collectionHolder2.find('> li:nth-last-child(1)').prev());
+                console.log($collectionHolder2.find('> li:nth-last-child(1)').prev());
+
+                addTagFormDeleteLink($collectionHolder2.find('> li:nth-last-child(1)').prev());
+
             });
 
             $addQuestionButton.on('click', function(e) {
@@ -479,8 +505,18 @@
                 $addReponseButton2.on('click',function(e){
 
                         addReponse2($collectionHolder4,$newLinkLi4,$indexQuestion)
+                        console.log($newLinkLi4);
+                        console.log($newLinkLi4.prev());
+                        console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD');
+                        addTagFormDeleteLink($newLinkLi4.prev());
 
                 })
+
+                console.log('-----------------')
+                console.log($collectionHolderQuestion);
+
+                $collectionHolderQuestion.find('> li:nth-last-child(1)').prev().prev().append($collectionHolderQuestion.find('> li:nth-last-child(1)').prev());
+                addTagFormDeleteLink($collectionHolderQuestion.find('> li:nth-last-child(1)').prev());
             });
 
             /*$addContactButton.on('click', function(e) {
@@ -528,6 +564,59 @@
             $collectionHolder2.find('div.new').each(function() {
                 console.log($(this));
                 addTagFormDeleteLink($(this));
+            });
+
+            // on s'occupe maintenant des suppressions des questions
+            console.log('iciiiiiiiiiii');
+            console.log($collectionHolderQuestion);
+
+            var compteur = 0;
+            $collectionHolderQuestion.find('> ul').each(function() {
+                //console.log($(this).next().prevUntil('ul'));
+                
+               
+                //$(this).prevUntil('div.new').wrapAll($('<div class = "new"> </div>'));
+                //$collectionHolder2.find('> div:eq('+compteur*4+') , > div:eq('+compteur*4 +1+') , > div:eq('+compteur*4 +2+') , > div:eq('+compteur*4 +3+') , > ul:eq('+compteur+') , > br:eq('+compteur*3+', > br:eq('+compteur*3+1+', > br:eq('+compteur*3+2+') ').wrapAll($('<div class = "new"> </div>'));
+               // $collectionHolder2.find('> div:eq('+compteur*4+') , > ul:eq('+compteur+') ').wrapAll($('<div class = "new"> </div>'));
+               // $(this).next().prevUntil('br').wrapAll($('<div class = "new"> </div>'));
+                $collectionHolderQuestion.find('> div.form-group:eq(0) , > ul:eq(0) ').wrapAll($('<div class = "new"> </div>'));
+               
+                compteur = compteur +1
+                
+            })
+
+            $collectionHolderQuestion.find('div.new').each(function() {
+                console.log($(this));
+                addTagFormDeleteLink($(this));
+            });
+
+            // on s'occupe des suppressions des contacts
+
+            console.log('laaaaaaaaaaaaa');
+            console.log($collectionHolder3);
+            $collectionHolder3.each(function(){
+                console.log($(this));
+                $(this).find(' fieldset').each(function() {
+
+                    addTagFormDeleteLink($(this));
+
+                });
+
+            });
+
+            // on s'occupe maintenant des suppression des réponses
+
+            $collectionHolderReponse 
+            console.log('J\'ai quasi fini ;)');
+            console.log($collectionHolderReponse);
+            $collectionHolderReponse.each(function(){
+                console.log($(this));
+                $(this).find('> div').each(function() {
+                    console.log($(this));
+                    addTagFormDeleteLink($(this));
+
+                });
+
             });
 
         });
@@ -583,7 +672,7 @@
             */
 
             //https://symfony.com/doc/current/form/form_collections.html#form-collections-remove
-            addTagFormDeleteLink($newFormLi)
+            //addTagFormDeleteLink($newFormLi)
         }
 
         function addContact2($collectionHolder, $newLinkLi,$indexOrga) {

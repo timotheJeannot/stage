@@ -1176,7 +1176,17 @@ class SiteController extends AbstractController
 				$originalOrganisateurs->add($key);
 			}
 
-			dump($originalOrganisateurs);
+			// les questions ne se suppriment pas automatiquement non plus.
+			$originalQuestions = new ArrayCollection();
+			foreach($evenement->getQuestions() as $key)
+			{
+				$originalQuestions->add($key);
+						
+			}
+
+			
+			
+			
 		}
 
 		$errors = null;
@@ -1214,6 +1224,24 @@ class SiteController extends AbstractController
 						}
 					}
 				}
+
+				foreach($originalQuestions as $key)
+				{
+					if(false === $evenement->getQuestions()->contains($key))
+					{
+						// on va supprimer les réponses de la question
+						foreach($key->getReponses() as $key2)
+						{
+							$manager->remove($key2);
+						}
+						$manager->remove($key);
+					}
+					
+					
+				}
+				
+
+				
 			}
 			
 			// on va modifier un peu la saisie de l'utilisateur
