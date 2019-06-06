@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}chargement evenement{% endblock %}
+
+{% block body %}
+    <h1> Vous pouvez ici lier un événement à l'article </h1>
+
+    {% form_theme form 'bootstrap_4_layout.html.twig' %}
+    {{form_start(form)}}
+    {{form_errors(form)}}
+    {{form_row(form.evenement)}}
+    <button type="submit" class="btn btn-success" >Envoyer</button>
+    {{form_end(form)}}
+
+{% endblock %}

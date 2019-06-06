@@ -38,6 +38,7 @@ use App\Repository\InfoSiteRepository;
 use Symfony\Component\Form\FormEvents;
 use App\Repository\EvenementRepository;
 use App\Repository\PartenairesRepository;
+use App\Form\ChargeEvenementInArticleType;
 use App\Repository\ListeContactRepository;
 use App\Repository\OrganisateurRepository;
 use App\Repository\SatisfactionRepository;
@@ -387,7 +388,7 @@ class SiteController extends AbstractController
 			{
 				$test1 = 1;
 			}
-
+			
 			foreach($article->getEvenements() as $key)
 			{
 				if($test1 ==1)
@@ -483,7 +484,7 @@ class SiteController extends AbstractController
 			
 			// on va faire en sorte de ne pas insérer de doublons qui serait présent dans 
 			//le formulaire 
-
+			
 			for($i =0 ; $i < count($article->getEvenements()) ; $i++)
 			{
 				//on va regarder si deux intervalles de temps sont identique
@@ -682,7 +683,7 @@ class SiteController extends AbstractController
 				}
 			}*/
 
-
+			
 			// la variable test est la pour ne pas prendre en compte le 1er événement ($event)
 			// qui est là pour faciliter le rendu dans twig
 			$test =0;
@@ -1003,7 +1004,7 @@ class SiteController extends AbstractController
 						"adresse" => $key->getLieu()->getAdresse(),
 						"codePostal" => $key->getLieu()->getCodePostal()
 					]);
-
+				
 					if($lieu2 != null)
 					{
 							
@@ -1045,7 +1046,7 @@ class SiteController extends AbstractController
 						}
 						
 					}
-
+					
 					$manager->persist($key->getLieu());
 
 					$user->addEvenement($key);
@@ -1057,6 +1058,7 @@ class SiteController extends AbstractController
 				
 				$test = 1;
 			}
+		
 			if(!$editmode)
 			{
 				$article->removeEvenement($event);
@@ -1064,8 +1066,9 @@ class SiteController extends AbstractController
 			$user->addArticle($article);
 			$manager->persist($article);
 			$manager->persist($user);
-
+			
 			$manager->flush();
+		
 			//return $this->redirectToRoute('blog_show',['id' => $article->getId()]);
 			return $this->redirectToRoute('article');
 		}
@@ -2069,5 +2072,33 @@ Ce mail est envoyé automatiquement.',
 		return $this->redirectToRoute('accueil');
 	}
 
+	/**
+	 *  @Route("/lier_evenement/{id}",name="lier_evenement")
+	 */
+	public function lier_evenement(ArticleRepository $repoA,ObjectManager $manager , Request $request , $id )
+	{
+		echo'.... <br>';
+		$article = $repoA->find($id);
+
+		$form = $this->createForm(ChargeEvenementInArticleType::class);
+		echo' encore ce handle ..<br>';
+		$form->handleRequest($request);
+		echo 'et oui ! <br>';
+
+		if ($form->isSubmitted()&& $form->isValid()) 
+       	{
+			$formData = $form->getData();
+        	$article->addEvenement($formData['evenement']);
+			$manager->persist($article);
+			$manager->flush();
+
+			echo'aie aie<br>';
+
+			return $this->redirectToRoute('accueil');
+		}
+		return $this->render('site/lier_evenement.html.twig', [
+            'form' => $form->createView(),
+        ]);
+	}
 	
 }
