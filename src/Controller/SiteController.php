@@ -300,6 +300,7 @@ class SiteController extends AbstractController
 
 		$user = $this->getUser();
 
+
 		/*
 		$this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -698,34 +699,47 @@ class SiteController extends AbstractController
 				{
 					foreach($key->getPeriode() as $key2)
 					{
-						//on va valider 
-						$erreurValidation = $validator->validate($key2);
-						if (count($erreurValidation) > 0) {
+						// on va regarder si l'élément a été supprimé
+						// si c'est le cas , le début est null
 
-							return $this->render('/site/form_article.html.twig'	,[
-								'formArticle'=> $form2->createView() ,
-								'editmode' => $editmode,
-								'lieuDejaPrisForm' => $lieuDejaPrisForm,
-								'lieuDejaPrisBd' => $lieuDejaPrisBd,
-								'erreurValidation' => $erreurValidation,
-								'erreurPeriode'	=>$erreurPeriode,
-								]);
-						}
-						//on va faire en sorte de pas mettre de doublons dans la bd
-						$periode2 = $repoPeriode->findOneBy([
-							"debut"=>$key2->getDebut(),
-							"fin"=>$key2->getFin()
-						]);
-
-						if($periode2 == null)
+						/*if($key2->getDebut() == null)
 						{
-							$manager->persist($key2);
+							// on va supprimer la période de l'événement
+							$key->removePeriode($key2);
+							echo 'test de fou 2<br>';
 						}
 						else
-						{
-							$key->removePeriode($key2);
-							$key->addPeriode($periode2);
-						}
+						{*/
+							//on va valider 
+							$erreurValidation = $validator->validate($key2);
+							if (count($erreurValidation) > 0) {
+
+								return $this->render('/site/form_article.html.twig'	,[
+									'formArticle'=> $form2->createView() ,
+									'editmode' => $editmode,
+									'lieuDejaPrisForm' => $lieuDejaPrisForm,
+									'lieuDejaPrisBd' => $lieuDejaPrisBd,
+									'erreurValidation' => $erreurValidation,
+									'erreurPeriode'	=>$erreurPeriode,
+									]);
+							}
+							//on va faire en sorte de pas mettre de doublons dans la bd
+							$periode2 = $repoPeriode->findOneBy([
+								"debut"=>$key2->getDebut(),
+								"fin"=>$key2->getFin()
+							]);
+
+							if($periode2 == null)
+							{
+								$manager->persist($key2);
+							}
+							else
+							{
+								$key->removePeriode($key2);
+								$key->addPeriode($periode2);
+							}
+
+						//}
 					}
 					foreach($key->getQuestions() as $key2 )
 					{
@@ -1075,7 +1089,7 @@ class SiteController extends AbstractController
      */
 	 public function createEvenement( Evenement $evenement = null ,Request $request , ObjectManager $manager , LieuRepository $repoLieu , ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode , ListeContactRepository $repoListeContact ,ValidatorInterface $validator)
 	 {
-
+		
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 		$user = $this->getUser();
 
@@ -1156,15 +1170,17 @@ class SiteController extends AbstractController
 		$erreurPeriode = null;
 
 		$form2 = $this->createForm(FormEvenementType::class , $evenement);
-
+		
 		$form2->handleRequest($request);
+
 		if($form2->isSubmitted() && $form2->isValid())
 		{
+			
 			if($evenement->getId() == null)
 			{
 				$evenement->setPublishedAt(new \DateTime( "now" , new \DateTimeZone("Europe/Paris")));
 			}
-
+			
 			// on va modifier un peu la saisie de l'utilisateur
 			
 			foreach($evenement->getOrganisateurs() as $key)
@@ -1202,7 +1218,7 @@ class SiteController extends AbstractController
 			]);
 			/* Il va falloir voir au niveau de la validation des champs de lieu (à faire dans Lieu.php) (voir si on peut pas utiliser des 
 				expressions régulières)*/
-
+				
 			$lieuDejaPris = false;
 			if($lieu2 == null)
 			{
@@ -1311,6 +1327,7 @@ class SiteController extends AbstractController
 
 				foreach($evenement->getPeriode() as $key )
 				{
+					
 					$errors = $validator->validate($key);
 					if (count($errors) > 0) {
 

@@ -417,27 +417,7 @@
                 // add a new organisateur form (see next code block)
                 addForm($collectionHolder2, $newLinkLi2);
 
-                // on va rajouter les code pour l'ajout de contact ici
 
-                // on récupère le formulaire organisateur qu'on vient d'ajouter
-                /*$lastFormOrga = $('ul.organisateurs > li:nth-last-child(2) ');
-
-                console.log($lastFormOrga);
-
-                var codeContact = $('<ul> </ul>');
-                console.log('!!!!!!!\n');
-                codeContact.addClass('contact');
-                codeContact.attr('data-prototype','{{form_widget(formEvenement.organisateurs.vars.prototype)}}|e');
-
-                console.log(codeContact);
-                
-                var copie = codeContact.clone();
-                
-                $($lastFormOrga).append(copie);*/
-
-                //on va essayer de lier le prototype contact avec le prototype_name
-
-                //le eq(0) ne sert surement à rien
                 var $collectionHolder4 = $('ul.contacts:eq(0)').clone();
                 
                 // on supprime les formulaires contact et le bouton
@@ -510,6 +490,45 @@
 
             });*/
             
+            // add a delete link to all of the existing tag form li elements
+            console.log('test omega');
+            console.log($collectionHolder);
+            $collectionHolder.find('> fieldset').each(function() {
+                console.log($(this));
+                addTagFormDeleteLink($(this));
+            });
+
+            console.log($collectionHolder2);
+            
+            console.log('yolo');
+            //$collectionHolder2.wrap($('<div class = "new"> </div>'))
+            //$collectionHolder.before($('<div class = "new">'));
+            //$collectionHolder2.find('li').before($('</div>'));
+            //$collectionHolder2.find('> ul , > div , > br').wrapAll($('<div class = "new"> </div>'));
+            //$collectionHolder2.find('> ul:eq(0) , > div , > br').wrapAll($('<div class = "new"> </div>'));
+            // on wrap dans une div le premier organisateur et son ul de contact et les sauts de ligne
+            $collectionHolder2.find('> div:eq(0) , > div:eq(1) , > div:eq(2) , > div:eq(3) , > ul:eq(0) , > br:eq(0) , > br:eq(1) , > br:eq(2) ').wrapAll($('<div class = "new"> </div>'));
+            var compteur = 0;
+            $collectionHolder2.find('> ul').each(function() {
+                //console.log($(this).next().prevUntil('ul'));
+                
+               
+                //$(this).prevUntil('div.new').wrapAll($('<div class = "new"> </div>'));
+                //$collectionHolder2.find('> div:eq('+compteur*4+') , > div:eq('+compteur*4 +1+') , > div:eq('+compteur*4 +2+') , > div:eq('+compteur*4 +3+') , > ul:eq('+compteur+') , > br:eq('+compteur*3+', > br:eq('+compteur*3+1+', > br:eq('+compteur*3+2+') ').wrapAll($('<div class = "new"> </div>'));
+               // $collectionHolder2.find('> div:eq('+compteur*4+') , > ul:eq('+compteur+') ').wrapAll($('<div class = "new"> </div>'));
+               // $(this).next().prevUntil('br').wrapAll($('<div class = "new"> </div>'));
+                $collectionHolder2.find('> div.form-group:eq(0) , > div.form-group:eq(1) , > div.form-group:eq(2) , > div.form-group:eq(3) , > ul:eq(0) , > br:eq(0) , > br:eq(1) , > br:eq(2) ').wrapAll($('<div class = "new"> </div>'));
+               
+                compteur = compteur +1
+                
+            });
+            console.log($collectionHolder2);
+            console.log('yolo 2');
+
+            $collectionHolder2.find('div.new').each(function() {
+                console.log($(this));
+                addTagFormDeleteLink($(this));
+            });
 
         });
 
@@ -545,6 +564,9 @@
             // Display the form in the page in an li, before the "Add a tag" link li
             var $newFormLi = $('<li></li>').append(newForm);
             $newLinkLi.before($newFormLi);
+
+            //https://symfony.com/doc/current/form/form_collections.html#form-collections-remove
+            addTagFormDeleteLink($newFormLi)
         }
 
         function addContact2($collectionHolder, $newLinkLi,$indexOrga) {
@@ -619,6 +641,23 @@
             // Display the form in the page in an li, before the "Add a tag" link li
             var $newFormLi = $('<li></li>').append(newForm);
             $newLinkLi.before($newFormLi);
+        }
+
+        function addTagFormDeleteLink ($newFormLi)
+        {
+            var $removeFormButton = $('<button type="button" class="btn btn-danger">Suppression</button>');
+            $newFormLi.append($removeFormButton);
+            $newFormLi.append($('<br> <br>'));
+
+            $removeFormButton.on('click', function(e) {
+                // remove the li for the tag form
+                console.log($newFormLi);
+                $newFormLi.remove();
+                console.log($newFormLi);
+
+                console.log($newFormLi);
+
+            });
         }
 
 

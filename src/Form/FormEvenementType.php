@@ -44,7 +44,8 @@ class FormEvenementType extends AbstractType
 			[
             'entry_type' => FormIntervalleTempsType::class,
 			'entry_options' => ['label' => false],
-			'allow_add' => true,
+            'allow_add' => true,
+            'allow_delete' => true,
 			])
             ->add('organisateurs',CollectionType::class, 
 			[
@@ -61,7 +62,8 @@ class FormEvenementType extends AbstractType
 			[
             'entry_type' => FormQuestionType::class,
 			'entry_options' => ['label' => false],
-			'allow_add' => true,
+            'allow_add' => true,
+            'allow_delete' =>true,
             ])
             ->add('brouillon',CheckboxType::class)
 			 // ->add('PublishedAt')
