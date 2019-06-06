@@ -77,7 +77,7 @@
 			{#on va regarder si l'événement est déja relié à un utilisateur (sinon ca va faire planter la création d'article#}
 			{#{{dump(evenement.vars.value.utilisateur.id)}}
 			{{dump(formArticle.vars.value.utilisateur.id)}}#}
-			{% if (is_granted('ROLE_ADMIN') or (test != 0 or evenement.vars.value.utilisateur.id == formArticle.vars.value.utilisateur.id)) %}			
+			{#{% if (is_granted('ROLE_ADMIN') or (test != 0 or evenement.vars.value.utilisateur.id == formArticle.vars.value.utilisateur.id)) %}	#}		
 				
 				{% if test != 0 %}
 
@@ -86,7 +86,7 @@
 					{{form_row(evenement.description)}}
 					{{form_row(evenement.domaine)}}
 
-				{% endif %}
+				{% endif %}}
 				<ul class="questions" data-prototype="{{ form_widget(evenement.questions.vars.prototype)|e('html_attr') }}">
 
 					{% for question in evenement.questions %}
@@ -188,13 +188,13 @@
 				{% endif %}	
 
 				{% set test = 1 %}
-			{% else %}
+			{#{% else %}
 
 				<h3> {{evenement.vars.value.nom}} a été écris par {{evenement.vars.value.utilisateur.prenom}} {{evenement.vars.value.utilisateur.nom}} </h3>
 				<p> Vous ne pouver pas le modifier car vous n'étes pas administrateur ni l'auteur de l'événement. </p>
 				<p>Si vous souhaiter le modifier , demander à un admnistrateur ou à l'auteur</p>
 				
-			{% endif %}
+			{% endif %}#}
 
 		{% endfor %}
 		

@@ -1066,7 +1066,7 @@ class SiteController extends AbstractController
 			$user->addArticle($article);
 			$manager->persist($article);
 			$manager->persist($user);
-			dump($article);
+			//dump($article);
 			$manager->flush();
 		
 			//return $this->redirectToRoute('blog_show',['id' => $article->getId()]);
@@ -2077,13 +2077,13 @@ Ce mail est envoyé automatiquement.',
 	 */
 	public function lier_evenement(ArticleRepository $repoA,ObjectManager $manager , Request $request , $id )
 	{
-		echo'.... <br>';
+		
 		$article = $repoA->find($id);
 
 		$form = $this->createForm(ChargeEvenementInArticleType::class);
-		echo' encore ce handle ..<br>';
+		
 		$form->handleRequest($request);
-		echo 'et oui ! <br>';
+		
 
 		if ($form->isSubmitted()&& $form->isValid()) 
        	{
@@ -2092,7 +2092,7 @@ Ce mail est envoyé automatiquement.',
 			$manager->persist($article);
 			$manager->flush();
 
-			echo'aie aie<br>';
+			
 
 			return $this->redirectToRoute('accueil');
 		}
