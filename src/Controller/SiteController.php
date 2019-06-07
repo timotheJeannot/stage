@@ -1267,6 +1267,7 @@ class SiteController extends AbstractController
 			
 			foreach($evenement->getOrganisateurs() as $key)
 			{
+				
 				foreach($key->getContacts() as $key2)
 				{
 					$key2->setTelephone(str_replace(" ","",$key2->getTelephone()));
@@ -1476,6 +1477,7 @@ class SiteController extends AbstractController
 				
 				foreach($evenement->getOrganisateurs() as $key )
 				{
+					
 					$errors = $validator->validate($key);
 					if (count($errors) > 0) {
 
@@ -1529,7 +1531,7 @@ class SiteController extends AbstractController
 					//on va faire en sorte de pas mettre de doublons dans la bd
 
 					$orga2 = $repoOrga->findOneBy([
-						"siteWeb"=>$key->getSiteWeb(),
+						"mail"=>$key->getMail(),
 
 					]);
 					if($orga2 == null)
@@ -1570,47 +1572,14 @@ class SiteController extends AbstractController
 								}
 							}*/
 						}
-						/*
-
-						$listesContactKey = $repoListeContact->findBy([
-							"organisateur"=>$key->getId()
-						]);
-
-						$testListeContact1 = false;
-						$testListeContact2 = true;
-
-						// des while seraient plus appropriés. Il faudra voir l'optimisation du code car
-						//on a vraimment abusé dans le controller
-						foreach($listesContactKey as $key2)
-						{
-							foreach($listeContact->getContact() as $key3)
-							{
-								foreach($key->getContact() as $key4)
-								{
-									if($key4 == $key3)
-									{
-										$testListeContact1 = true;
-									}
-								}
-								if($testListeContact1 == false)
-								{
-									$testListeContact2 = false;
-								}
-								$testListeContact1 = false;
-							}
-							if($testListeContact2)
-							{
-								$listeContact = $key2;
-							}
-							$testListeContact2 = true;
-						}
-						*/
+						
 
 						/* on rajoute les contacts dans dans la relation organisateur_contacts*/
 						foreach($key->getContacts() as $key2)
 						{
 							$orga2->addContact($key2);
 						}
+						
 
 						$evenement->addListesContact($listeContact);
 						$evenement->removeOrganisateur($key);
@@ -1660,6 +1629,7 @@ class SiteController extends AbstractController
 					}
 
 				}
+				
 				$user->addEvenement($evenement);
 				$evenement->setSurvey(false);
 				$manager->persist($evenement);
