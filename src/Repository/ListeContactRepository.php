@@ -47,4 +47,16 @@ class ListeContactRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByIdEveIdOrga($idEve, $idOrga): ?ListeContact
+    {
+        return $this->createQueryBuilder('l')
+            ->where('l.evenement = :idEve')
+            ->setParameter('idEve', $idEve)
+            ->andWhere('l.organisateur = :idOrga')
+            ->setParameter('idOrga', $idOrga)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

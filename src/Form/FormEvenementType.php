@@ -57,7 +57,9 @@ class FormEvenementType extends AbstractType
             'prototype' => true,
             
             ])
-            ->add('lieu',FormLieuType::class)
+            ->add('lieu',FormLieuType::class,[
+                'label' => false,
+            ])
             ->add('questions', CollectionType::class, 
 			[
             'entry_type' => FormQuestionType::class,

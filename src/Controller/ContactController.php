@@ -42,7 +42,7 @@ class ContactController extends AbstractController
 
                 $message = (new \Swift_Message($contactFormData['sujet']))
                         ->setFrom($contactFormData['email'])
-                        ->setTo('timothe.jeannot@gmail.com')
+                        ->setTo('ce.dafpic@ac-besancon.fr')
                         ->setBody(
                         $contactFormData['contenu'],
                         'text/html'

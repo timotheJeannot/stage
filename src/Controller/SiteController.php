@@ -1190,9 +1190,17 @@ class SiteController extends AbstractController
 			// je m'inspire de ce lien : https://symfony.com/doc/current/form/form_collections.html#form-collections-remove
 
 			$originalOrganisateurs = new ArrayCollection();
+			
 			foreach($evenement->getOrganisateurs() as $key)
 			{
 				$originalOrganisateurs->add($key);
+				$lc = $repoListeContact->findByIdEveIdOrga($evenement->getId(),$key->getId());
+				/*dump($lc);
+				foreach($lc->getContact() as $key2)
+				{
+					dump($key2);
+				}*/
+
 			}
 
 			// les questions ne se suppriment pas automatiquement non plus.
@@ -1277,6 +1285,21 @@ class SiteController extends AbstractController
 					$key2->setPrenom(str_replace(substr($key2->getPrenom(),0,1),strtoupper(substr($key2->getPrenom(),0,1)),$key2->getPrenom()));
 					*/
 				}
+			}
+
+			// les listes de contacts ne sont pas présent pour les erreurs de validation
+			// on va les créer mainteantn et les supprimer après
+			// code apporté le dernier jour du stage
+
+			foreach($evenement->getOrganisateurs() as $key)
+			{
+				$lc = new ListeContact();
+				foreach($key->getContacts() as $key2)
+				{
+					$lc->addContact($key2);
+				}
+				$key->addListeContact($lc);
+				$evenement->addListesContact($lc);
 			}
 			
 			
@@ -1489,7 +1512,16 @@ class SiteController extends AbstractController
 						   'erreurPeriode' => $erreurPeriode ,
 						]);
 					}
-					
+					// on va supprimer lesl istes de contacts dont l'id est null crées plus haut
+					// voir le commentaire du haut
+					foreach($key->getListeContact() as $key2)
+					{
+						if($key2->getId() == null)
+						{
+							$evenement->removeListesContact($key2);
+							$key->removeListeContact($key2);
+						}
+					}
 					// on va vérifier les contacts et créer la liste de contact de l'organisateur
 
 					$listeContact = new ListeContact();
@@ -1891,8 +1923,6 @@ class SiteController extends AbstractController
 		   // On va juste faire en sorte de ne pas créer de doublons d'inscrit et vérifier que
 		   //l'inscrit ne s'est pas déja inscrit à l'événement
 		   	$inscrit2 = $repositoryI->findOneBy([
-			"nom"=>$inscrit->getNom(),
-			"prenom"=>$inscrit->getPrenom(),
 			"mail"=>$inscrit->getMail(),
 			//"categorie"=>$inscrit->getCategorie()
 			]);
@@ -1910,10 +1940,10 @@ class SiteController extends AbstractController
 				$manager->persist($evenement);
 				$manager->flush();
 
-				// on va envoyer un mail de confoirmation d'inscription à l'inscrit
+				// on va envoyer un mail de confirmation d'inscription à l'inscrit
 
 				$message = (new \Swift_Message('Confirmation d\'inscription'))
-                        ->setFrom('timothe.jeannot@gmail.com')
+                        ->setFrom($evenement->getUtilisateur()->getEmail())
                         ->setTo($inscrit->getMail())
                         ->setBody(
 						'Bonjour '.$inscrit->getPrenom().' '.$inscrit->getNom().'
@@ -1921,7 +1951,7 @@ class SiteController extends AbstractController
 						Vous êtes bien inscrit à l\'événement <strong>'.$evenement->getNom().'</strong>.
 						<br><br>
 Nous vous enverrons un mail d\'enquête de satisfaction une fois l\'événement terminé. <br><br>
-Pour vous desinscrire , veuillez passer par le formulaire de contact du site.
+Pour vous desinscrire , veuillez en faire la demande en utilisant le formulaire de contact du site.
 <br><br>
 Ce mail est envoyé automatiquement.',
                         'text/html'
@@ -1935,7 +1965,7 @@ Ce mail est envoyé automatiquement.',
 				// on va envoyer un mail de confoirmation d'inscription à l'auteur de l'événement (le chargé de mission)
 
 				$message = (new \Swift_Message('Nouvel Inscrit pour '.$evenement->getNom()))
-                        ->setFrom('timothe.jeannot@gmail.com')
+                        ->setFrom('ce.dafpic@ac-besancon.fr')
                         ->setTo($evenement->getUtilisateur()->getEMail())
                         ->setBody(
 						'Bonjour '.$evenement->getUtilisateur()->getPrenom().' '.$evenement->getUtilisateur()->getNom().'
