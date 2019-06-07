@@ -63,8 +63,9 @@
 		</ul>#}
 		{% set test =0 %}
 
-		{% if editmode %}
-
+		{% if (editmode or isSubmitted)  %}
+			{# isSubmitted a été rajouté car le allow_delete a supprimé l'événément bidon à la soumission 
+				si on se trompe , il faut afficher le 1er événement #}
 			{% set test =1 %}
 
 		{% endif %}
@@ -77,7 +78,7 @@
 			{#on va regarder si l'événement est déja relié à un utilisateur (sinon ca va faire planter la création d'article#}
 			{#{{dump(evenement.vars.value.utilisateur.id)}}
 			{{dump(formArticle.vars.value.utilisateur.id)}}#}
-			{#{% if (is_granted('ROLE_ADMIN') or (test != 0 or evenement.vars.value.utilisateur.id == formArticle.vars.value.utilisateur.id)) %}	#}		
+			{% if (is_granted('ROLE_ADMIN') or (evenement.vars.value.utilisateur == null or evenement.vars.value.utilisateur.id == formArticle.vars.value.utilisateur.id)) %}			
 				
 				{% if test != 0 %}
 
@@ -86,7 +87,7 @@
 					{{form_row(evenement.description)}}
 					{{form_row(evenement.domaine)}}
 
-				{% endif %}}
+				{% endif %}
 				<ul class="questions" data-prototype="{{ form_widget(evenement.questions.vars.prototype)|e('html_attr') }}">
 
 					{% for question in evenement.questions %}
@@ -188,13 +189,13 @@
 				{% endif %}	
 
 				{% set test = 1 %}
-			{#{% else %}
+			{% else %}
 
 				<h3> {{evenement.vars.value.nom}} a été écris par {{evenement.vars.value.utilisateur.prenom}} {{evenement.vars.value.utilisateur.nom}} </h3>
 				<p> Vous ne pouver pas le modifier car vous n'étes pas administrateur ni l'auteur de l'événement. </p>
 				<p>Si vous souhaiter le modifier , demander à un admnistrateur ou à l'auteur</p>
 				
-			{% endif %}#}
+			{% endif %}
 
 		{% endfor %}
 		
@@ -248,9 +249,13 @@
 			// voir le controller pour comprendre , il nous fallait un événement et un organisateur bidon
 			// pour pouvoir rentrer dans les for au moin une fois et avoir accés aux ul
 
+			// finalement le allow_delete de la classe formulaire supprime l'événement bidon lors de la soummission
+			// il faut donc aussi vérifier la variable isSubmitted
+
 			var start = 1;
 			var editmode = '{{editmode}}';
-			if(editmode == true)
+			var isSubmitted = '{{isSubmitted}}';
+			if(editmode == true || isSubmitted)
 			{
 				// si on est en mode édition , le 1er ul n'est pas bidon
 				start = 0;
@@ -920,7 +925,7 @@
 						//---------------------------------------
 				});
 
-				/*console.log('làààààààààààààààààà');
+				console.log('làààààààààààààààààà');
 				console.log($collectionHolder);
 				console.log($newLinkLi);
 				$collectionHolder.find('> ul:eq(0) , > ul:eq(1) , > ul:eq(2) ').wrapAll($('<div class = "new"> </div>'));
@@ -930,20 +935,20 @@
 				console.log($collectionHolder.find('> div:last-child'));
 				console.log($collectionHolder.find('> li:last-child').prev());
 				console.log('sérieu ?');
-				addTagFormDeleteLink($collectionHolder.find('> li:last-child').prev());*/
+				addTagFormDeleteLink($collectionHolder.find('> li:last-child').prev());
             });
 
 			
 			console.log('iciiiiiiiiiiiiii');
 			console.log($collectionHolder);
-			/*$collectionHolder.find('ul.questions').each(function(){
+			$collectionHolder.find('ul.questions').each(function(){
 				$collectionHolder.find('> div.form-group:eq(0) , > div.form-group:eq(1) , > div.form-group:eq(2) , > div.form-group:eq(3) , > ul:eq(0) , > ul:eq(1) , > ul:eq(2) , > fieldset:eq(0) ').wrapAll($('<div class = "new"> </div>'));
 			});
 
 			$collectionHolder.find('div.new').each(function() {
                 console.log($(this));
                 addTagFormDeleteLink($(this));
-            });*/
+            });
 		
 
 		});

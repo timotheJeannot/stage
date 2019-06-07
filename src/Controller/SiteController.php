@@ -327,12 +327,16 @@ class SiteController extends AbstractController
 
 			$article->addEvenement($event);
 			$editmode = false;
+
+			
 		}
 
 		$form2 = $this->createForm(FormArticleType::class , $article);
 
 
 		$form2->handleRequest($request);
+
+
 
 		$lieuDejaPrisForm = null;
 		$lieuDejaPrisBd = null;
@@ -382,7 +386,9 @@ class SiteController extends AbstractController
 			// pour envoyer un message d'erreur si il y a des doublons contacts au sein du même organisateur
 			// il faudra enlever la validation des événements plus bas
 
-			$test1 = 0 ; // est ici pour ne pas traité le premier événement qui est crée juste pour les for du rendu
+			//$test1 = 0 ; // est ici pour ne pas traité le premier événement qui est crée juste pour les for du rendu
+			$test1 = 1 ; // le allow_delete de la class FormArticleType delete l'événement bidon , on a 
+						  // plus besoin des tests, je vais tous les mettres à 1
 
 			if($editmode)
 			{
@@ -403,6 +409,7 @@ class SiteController extends AbstractController
 								'lieuDejaPrisBd' => $lieuDejaPrisBd,
 								'erreurValidation' => $erreurValidation,
 								'erreurPeriode'	=>$erreurPeriode,
+								'isSubmitted' => true,
 								]);
 						}
 				}
@@ -412,8 +419,10 @@ class SiteController extends AbstractController
 
 			// les variable testi sont la pour ne pas prendre en compte le 1er événement ($event)
 			// qui est là pour faciliter le rendu dans twig
-			$test1 =0;
-			$test2 =0;
+			$test1 =1;
+			$test2 =1;
+			// le allow_delete de la class FormArticleType delete l'événement bidon , on a 
+			// plus besoin des tests, je vais tous les mettres à 1
 
 			if($editmode)
 			{
@@ -462,6 +471,7 @@ class SiteController extends AbstractController
 													'lieuDejaPrisBd' => $lieuDejaPrisBd,
 													'erreurValidation' => $erreurValidation,
 													'erreurPeriode'	=>$erreurPeriode,
+													'isSubmitted' => true,
 													]);
 											}
 
@@ -475,7 +485,7 @@ class SiteController extends AbstractController
 				}
 
 				$test1 =1;
-				$test2= 0;
+				$test2= 1;
 				if($editmode)
 				{
 					$test2 = 1;
@@ -686,7 +696,7 @@ class SiteController extends AbstractController
 			
 			// la variable test est la pour ne pas prendre en compte le 1er événement ($event)
 			// qui est là pour faciliter le rendu dans twig
-			$test =0;
+			$test =1;
 			if($editmode)
 			{
 				$test = 1;
@@ -697,8 +707,10 @@ class SiteController extends AbstractController
 				// attention pour le test du lieu , il faut le faire avec
 				// les informations du formulaire en plus des infos qui sont en
 				// base de données
+			
 				if($test !=0)
 				{
+				
 					foreach($key->getPeriode() as $key2)
 					{
 						// on va regarder si l'élément a été supprimé
@@ -723,6 +735,7 @@ class SiteController extends AbstractController
 									'lieuDejaPrisBd' => $lieuDejaPrisBd,
 									'erreurValidation' => $erreurValidation,
 									'erreurPeriode'	=>$erreurPeriode,
+									'isSubmitted' => true,
 									]);
 							}
 							//on va faire en sorte de pas mettre de doublons dans la bd
@@ -756,6 +769,7 @@ class SiteController extends AbstractController
 								'lieuDejaPrisBd' => $lieuDejaPrisBd,
 								'erreurValidation' => $erreurValidation,
 								'erreurPeriode'	=>$erreurPeriode,
+								'isSubmitted' => true,
 								]);
 						}
 						foreach($key2->getReponses() as $key3)
@@ -769,6 +783,7 @@ class SiteController extends AbstractController
 								'errors' => $errors ,
 								'erreurDejaPris' =>$erreurDejaPris,
 								'erreurPeriode' => $erreurPeriode ,
+								'isSubmitted' => true,
 								]);
 							}
 							$key3->setQuestion($key2);
@@ -792,14 +807,12 @@ class SiteController extends AbstractController
 									'lieuDejaPrisBd' => $lieuDejaPrisBd,
 									'erreurValidation' => $erreurValidation,
 									'erreurPeriode'	=>$erreurPeriode,
+									'isSubmitted' => true,
 									]);
 							}
 							//on va faire en sorte de pas mettre de doublons dans la bd
 							$contact2 = $repoContact->findOneBy([
-								"nom"=>$key4->getNom(),
-								"prenom"=>$key4->getPrenom(),
 								"mail"=>$key4->getMail(),
-								"telephone"=>$key4->getTelephone()
 							]);
 							if($contact2 == null)
 							{
@@ -839,6 +852,7 @@ class SiteController extends AbstractController
 								'lieuDejaPrisBd' => $lieuDejaPrisBd,
 								'erreurValidation' => $erreurValidation,
 								'erreurPeriode'	=>$erreurPeriode,
+								'isSubmitted' => true,
 								]);
 						}
 						//on va faire en sorte de pas mettre de doublons dans la bd
@@ -854,10 +868,7 @@ class SiteController extends AbstractController
 							// on regarde si on est en train de créer un organisateur qui existe déja (formulaire de création)
 
 							$orga2 = $repoOrga->findOneBy([
-								"nom"=>$key3->getNom(),
-								"siteWeb"=>$key3->getSiteWeb(),
 								"mail"=>$key3->getMail(),
-								"image"=>$key3->getImage()
 							]);
 						}
 						if($orga2 == null)
@@ -994,6 +1005,7 @@ class SiteController extends AbstractController
 							'lieuDejaPrisBd' => $lieuDejaPrisBd,
 							'erreurValidation' => $erreurValidation,
 							'erreurPeriode'	=>$erreurPeriode,
+							'isSubmitted' => true,
 							]);
 					}
 					//on va faire en sorte de pas mettre de doublons dans la bd
@@ -1037,6 +1049,7 @@ class SiteController extends AbstractController
 												'lieuDejaPrisBd' => $lieuDejaPrisBd,
 												'erreurValidation' => $erreurValidation,
 												'erreurPeriode'	=>$erreurPeriode,
+												'isSubmitted' => true,
 												]);
 										}
 									}
@@ -1053,7 +1066,8 @@ class SiteController extends AbstractController
 					$key->setSurvey(false);
 
 					$key->setPublishedAt($article->getCreatedAt());
-					$manager->persist($key);	
+					$manager->persist($key);
+					
 				}
 				
 				$test = 1;
@@ -1061,19 +1075,20 @@ class SiteController extends AbstractController
 		
 			if(!$editmode)
 			{
+				
 				$article->removeEvenement($event);
 			}
 			$user->addArticle($article);
 			$manager->persist($article);
 			$manager->persist($user);
-			//dump($article);
+			
 			$manager->flush();
 		
 			//return $this->redirectToRoute('blog_show',['id' => $article->getId()]);
 			return $this->redirectToRoute('article');
 		}
 
-
+		
 		return $this->render('/site/form_article.html.twig'	,[
 			'formArticle'=> $form2->createView() ,
 			'editmode' => $editmode,
@@ -1081,6 +1096,7 @@ class SiteController extends AbstractController
 			'lieuDejaPrisBd' => $lieuDejaPrisBd,
 			'erreurValidation' => $erreurValidation,
 			'erreurPeriode'	=>$erreurPeriode,
+			'isSubmitted' => false,
 			]);
 			
 	 }
@@ -1492,10 +1508,8 @@ class SiteController extends AbstractController
 						
 						//on va faire en sorte de pas mettre de doublons dans la bd
 						$contact2 = $repoContact->findOneBy([
-							"nom"=>$key2->getNom(),
-							"prenom"=>$key2->getPrenom(),
 							"mail"=>$key2->getMail(),
-							"telephone"=>$key2->getTelephone()
+			
 						]);
 						if($contact2 == null)
 						{
@@ -1515,10 +1529,8 @@ class SiteController extends AbstractController
 					//on va faire en sorte de pas mettre de doublons dans la bd
 
 					$orga2 = $repoOrga->findOneBy([
-						"nom"=>$key->getNom(),
 						"siteWeb"=>$key->getSiteWeb(),
-						"mail"=>$key->getMail(),
-						"image"=>$key->getImage()
+
 					]);
 					if($orga2 == null)
 					{
@@ -1765,6 +1777,11 @@ class SiteController extends AbstractController
 		$evenement = $repository->find($id);
 
 		foreach($evenement->getListesContact() as $key)
+		{
+			$manager->remove($key);
+		}
+
+		foreach($evenement->getQuestions() as $key)
 		{
 			$manager->remove($key);
 		}
