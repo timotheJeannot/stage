@@ -24,7 +24,7 @@ class Part
     private $question;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $reponse; // la réponse peut être null ne pas mettre d'assert sur ce champ
 

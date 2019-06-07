@@ -29,7 +29,7 @@
 
                         <div class="card mb-4">
                             {% if article.image is null %}
-								              <img class="card-img-top" src="http://placehold.it/750x350" alt="">
+								              <img class="card-img-top" src="https://placehold.it/750x350" alt="">
 							              {% else %}
                             	<img class="card-img-top" src="{{article.image}}" alt="">
 							              {% endif %}
@@ -153,12 +153,12 @@
             {% form_theme form 'bootstrap_4_layout.html.twig' %} 
             {{form_start(form)}}
             <div class="card my-4">
-            <h5 class="card-header">Informations sur le site</h5>
-            <div class="card-body">
-             
-              {{form_row(form.infoSite.contenu)}}  
+              <h5 class="card-header">Informations sur le site</h5>
+              <div class="card-body">
+              
+                {{form_row(form.infoSite.contenu)}}  
+              </div>
             </div>
-          </div>
 
             <!-- Side Widget -->
           <div class="card my-4">

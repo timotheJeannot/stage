@@ -18,7 +18,7 @@ class InfoSite
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      * @Assert\NotNull(message="Veuillez renseigner le contenu ")
      */
     private $contenu;

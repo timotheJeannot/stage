@@ -63,124 +63,139 @@
 		</ul>#}
 		{% set test =0 %}
 
-		{% if editmode %}
-
+		{% if (editmode or isSubmitted)  %}
+			{# isSubmitted a été rajouté car le allow_delete a supprimé l'événément bidon à la soumission 
+				si on se trompe , il faut afficher le 1er événement #}
 			{% set test =1 %}
 
 		{% endif %}
 
 		{% for evenement in formArticle.evenements %}
+
+			{# comme on peut charger un événement qui nous appartient pas , il faut faire en sorte
+				que on ne puisse pas le modifier	 #}
+			{#{{dump(evenement.vars.value.utilisateur)}}#}
+			{#on va regarder si l'événement est déja relié à un utilisateur (sinon ca va faire planter la création d'article#}
+			{#{{dump(evenement.vars.value.utilisateur.id)}}
+			{{dump(formArticle.vars.value.utilisateur.id)}}#}
+			{% if (is_granted('ROLE_ADMIN') or (evenement.vars.value.utilisateur == null or evenement.vars.value.utilisateur.id == formArticle.vars.value.utilisateur.id)) %}			
+				
+				{% if test != 0 %}
+
+					{{form_row(evenement.nom)}}
+					{{form_row(evenement.image)}}
+					{{form_row(evenement.description)}}
+					{{form_row(evenement.domaine)}}
+
+				{% endif %}
+				<ul class="questions" data-prototype="{{ form_widget(evenement.questions.vars.prototype)|e('html_attr') }}">
+
+					{% for question in evenement.questions %}
+						{% if test != 0 %}
+
+							{{form_row(question.contenu)}}
+
+						{% endif %}	
+						<ul class="reponses" data-prototype="{{ form_widget(question.reponses.vars.prototype)|e('html_attr') }}">
+							{% for reponse in question.reponses %}
+
+								{{form_row(reponse.contenu)}}
+
+							{% endfor %}
+						</ul>
+
+
+					{% endfor %}
+
+				</ul>
+				<ul class="periodes" data-prototype="{{form_widget(evenement.periode.vars.prototype)|e('html_attr')}}">
+					{% for periode in evenement.periode %}
+
+						{{form_row(periode)}}
+
+					{% endfor %}
 			
-			{% if test != 0 %}
+				</ul>
 
-				{{form_row(evenement.nom)}}
-				{{form_row(evenement.image)}}
-				{{form_row(evenement.description)}}
-				{{form_row(evenement.domaine)}}
+				<ul class="organisateurs" data-prototype="{{form_widget(evenement.organisateurs.vars.prototype)|e('html_attr')}}">
+					{% for organisateur in evenement.organisateurs %}
 
-			{% endif %}
-			<ul class="questions" data-prototype="{{ form_widget(evenement.questions.vars.prototype)|e('html_attr') }}">
+						{% if test != 0 %}
 
-				{% for question in evenement.questions %}
-					{% if test != 0 %}
+							{{form_row(organisateur.nom)}}
+							{{form_row(organisateur.siteWeb)}}
+							{{form_row(organisateur.mail)}}
+							{{form_row(organisateur.image)}}
+
+						{% endif %}
+
+						<ul class="contacts" data-prototype="{{form_widget(organisateur.contacts.vars.prototype)|e('html_attr')}}">
+
+							{#{% for contact in organisateur.contacts %}
+
+								{{form_row(contact)}}
+							
+							{% endfor %}#}
+
+							{% for listeContact in organisateur.vars["value"].listeContact %}
+								
+								
+								{% if listeContact.evenement == evenement.vars["value"] %}
+									{% for contact in listeContact.contact %}
+
+										{#{{form_row(contact)}}#}
+										
+										
+
+										{# contact est une entity et pas un formView , je ne sais pas comment générer le formView
+										à partir du twig , donc pour l'instant on va récupérer le bon contact dans organisateurs.contacts
+										qui est un formView
+										#}
+
+										{% for contact2 in organisateur.contacts %}
+
+											{% if contact == contact2.vars["value"] %}
+
+												{{form_row(contact2)}}
+
+											{% endif %}
+
+										{% endfor %}
+				
+									{% endfor %}
+
+								{% endif %}
+
+							{% endfor %}
+
+						</ul>
+					{% endfor %}
+				</ul>
+
+				{#<ul class="questions" data-prototype="{{ form_widget(evenement.questions.vars.prototype)|e('html_attr') }}">
+
+					{% for question in evenement.questions %}
 
 						{{form_row(question.contenu)}}
 
-					{% endif %}	
-					<ul class="reponses" data-prototype="{{ form_widget(question.reponses.vars.prototype)|e('html_attr') }}">
-						{% for reponse in question.reponses %}
+					{% endfor %}
 
-							{{form_row(reponse.contenu)}}
+				</ul>#}
 
-						{% endfor %}
-					</ul>
+				{% if test !=0 %}
 
+					{{form_row(evenement.lieu)}}
 
-				{% endfor %}
+				{% endif %}	
 
-			</ul>
-			<ul class="periodes" data-prototype="{{form_widget(evenement.periode.vars.prototype)|e('html_attr')}}">
-				{% for periode in evenement.periode %}
+				{% set test = 1 %}
+			{% else %}
 
-					{{form_row(periode)}}
-
-				{% endfor %}
-		
-			</ul>
-
-			<ul class="organisateurs" data-prototype="{{form_widget(evenement.organisateurs.vars.prototype)|e('html_attr')}}">
-				{% for organisateur in evenement.organisateurs %}
-
-					{% if test != 0 %}
-
-						{{form_row(organisateur.nom)}}
-						{{form_row(organisateur.siteWeb)}}
-						{{form_row(organisateur.mail)}}
-						{{form_row(organisateur.image)}}
-
-					{% endif %}
-
-					<ul class="contacts" data-prototype="{{form_widget(organisateur.contacts.vars.prototype)|e('html_attr')}}">
-
-						{#{% for contact in organisateur.contacts %}
-
-							{{form_row(contact)}}
-						
-						{% endfor %}#}
-
-						{% for listeContact in organisateur.vars["value"].listeContact %}
-							
-							
-							{% if listeContact.evenement == evenement.vars["value"] %}
-								{% for contact in listeContact.contact %}
-
-									{#{{form_row(contact)}}#}
-									
-									
-
-									{# contact est une entity et pas un formView , je ne sais pas comment générer le formView
-									à partir du twig , donc pour l'instant on va récupérer le bon contact dans organisateurs.contacts
-									qui est un formView
-									#}
-
-									{% for contact2 in organisateur.contacts %}
-
-										{% if contact == contact2.vars["value"] %}
-
-											{{form_row(contact2)}}
-
-										{% endif %}
-
-									{% endfor %}
-			
-								{% endfor %}
-
-							{% endif %}
-
-						{% endfor %}
-
-					</ul>
-				{% endfor %}
-			</ul>
-
-			{#<ul class="questions" data-prototype="{{ form_widget(evenement.questions.vars.prototype)|e('html_attr') }}">
-
-				{% for question in evenement.questions %}
-
-					{{form_row(question.contenu)}}
-
-				{% endfor %}
-
-			</ul>#}
-
-			{% if test !=0 %}
-
-				{{form_row(evenement.lieu)}}
-
-			{% endif %}	
-
-			{% set test = 1 %}
-
+				<h3> {{evenement.vars.value.nom}} a été écris par {{evenement.vars.value.utilisateur.prenom}} {{evenement.vars.value.utilisateur.nom}} </h3>
+				<p> Vous ne pouver pas le modifier car vous n'étes pas administrateur ni l'auteur de l'événement. </p>
+				<p>Si vous souhaiter le modifier , demander à un admnistrateur ou à l'auteur</p>
+				
+			{% endif %}
 
 		{% endfor %}
 		
@@ -234,9 +249,13 @@
 			// voir le controller pour comprendre , il nous fallait un événement et un organisateur bidon
 			// pour pouvoir rentrer dans les for au moin une fois et avoir accés aux ul
 
+			// finalement le allow_delete de la classe formulaire supprime l'événement bidon lors de la soummission
+			// il faut donc aussi vérifier la variable isSubmitted
+
 			var start = 1;
 			var editmode = '{{editmode}}';
-			if(editmode == true)
+			var isSubmitted = '{{isSubmitted}}';
+			if(editmode == true || isSubmitted)
 			{
 				// si on est en mode édition , le 1er ul n'est pas bidon
 				start = 0;
@@ -904,7 +923,31 @@
 
                 		})
 						//---------------------------------------
-				});	
+				});
+
+				console.log('làààààààààààààààààà');
+				console.log($collectionHolder);
+				console.log($newLinkLi);
+				$collectionHolder.find('> ul:eq(0) , > ul:eq(1) , > ul:eq(2) ').wrapAll($('<div class = "new"> </div>'));
+				console.log($collectionHolder.find('> li:nth-last-child(1)').prev().prev());
+				console.log($collectionHolder.find('> li:nth-last-child(1)').prev());
+				$collectionHolder.find('> li:nth-last-child(1)').prev().prepend($collectionHolder.find('> li:nth-last-child(1)').prev().prev());
+				console.log($collectionHolder.find('> div:last-child'));
+				console.log($collectionHolder.find('> li:last-child').prev());
+				console.log('sérieu ?');
+				addTagFormDeleteLink($collectionHolder.find('> li:last-child').prev());
+            });
+
+			
+			console.log('iciiiiiiiiiiiiii');
+			console.log($collectionHolder);
+			$collectionHolder.find('ul.questions').each(function(){
+				$collectionHolder.find('> div.form-group:eq(0) , > div.form-group:eq(1) , > div.form-group:eq(2) , > div.form-group:eq(3) , > ul:eq(0) , > ul:eq(1) , > ul:eq(2) , > fieldset:eq(0) ').wrapAll($('<div class = "new"> </div>'));
+			});
+
+			$collectionHolder.find('div.new').each(function() {
+                console.log($(this));
+                addTagFormDeleteLink($(this));
             });
 		
 
@@ -918,8 +961,9 @@
 
             // get the new index
             var index = $collectionHolder.data('index');
-
+			
             var newForm = prototype;
+			
             // You need this only if you didn't set 'label' => false in your tags field in TaskType
             // Replace '__name__label__' in the prototype's HTML to
             // instead be a number based on how many items we have
@@ -1139,6 +1183,23 @@
 
             })
 		}
+
+		function addTagFormDeleteLink ($newFormLi)
+        {
+            var $removeFormButton = $('<button type="button" class="btn btn-danger">Suppression</button>');
+            $newFormLi.append($removeFormButton);
+            $newFormLi.append($('<br> <br>'));
+
+            $removeFormButton.on('click', function(e) {
+                // remove the li for the tag form
+                console.log($newFormLi);
+                $newFormLi.remove();
+                console.log($newFormLi);
+
+                console.log($newFormLi);
+
+            });
+        }
 
 	</script>
 

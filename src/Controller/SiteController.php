@@ -38,6 +38,7 @@ use App\Repository\InfoSiteRepository;
 use Symfony\Component\Form\FormEvents;
 use App\Repository\EvenementRepository;
 use App\Repository\PartenairesRepository;
+use App\Form\ChargeEvenementInArticleType;
 use App\Repository\ListeContactRepository;
 use App\Repository\OrganisateurRepository;
 use App\Repository\SatisfactionRepository;
@@ -46,6 +47,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -300,6 +302,7 @@ class SiteController extends AbstractController
 
 		$user = $this->getUser();
 
+
 		/*
 		$this->denyAccessUnlessGranted('ROLE_ADMIN');
 
@@ -324,12 +327,16 @@ class SiteController extends AbstractController
 
 			$article->addEvenement($event);
 			$editmode = false;
+
+			
 		}
 
 		$form2 = $this->createForm(FormArticleType::class , $article);
 
 
 		$form2->handleRequest($request);
+
+
 
 		$lieuDejaPrisForm = null;
 		$lieuDejaPrisBd = null;
@@ -379,13 +386,15 @@ class SiteController extends AbstractController
 			// pour envoyer un message d'erreur si il y a des doublons contacts au sein du même organisateur
 			// il faudra enlever la validation des événements plus bas
 
-			$test1 = 0 ; // est ici pour ne pas traité le premier événement qui est crée juste pour les for du rendu
+			//$test1 = 0 ; // est ici pour ne pas traité le premier événement qui est crée juste pour les for du rendu
+			$test1 = 1 ; // le allow_delete de la class FormArticleType delete l'événement bidon , on a 
+						  // plus besoin des tests, je vais tous les mettres à 1
 
 			if($editmode)
 			{
 				$test1 = 1;
 			}
-
+			
 			foreach($article->getEvenements() as $key)
 			{
 				if($test1 ==1)
@@ -400,6 +409,7 @@ class SiteController extends AbstractController
 								'lieuDejaPrisBd' => $lieuDejaPrisBd,
 								'erreurValidation' => $erreurValidation,
 								'erreurPeriode'	=>$erreurPeriode,
+								'isSubmitted' => true,
 								]);
 						}
 				}
@@ -409,8 +419,10 @@ class SiteController extends AbstractController
 
 			// les variable testi sont la pour ne pas prendre en compte le 1er événement ($event)
 			// qui est là pour faciliter le rendu dans twig
-			$test1 =0;
-			$test2 =0;
+			$test1 =1;
+			$test2 =1;
+			// le allow_delete de la class FormArticleType delete l'événement bidon , on a 
+			// plus besoin des tests, je vais tous les mettres à 1
 
 			if($editmode)
 			{
@@ -459,6 +471,7 @@ class SiteController extends AbstractController
 													'lieuDejaPrisBd' => $lieuDejaPrisBd,
 													'erreurValidation' => $erreurValidation,
 													'erreurPeriode'	=>$erreurPeriode,
+													'isSubmitted' => true,
 													]);
 											}
 
@@ -472,7 +485,7 @@ class SiteController extends AbstractController
 				}
 
 				$test1 =1;
-				$test2= 0;
+				$test2= 1;
 				if($editmode)
 				{
 					$test2 = 1;
@@ -481,7 +494,7 @@ class SiteController extends AbstractController
 			
 			// on va faire en sorte de ne pas insérer de doublons qui serait présent dans 
 			//le formulaire 
-
+			
 			for($i =0 ; $i < count($article->getEvenements()) ; $i++)
 			{
 				//on va regarder si deux intervalles de temps sont identique
@@ -680,10 +693,10 @@ class SiteController extends AbstractController
 				}
 			}*/
 
-
+			
 			// la variable test est la pour ne pas prendre en compte le 1er événement ($event)
 			// qui est là pour faciliter le rendu dans twig
-			$test =0;
+			$test =1;
 			if($editmode)
 			{
 				$test = 1;
@@ -694,38 +707,54 @@ class SiteController extends AbstractController
 				// attention pour le test du lieu , il faut le faire avec
 				// les informations du formulaire en plus des infos qui sont en
 				// base de données
+			
 				if($test !=0)
 				{
+				
 					foreach($key->getPeriode() as $key2)
 					{
-						//on va valider 
-						$erreurValidation = $validator->validate($key2);
-						if (count($erreurValidation) > 0) {
+						// on va regarder si l'élément a été supprimé
+						// si c'est le cas , le début est null
 
-							return $this->render('/site/form_article.html.twig'	,[
-								'formArticle'=> $form2->createView() ,
-								'editmode' => $editmode,
-								'lieuDejaPrisForm' => $lieuDejaPrisForm,
-								'lieuDejaPrisBd' => $lieuDejaPrisBd,
-								'erreurValidation' => $erreurValidation,
-								'erreurPeriode'	=>$erreurPeriode,
-								]);
-						}
-						//on va faire en sorte de pas mettre de doublons dans la bd
-						$periode2 = $repoPeriode->findOneBy([
-							"debut"=>$key2->getDebut(),
-							"fin"=>$key2->getFin()
-						]);
-
-						if($periode2 == null)
+						/*if($key2->getDebut() == null)
 						{
-							$manager->persist($key2);
+							// on va supprimer la période de l'événement
+							$key->removePeriode($key2);
+							echo 'test de fou 2<br>';
 						}
 						else
-						{
-							$key->removePeriode($key2);
-							$key->addPeriode($periode2);
-						}
+						{*/
+							//on va valider 
+							$erreurValidation = $validator->validate($key2);
+							if (count($erreurValidation) > 0) {
+
+								return $this->render('/site/form_article.html.twig'	,[
+									'formArticle'=> $form2->createView() ,
+									'editmode' => $editmode,
+									'lieuDejaPrisForm' => $lieuDejaPrisForm,
+									'lieuDejaPrisBd' => $lieuDejaPrisBd,
+									'erreurValidation' => $erreurValidation,
+									'erreurPeriode'	=>$erreurPeriode,
+									'isSubmitted' => true,
+									]);
+							}
+							//on va faire en sorte de pas mettre de doublons dans la bd
+							$periode2 = $repoPeriode->findOneBy([
+								"debut"=>$key2->getDebut(),
+								"fin"=>$key2->getFin()
+							]);
+
+							if($periode2 == null)
+							{
+								$manager->persist($key2);
+							}
+							else
+							{
+								$key->removePeriode($key2);
+								$key->addPeriode($periode2);
+							}
+
+						//}
 					}
 					foreach($key->getQuestions() as $key2 )
 					{
@@ -740,6 +769,7 @@ class SiteController extends AbstractController
 								'lieuDejaPrisBd' => $lieuDejaPrisBd,
 								'erreurValidation' => $erreurValidation,
 								'erreurPeriode'	=>$erreurPeriode,
+								'isSubmitted' => true,
 								]);
 						}
 						foreach($key2->getReponses() as $key3)
@@ -753,6 +783,7 @@ class SiteController extends AbstractController
 								'errors' => $errors ,
 								'erreurDejaPris' =>$erreurDejaPris,
 								'erreurPeriode' => $erreurPeriode ,
+								'isSubmitted' => true,
 								]);
 							}
 							$key3->setQuestion($key2);
@@ -776,14 +807,12 @@ class SiteController extends AbstractController
 									'lieuDejaPrisBd' => $lieuDejaPrisBd,
 									'erreurValidation' => $erreurValidation,
 									'erreurPeriode'	=>$erreurPeriode,
+									'isSubmitted' => true,
 									]);
 							}
 							//on va faire en sorte de pas mettre de doublons dans la bd
 							$contact2 = $repoContact->findOneBy([
-								"nom"=>$key4->getNom(),
-								"prenom"=>$key4->getPrenom(),
 								"mail"=>$key4->getMail(),
-								"telephone"=>$key4->getTelephone()
 							]);
 							if($contact2 == null)
 							{
@@ -823,6 +852,7 @@ class SiteController extends AbstractController
 								'lieuDejaPrisBd' => $lieuDejaPrisBd,
 								'erreurValidation' => $erreurValidation,
 								'erreurPeriode'	=>$erreurPeriode,
+								'isSubmitted' => true,
 								]);
 						}
 						//on va faire en sorte de pas mettre de doublons dans la bd
@@ -838,10 +868,7 @@ class SiteController extends AbstractController
 							// on regarde si on est en train de créer un organisateur qui existe déja (formulaire de création)
 
 							$orga2 = $repoOrga->findOneBy([
-								"nom"=>$key3->getNom(),
-								"siteWeb"=>$key3->getSiteWeb(),
 								"mail"=>$key3->getMail(),
-								"image"=>$key3->getImage()
 							]);
 						}
 						if($orga2 == null)
@@ -978,6 +1005,7 @@ class SiteController extends AbstractController
 							'lieuDejaPrisBd' => $lieuDejaPrisBd,
 							'erreurValidation' => $erreurValidation,
 							'erreurPeriode'	=>$erreurPeriode,
+							'isSubmitted' => true,
 							]);
 					}
 					//on va faire en sorte de pas mettre de doublons dans la bd
@@ -988,7 +1016,7 @@ class SiteController extends AbstractController
 						"adresse" => $key->getLieu()->getAdresse(),
 						"codePostal" => $key->getLieu()->getCodePostal()
 					]);
-
+				
 					if($lieu2 != null)
 					{
 							
@@ -1021,6 +1049,7 @@ class SiteController extends AbstractController
 												'lieuDejaPrisBd' => $lieuDejaPrisBd,
 												'erreurValidation' => $erreurValidation,
 												'erreurPeriode'	=>$erreurPeriode,
+												'isSubmitted' => true,
 												]);
 										}
 									}
@@ -1030,32 +1059,36 @@ class SiteController extends AbstractController
 						}
 						
 					}
-
+					
 					$manager->persist($key->getLieu());
 
 					$user->addEvenement($key);
 					$key->setSurvey(false);
 
 					$key->setPublishedAt($article->getCreatedAt());
-					$manager->persist($key);	
+					$manager->persist($key);
+					
 				}
 				
 				$test = 1;
 			}
+		
 			if(!$editmode)
 			{
+				
 				$article->removeEvenement($event);
 			}
 			$user->addArticle($article);
 			$manager->persist($article);
 			$manager->persist($user);
-
+			
 			$manager->flush();
+		
 			//return $this->redirectToRoute('blog_show',['id' => $article->getId()]);
 			return $this->redirectToRoute('article');
 		}
 
-
+		
 		return $this->render('/site/form_article.html.twig'	,[
 			'formArticle'=> $form2->createView() ,
 			'editmode' => $editmode,
@@ -1063,6 +1096,7 @@ class SiteController extends AbstractController
 			'lieuDejaPrisBd' => $lieuDejaPrisBd,
 			'erreurValidation' => $erreurValidation,
 			'erreurPeriode'	=>$erreurPeriode,
+			'isSubmitted' => false,
 			]);
 			
 	 }
@@ -1075,7 +1109,7 @@ class SiteController extends AbstractController
      */
 	 public function createEvenement( Evenement $evenement = null ,Request $request , ObjectManager $manager , LieuRepository $repoLieu , ContactRepository $repoContact , OrganisateurRepository $repoOrga , IntervalleTempsRepository $repoPeriode , ListeContactRepository $repoListeContact ,ValidatorInterface $validator)
 	 {
-
+		
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 		$user = $this->getUser();
 
@@ -1149,6 +1183,37 @@ class SiteController extends AbstractController
 		else
 		{
 			$lieu = $evenement->getLieu();
+
+			//On est ici en train de modifier un événement
+			// quand on supprime un organisateur depuis le formulaire ,
+			// la liste de contact ne se supprime pas , on va donc s'en occuper
+			// je m'inspire de ce lien : https://symfony.com/doc/current/form/form_collections.html#form-collections-remove
+
+			$originalOrganisateurs = new ArrayCollection();
+			
+			foreach($evenement->getOrganisateurs() as $key)
+			{
+				$originalOrganisateurs->add($key);
+				$lc = $repoListeContact->findByIdEveIdOrga($evenement->getId(),$key->getId());
+				/*dump($lc);
+				foreach($lc->getContact() as $key2)
+				{
+					dump($key2);
+				}*/
+
+			}
+
+			// les questions ne se suppriment pas automatiquement non plus.
+			$originalQuestions = new ArrayCollection();
+			foreach($evenement->getQuestions() as $key)
+			{
+				$originalQuestions->add($key);
+						
+			}
+
+			
+			
+			
 		}
 
 		$errors = null;
@@ -1156,19 +1221,61 @@ class SiteController extends AbstractController
 		$erreurPeriode = null;
 
 		$form2 = $this->createForm(FormEvenementType::class , $evenement);
-
+		
 		$form2->handleRequest($request);
+
 		if($form2->isSubmitted() && $form2->isValid())
 		{
+			
 			if($evenement->getId() == null)
 			{
 				$evenement->setPublishedAt(new \DateTime( "now" , new \DateTimeZone("Europe/Paris")));
 			}
 
+			//on va supprimer les listes de contats qui ne se supprime pas automatiquement quand on modifie un événement
+			if($editmode)
+			{
+				foreach($originalOrganisateurs as $key)
+				{
+					if(false === $evenement->getOrganisateurs()->contains($key))
+					{
+						
+						foreach($key->getListeContact() as $key2)
+						{
+							if($evenement->getListesContact()->contains($key2))
+							{
+								//$key->removeListeContact($key2);
+								//$manager->persist($key);
+								$manager->remove($key2);
+							}
+						}
+					}
+				}
+
+				foreach($originalQuestions as $key)
+				{
+					if(false === $evenement->getQuestions()->contains($key))
+					{
+						// on va supprimer les réponses de la question
+						foreach($key->getReponses() as $key2)
+						{
+							$manager->remove($key2);
+						}
+						$manager->remove($key);
+					}
+					
+					
+				}
+				
+
+				
+			}
+			
 			// on va modifier un peu la saisie de l'utilisateur
 			
 			foreach($evenement->getOrganisateurs() as $key)
 			{
+				
 				foreach($key->getContacts() as $key2)
 				{
 					$key2->setTelephone(str_replace(" ","",$key2->getTelephone()));
@@ -1178,6 +1285,21 @@ class SiteController extends AbstractController
 					$key2->setPrenom(str_replace(substr($key2->getPrenom(),0,1),strtoupper(substr($key2->getPrenom(),0,1)),$key2->getPrenom()));
 					*/
 				}
+			}
+
+			// les listes de contacts ne sont pas présent pour les erreurs de validation
+			// on va les créer mainteantn et les supprimer après
+			// code apporté le dernier jour du stage
+
+			foreach($evenement->getOrganisateurs() as $key)
+			{
+				$lc = new ListeContact();
+				foreach($key->getContacts() as $key2)
+				{
+					$lc->addContact($key2);
+				}
+				$key->addListeContact($lc);
+				$evenement->addListesContact($lc);
 			}
 			
 			
@@ -1202,7 +1324,7 @@ class SiteController extends AbstractController
 			]);
 			/* Il va falloir voir au niveau de la validation des champs de lieu (à faire dans Lieu.php) (voir si on peut pas utiliser des 
 				expressions régulières)*/
-
+				
 			$lieuDejaPris = false;
 			if($lieu2 == null)
 			{
@@ -1311,6 +1433,7 @@ class SiteController extends AbstractController
 
 				foreach($evenement->getPeriode() as $key )
 				{
+					
 					$errors = $validator->validate($key);
 					if (count($errors) > 0) {
 
@@ -1377,6 +1500,7 @@ class SiteController extends AbstractController
 				
 				foreach($evenement->getOrganisateurs() as $key )
 				{
+					
 					$errors = $validator->validate($key);
 					if (count($errors) > 0) {
 
@@ -1388,7 +1512,16 @@ class SiteController extends AbstractController
 						   'erreurPeriode' => $erreurPeriode ,
 						]);
 					}
-					
+					// on va supprimer lesl istes de contacts dont l'id est null crées plus haut
+					// voir le commentaire du haut
+					foreach($key->getListeContact() as $key2)
+					{
+						if($key2->getId() == null)
+						{
+							$evenement->removeListesContact($key2);
+							$key->removeListeContact($key2);
+						}
+					}
 					// on va vérifier les contacts et créer la liste de contact de l'organisateur
 
 					$listeContact = new ListeContact();
@@ -1409,10 +1542,8 @@ class SiteController extends AbstractController
 						
 						//on va faire en sorte de pas mettre de doublons dans la bd
 						$contact2 = $repoContact->findOneBy([
-							"nom"=>$key2->getNom(),
-							"prenom"=>$key2->getPrenom(),
 							"mail"=>$key2->getMail(),
-							"telephone"=>$key2->getTelephone()
+			
 						]);
 						if($contact2 == null)
 						{
@@ -1432,10 +1563,8 @@ class SiteController extends AbstractController
 					//on va faire en sorte de pas mettre de doublons dans la bd
 
 					$orga2 = $repoOrga->findOneBy([
-						"nom"=>$key->getNom(),
-						"siteWeb"=>$key->getSiteWeb(),
 						"mail"=>$key->getMail(),
-						"image"=>$key->getImage()
+
 					]);
 					if($orga2 == null)
 					{
@@ -1475,47 +1604,14 @@ class SiteController extends AbstractController
 								}
 							}*/
 						}
-						/*
-
-						$listesContactKey = $repoListeContact->findBy([
-							"organisateur"=>$key->getId()
-						]);
-
-						$testListeContact1 = false;
-						$testListeContact2 = true;
-
-						// des while seraient plus appropriés. Il faudra voir l'optimisation du code car
-						//on a vraimment abusé dans le controller
-						foreach($listesContactKey as $key2)
-						{
-							foreach($listeContact->getContact() as $key3)
-							{
-								foreach($key->getContact() as $key4)
-								{
-									if($key4 == $key3)
-									{
-										$testListeContact1 = true;
-									}
-								}
-								if($testListeContact1 == false)
-								{
-									$testListeContact2 = false;
-								}
-								$testListeContact1 = false;
-							}
-							if($testListeContact2)
-							{
-								$listeContact = $key2;
-							}
-							$testListeContact2 = true;
-						}
-						*/
+						
 
 						/* on rajoute les contacts dans dans la relation organisateur_contacts*/
 						foreach($key->getContacts() as $key2)
 						{
 							$orga2->addContact($key2);
 						}
+						
 
 						$evenement->addListesContact($listeContact);
 						$evenement->removeOrganisateur($key);
@@ -1565,6 +1661,7 @@ class SiteController extends AbstractController
 					}
 
 				}
+				
 				$user->addEvenement($evenement);
 				$evenement->setSurvey(false);
 				$manager->persist($evenement);
@@ -1686,6 +1783,15 @@ class SiteController extends AbstractController
 			$manager->remove($key);
 		}
 
+		foreach($evenement->getQuestions() as $key)
+		{
+			$manager->remove($key);
+			foreach($key->getReponses() as $key2)
+			{
+				$manager->remove($key2);
+			}
+		}
+
 		$manager->remove($evenement);
 
 		$manager->flush();
@@ -1775,7 +1881,7 @@ class SiteController extends AbstractController
 	/**
 	 *  @Route("/inscription/{id}",name="inscription")
 	 */
-	public function inscription(EvenementRepository $repository , Request $request , $id , InscritRepository $repositoryI,ObjectManager $manager)
+	public function inscription(EvenementRepository $repository , Request $request , $id , InscritRepository $repositoryI,ObjectManager $manager , \Swift_Mailer $mailer)
 	{
 		$inscrit = new Inscrit();
 
@@ -1817,8 +1923,6 @@ class SiteController extends AbstractController
 		   // On va juste faire en sorte de ne pas créer de doublons d'inscrit et vérifier que
 		   //l'inscrit ne s'est pas déja inscrit à l'événement
 		   	$inscrit2 = $repositoryI->findOneBy([
-			"nom"=>$inscrit->getNom(),
-			"prenom"=>$inscrit->getPrenom(),
 			"mail"=>$inscrit->getMail(),
 			//"categorie"=>$inscrit->getCategorie()
 			]);
@@ -1835,6 +1939,49 @@ class SiteController extends AbstractController
 				$manager->persist($inscrit);
 				$manager->persist($evenement);
 				$manager->flush();
+
+				// on va envoyer un mail de confirmation d'inscription à l'inscrit
+
+				$message = (new \Swift_Message('Confirmation d\'inscription'))
+                        ->setFrom($evenement->getUtilisateur()->getEmail())
+                        ->setTo($inscrit->getMail())
+                        ->setBody(
+						'Bonjour '.$inscrit->getPrenom().' '.$inscrit->getNom().'
+						<br><br>
+						Vous êtes bien inscrit à l\'événement <strong>'.$evenement->getNom().'</strong>.
+						<br><br>
+Nous vous enverrons un mail d\'enquête de satisfaction une fois l\'événement terminé. <br><br>
+Pour vous desinscrire , veuillez en faire la demande en utilisant le formulaire de contact du site.
+<br><br>
+Ce mail est envoyé automatiquement.',
+                        'text/html'
+                        )
+                    ;
+                
+				$mailer->send($message);
+				
+				$this->addFlash('success', 'It sent!');
+
+				// on va envoyer un mail de confoirmation d'inscription à l'auteur de l'événement (le chargé de mission)
+
+				$message = (new \Swift_Message('Nouvel Inscrit pour '.$evenement->getNom()))
+                        ->setFrom('ce.dafpic@ac-besancon.fr')
+                        ->setTo($evenement->getUtilisateur()->getEMail())
+                        ->setBody(
+						'Bonjour '.$evenement->getUtilisateur()->getPrenom().' '.$evenement->getUtilisateur()->getNom().'
+						<br><br>
+						'.$inscrit->getPrenom().' '.$inscrit->getNom().' s\'est inscrit à <strong>'.$evenement->getNom().'</strong>.
+						<br><br>
+Les informations le concernant est disponible sur la page de l\'événement. <br><br>
+Ce mail est envoyé automatiquement.',
+                        'text/html'
+                        )
+                    ;
+                
+				$mailer->send($message);
+				
+				$this->addFlash('success', 'It sent!');
+
 				return $this->redirectToRoute('accueil');
 			}
 			// déja inscrit , il faut renvoyer un message d'erreur
@@ -1931,5 +2078,48 @@ class SiteController extends AbstractController
         ]);
 	}
 
+	/**
+	 *  @Route("/satisfaction/{idEve}/{idInscrit}/",name="suppression_inscrit")
+	 */
+	public function suppression_inscrit(EvenementRepository $repoE, InscritRepository $repoI , $idEve , $idInscrit , InscritRepository $repositoryI,ObjectManager $manager )
+	{
+		$evenement = $repoE->find($idEve);
+		$inscrit = $repositoryI->find($idInscrit);
+
+		$evenement->removeInscrit($inscrit);
+		$manager->persist($evenement);
+		$manager->flush();
+
+		return $this->redirectToRoute('accueil');
+	}
+
+	/**
+	 *  @Route("/lier_evenement/{id}",name="lier_evenement")
+	 */
+	public function lier_evenement(ArticleRepository $repoA,ObjectManager $manager , Request $request , $id )
+	{
+		
+		$article = $repoA->find($id);
+
+		$form = $this->createForm(ChargeEvenementInArticleType::class);
+		
+		$form->handleRequest($request);
+		
+
+		if ($form->isSubmitted()&& $form->isValid()) 
+       	{
+			$formData = $form->getData();
+        	$article->addEvenement($formData['evenement']);
+			$manager->persist($article);
+			$manager->flush();
+
+			
+
+			return $this->redirectToRoute('accueil');
+		}
+		return $this->render('site/lier_evenement.html.twig', [
+            'form' => $form->createView(),
+        ]);
+	}
 	
 }

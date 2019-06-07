@@ -23,6 +23,7 @@ class FormArticleType extends AbstractType
                 'entry_type' => FormEvenementType::class,
                 'entry_options' => ['label' => false],
                 'allow_add' => true,
+                'allow_delete'=> true,
             ])
             ->add('brouillon',CheckboxType::class)
         ;

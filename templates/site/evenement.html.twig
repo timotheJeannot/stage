@@ -88,11 +88,15 @@
 								{% endif %}
 							</div>
 							{% if evenement.image is null %}
-								<img class="card-img-top" src="http://placehold.it/750x350" alt="">
+								<img class="card-img-top" src="https://placehold.it/750x350" alt="">
 							{% else %}
 													<img class="card-img-top" src="{{evenement.image}}" alt="">
 							{% endif %}
 													<div class="card-body">
+															{% if evenement.brouillon %}
+																<h4 style="color : red"> Cette événement est un brouillon </h4>
+																<hr>
+															{% endif %}
 															<h2 class="card-title">{{evenement.nom}}</h2>
 															<p class="card-text">{{evenement.description}}</p>
 															<a href="{{path('show_evenement' , {id : evenement.id})}}" class="btn btn-primary"> Lire la suite </a>

@@ -124,7 +124,7 @@
 			  </li>
 
 					<li class="nav-item">
-					<a class="nav-link" href="{{path('profile')}}">Profile</a>
+					<a class="nav-link" href="{{path('profile')}}">Profil</a>
 					</li>
 
 					<li class="nav-item">
@@ -163,27 +163,28 @@
 			  
 			  
 			  
-			</ul>
+			
 
 			<form class="form-inline my-2 my-lg-0">
 				<input class="form-control mr-sm-2" type="text" placeholder="Rechercher">
 				<button class="btn btn-secondary my-2 my-sm-0" type="submit">Rechercher</button>
 		   </form>#}
-
+			</ul>
 		  </div>
 		</nav>
 		
 		
-		<div class="container">
+		<div class="container" style="margin : 5em 0 5em 5em">
       {% block body %}{% endblock %}
 		</div>
 		{# https://mdbootstrap.com/docs/jquery/navigation/footer/ #}
 		{#<footer class = "page-footer font-small bg-primary pt-4">#}
-		<footer class = "page-footer py-4 bg-primary" >
+		{#http://paulgruson.fr/2014/05/19/tutoriel-css-footer-en-bas-de-page/ #}
+		<footer class = "page-footer py-4 bg-primary" style="">
 			<div class="container">
 				<p class="m-0 text-right text-white">Mentions légales</p>
-     		<p class="m-0 text-right text-white">Copyright &copy; Your Website 2019</p>
-    	</div>
+     			<p class="m-0 text-right text-white">Copyright &copy; Your Website 2019</p>
+    		</div>
 		</footer>
 		<script>
 			$(document).ready(function(){
