@@ -1784,6 +1784,10 @@ class SiteController extends AbstractController
 		foreach($evenement->getQuestions() as $key)
 		{
 			$manager->remove($key);
+			foreach($key->getReponses() as $key2)
+			{
+				$manager->remove($key2);
+			}
 		}
 
 		$manager->remove($evenement);
