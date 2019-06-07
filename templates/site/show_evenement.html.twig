@@ -207,37 +207,40 @@
 				{% endfor %}
 			{% else %}
 				{% if is_granted('ROLE_USER') %}
-          {% if app.user.getId() == evenement.utilisateur.getId() %}
-						<div class="card mb-4">
-							<div class="card-header ">
-								
-								<div class ="card-body">
-
-									<h3 class="text-primary card-title"> {{inscrit.prenom}} {{inscrit.nom}} </h3>
-									<hr>
-									<h4 class="text-primary"> Mail : {{inscrit.mail}} </h4>
-									<h4 class="text-primary"> Categorie : {{inscrit.categorie}} </h4>
-									<hr>
-									<h4 class="text-primary"> Réponses </h5>
-									{# on va chercher la satisfaction correspondant à l'événement #}
-									{% for satisfaction in inscrit.satisfactions %}
-										{% if satisfaction.evenement.getId == evenement.getId %}
-											
-												{% for part in satisfaction.parts %}
-
-													<h5 class="text-primary"> {{part.question}} </h5>
-													<p> {{part.reponse}} </p>
-
-												{% endfor %}
-
-										{% endif %}
-									{% endfor %}
+         		 	{% if app.user.getId() == evenement.utilisateur.getId() %}
+						<h4 class="text-primary"> Inscrits </h4>
+						{% for inscrit in inscrits %}
+							<div class="card mb-4">
+								<div class="card-header ">
 									
+									<div class ="card-body">
 
-								</div>
+										<h3 class="text-primary card-title"> {{inscrit.prenom}} {{inscrit.nom}} </h3>
+										<hr>
+										<h4 class="text-primary"> Mail : {{inscrit.mail}} </h4>
+										<h4 class="text-primary"> Categorie : {{inscrit.categorie}} </h4>
+										<hr>
+										<h4 class="text-primary"> Réponses </h5>
+										{# on va chercher la satisfaction correspondant à l'événement #}
+										{% for satisfaction in inscrit.satisfactions %}
+											{% if satisfaction.evenement.getId == evenement.getId %}
+												
+													{% for part in satisfaction.parts %}
 
-							</div>	
-						</div>
+														<h5 class="text-primary"> {{part.question}} </h5>
+														<p> {{part.reponse}} </p>
+
+													{% endfor %}
+
+											{% endif %}
+										{% endfor %}
+										
+
+									</div>
+
+								</div>	
+							</div>
+						{% endfor %}	
 					{% endif %}
 				{% endif %}		
 			{% endif %}
