@@ -1229,7 +1229,9 @@ class SiteController extends AbstractController
 			foreach($evenement->getOrganisateurs() as $key)
 			{
 				$originalOrganisateurs->add($key);
+				
 				$lc = $repoListeContact->findByIdEveIdOrga($evenement->getId(),$key->getId());
+				
 				/*dump($lc);
 				foreach($lc->getContact() as $key2)
 				{

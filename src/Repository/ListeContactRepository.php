@@ -56,7 +56,7 @@ class ListeContactRepository extends ServiceEntityRepository
             ->andWhere('l.organisateur = :idOrga')
             ->setParameter('idOrga', $idOrga)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getResult()[0]
         ;
     }
 }
