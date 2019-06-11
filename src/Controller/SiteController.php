@@ -994,6 +994,17 @@ class SiteController extends AbstractController
 						}
 					}
 
+					// une liste de contact n'a pas été persist à la modification d'un article
+					// je n'ai pas le temps de voir où est le soucis dans le code en haut
+					// on va reparcouris les orga et persist leur liste de contact
+					foreach($key->getOrganisateurs() as $key3)
+					{
+						foreach($key3->getListeContact() as $key42)
+						{
+							$manager->persist($key42);
+						}
+					}
+
 					//on va valider 
 					$erreurValidation = $validator->validate($key->getLieu());
 					if (count($erreurValidation) > 0) {
