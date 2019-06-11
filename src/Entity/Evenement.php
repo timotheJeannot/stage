@@ -41,7 +41,7 @@ class Evenement
     private $image;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Article", inversedBy="evenements")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Article", mappedBy="evenements")
      */
     private $estDans;
 
