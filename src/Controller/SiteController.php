@@ -519,7 +519,7 @@ class SiteController extends AbstractController
 				}
 
 				// on va créer la liste de contacts des organisateurs et les rattacher à l'événement
-				foreach($article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs() as $key)
+				/*foreach($article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->getOrganisateurs() as $key)
 				{
 					$listeContact = new ListeContact();
 					foreach($key->getContacts() as $key2)
@@ -528,7 +528,7 @@ class SiteController extends AbstractController
 					}
 					$key->addListeContact($listeContact);
 					$article->getEvenements()[$article->getEvenements()->getKeys()[$i]]->addListesContact($listeContact);
-				}
+				}*/
 			}
 			
 			
@@ -893,6 +893,7 @@ class SiteController extends AbstractController
 						}
 						else
 						{
+							
 							//l'organisateur existe déja en base de donné , donc
 							// on va vérifier que notre liste de contact n'existe pas déja en base de donnée
 							$listeContactKey3 = $repoListeContact->findOneBy([
@@ -987,23 +988,46 @@ class SiteController extends AbstractController
 								//$key->addListesContact($key4);
 								$manager->persist($key4);
 							}
-
+							//dump($key3);
+							//dump($orga2);
 
 							$key->removeOrganisateur($key3);
+							/*foreach($key3->getListeContact() as $key42)
+							{
+								foreach($key42->getContact() as $key43)
+								{
+									$manager->persist($key43);
+								}
+								$manager->persist($key42);
+							}
+							foreach($orga2->getListeContact() as $key42)
+							{
+								foreach($key42->getContact() as $key43)
+								{
+									$manager->persist($key43);
+								}
+								$manager->persist($key42);
+							}*/
+
 							$key->addOrganisateur($orga2);
+							//$manager->persist($key3);
+							//$manager->persist($orga2);
 						}
 					}
 
 					// une liste de contact n'a pas été persist à la modification d'un article
 					// je n'ai pas le temps de voir où est le soucis dans le code en haut
 					// on va reparcouris les orga et persist leur liste de contact
-					foreach($key->getOrganisateurs() as $key3)
+					/*foreach($key->getOrganisateurs() as $key3)
 					{
 						foreach($key3->getListeContact() as $key42)
 						{
 							$manager->persist($key42);
 						}
-					}
+						$manager->persist($key3);
+						//dump($key3);
+					}*/
+					//dump($key);
 
 					//on va valider 
 					$erreurValidation = $validator->validate($key->getLieu());
